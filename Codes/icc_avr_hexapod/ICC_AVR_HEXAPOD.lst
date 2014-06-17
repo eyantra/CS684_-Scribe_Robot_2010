@@ -1,0 +1,5159 @@
+__start:
+__text_start:
+      79 EFCF      LDI	R28,0xFF
+      7A E2D1      LDI	R29,0x21
+      7B BFCD      OUT	0x3D,R28
+      7C BFDE      OUT	0x3E,R29
+      7D 51CE      SUBI	R28,0x1E
+      7E 40D0      SBCI	R29,0
+      7F EA0A      LDI	R16,0xAA
+      80 8308      STD	Y+0,R16
+      81 2400      CLR	R0
+      82 E0EA      LDI	R30,0xA
+      83 E0F2      LDI	R31,2
+      84 E012      LDI	R17,2
+      85 34E8      CPI	R30,0x48
+      86 07F1      CPC	R31,R17
+      87 F011      BEQ	0x008A
+      88 9201      ST	R0,Z+
+      89 CFFB      RJMP	0x0085
+      8A 8300      STD	Z+0,R16
+      8B EEE8      LDI	R30,0xE8
+      8C E0F0      LDI	R31,0
+      8D E0A0      LDI	R26,0
+      8E E0B2      LDI	R27,2
+      8F E010      LDI	R17,0
+      90 E000      LDI	R16,0
+      91 BF0B      OUT	0x3B,R16
+      92 3FE2      CPI	R30,0xF2
+      93 07F1      CPC	R31,R17
+      94 F021      BEQ	0x0099
+      95 95C8      LPM
+      96 9631      ADIW	R30,1
+      97 920D      ST	R0,X+
+      98 CFF9      RJMP	0x0092
+      99 940E 0A1E CALL	_main
+_exit:
+      9B CFFF      RJMP	_exit
+FILE: C:\DOCUME~1\Administrator\Desktop\Embedded\icc_avr_hexapod\icc_avr_hexapod\hexapod_firebirdv.h
+(0001) /**
+(0002) 
+(0003)  hexapod_firebirdv.h : Basic control operations setting ports, defining interfaces, etc. for FirebirdV platform.
+(0004)  @author Group 10: Abhinav Maurya 10305016
+(0005)  		 	   	   Yogesh Kakde	  10305039
+(0006) 				   Lokesh Rajwani 10305066
+(0007)  
+(0008)  AVR Studio Version 4.17, Build 666
+(0009) 
+(0010)  Date: 6th November 2010
+(0011)  
+(0012)     Make sure that in the configuration options following settings are 
+(0013)  	done for proper operation of the code
+(0014) 
+(0015)  	Microcontroller: atmega2560
+(0016)  	Frequency: 11059200
+(0017)  	Optimization: -O0 (For more information read section: Selecting proper optimization options 
+(0018) 						below figure 4.22 in the hardware manual)
+(0019) *********************************************************************************/
+(0020) 
+(0021) 
+(0022) /********************************************************************************
+(0023) 
+(0024)    Copyright (c) 2010, ERTS Lab IIT Bombay erts@cse.iitb.ac.in               -*- c -*-
+(0025)    All rights reserved.
+(0026) 
+(0027)    Redistribution and use in source and binary forms, with or without
+(0028)    modification, are permitted provided that the following conditions are met:
+(0029) 
+(0030)    * Redistributions of source code must retain the above copyright
+(0031)      notice, this list of conditions and the following disclaimer.
+(0032) 
+(0033)    * Redistributions in binary form must reproduce the above copyright
+(0034)      notice, this list of conditions and the following disclaimer in
+(0035)      the documentation and/or other materials provided with the
+(0036)      distribution.
+(0037) 
+(0038)    * Neither the name of the copyright holders nor the names of
+(0039)      contributors may be used to endorse or promote products derived
+(0040)      from this software without specific prior written permission.
+(0041) 
+(0042)    * Source code can be used for academic purpose. 
+(0043) 	 For commercial use permission form the author needs to be taken.
+(0044) 
+(0045)   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+(0046)   AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+(0047)   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+(0048)   ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+(0049)   LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+(0050)   CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+(0051)   SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+(0052)   INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+(0053)   CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+(0054)   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+(0055)   POSSIBILITY OF SUCH DAMAGE. 
+(0056) 
+(0057) ********************************************************************************/
+(0058) 
+(0059) 
+(0060) 	// Application: ICC-AVR
+(0061) // Target: M2560
+(0062) // Crystal: 11.059Mhz
+(0063) 
+(0064) //List of variables supplied by this header file, hexapod_firebirdv.h
+(0065) /*
+(0066) unsigned char arm_number;
+(0067) unsigned char angle_upper_byte; 
+(0068) unsigned char angle_lower_byte;
+(0069) unsigned char degree;
+(0070) unsigned char _1A, _1B, _1C, _2A, _2B, _2C, _3A, _3B, _3C, _4A, _4B, _4C, _5A, _5B, _5C, _6A, _6B, _6C;
+(0071) unsigned char angle_upper_byte_1A, angle_lower_byte_1A, angle_upper_byte_1B, angle_lower_byte_1B, angle_upper_byte_1C, angle_lower_byte_1C;
+(0072) unsigned char angle_upper_byte_2A, angle_lower_byte_2A, angle_upper_byte_2B, angle_lower_byte_2B, angle_upper_byte_2C, angle_lower_byte_2C;
+(0073) unsigned char angle_upper_byte_3A, angle_lower_byte_3A, angle_upper_byte_3B, angle_lower_byte_3B, angle_upper_byte_3C, angle_lower_byte_3C;
+(0074) unsigned char angle_upper_byte_4A, angle_lower_byte_4A, angle_upper_byte_4B, angle_lower_byte_4B, angle_upper_byte_4C, angle_lower_byte_4C;
+(0075) unsigned char angle_upper_byte_5A, angle_lower_byte_5A, angle_upper_byte_5B, angle_lower_byte_5B, angle_upper_byte_5C, angle_lower_byte_5C;
+(0076) unsigned char angle_upper_byte_6A, angle_lower_byte_6A, angle_upper_byte_6B, angle_lower_byte_6B, angle_upper_byte_6C, angle_lower_byte_6C;
+(0077) unsigned int delay_count;
+(0078) unsigned int serial_communication_interval;
+(0079) unsigned char serial_communication_channel_number;
+(0080) unsigned char remote_data [8];
+(0081) unsigned char motion_busy;
+(0082) */
+(0083) 
+(0084) //List of functions supplied by this header file, hexapod_firebirdv.h
+(0085) /*
+(0086) void servo_on (void);
+(0087) void servo_off (void);
+(0088) void reset_SP_LEFT (void);
+(0089) void set_SP_LEFT (void);
+(0090) void reset_1A (void);
+(0091) void set_1A (void);
+(0092) void reset_1B (void);
+(0093) void set_1B (void);
+(0094) void reset_1C (void);
+(0095) void set_1C (void);
+(0096) void reset_2A (void);
+(0097) void set_2A (void);
+(0098) void reset_2B (void);
+(0099) void set_2B (void);
+(0100) void reset_2C (void);
+(0101) void set_2C (void);
+(0102) void reset_3A (void);
+(0103) void set_3A (void);
+(0104) void reset_3B (void);
+(0105) void set_3B (void);
+(0106) void reset_3C (void);
+(0107) void set_3C (void);
+(0108) void reset_SP_RIGHT (void);
+(0109) void set_SP_RIGHT (void);
+(0110) void reset_4A (void);
+(0111) void set_4A (void);
+(0112) void reset_4B (void);
+(0113) void set_4B (void);
+(0114) void reset_4C (void);
+(0115) void set_4C (void);
+(0116) void reset_5A (void);
+(0117) void set_5A (void);
+(0118) void reset_5B (void);
+(0119) void set_5B (void);
+(0120) void reset_5C (void);
+(0121) void set_5C (void);
+(0122) void reset_6A (void);
+(0123) void set_6A (void);
+(0124) void reset_6B (void);
+(0125) void set_6B (void);
+(0126) void reset_6C (void);
+(0127) void set_6C (void);
+(0128) void delay (int millisec);
+(0129) void delay_100ms (void);
+(0130) void delay_250ms (void);
+(0131) void delay_500ms (void);
+(0132) void delay_1s (void);
+(0133) void port_init (void);
+(0134) void timer1_init (void);
+(0135) void timer1_compa_isr (void);
+(0136) void timer1_compb_isr (void);
+(0137) void timer1_compc_isr (void);
+(0138) void timer1_ovf_isr (void);
+(0139) void uart0_init (void);
+(0140) void uart0_rx_isr (void);
+(0141) void init_devices (void);
+(0142) void angle_value_calculation (void);
+(0143) void angle_1A (unsigned char angle);
+(0144) void angle_1B (unsigned char angle);
+(0145) void angle_1C (unsigned char angle);
+(0146) void angle_2A (unsigned char angle);
+(0147) void angle_2B (unsigned char angle);
+(0148) void angle_2C (unsigned char angle);
+(0149) void angle_3A (unsigned char angle);
+(0150) void angle_3B (unsigned char angle);
+(0151) void angle_3C (unsigned char angle);
+(0152) void angle_4A (unsigned char angle);
+(0153) void angle_4B (unsigned char angle);
+(0154) void angle_4C (unsigned char angle);
+(0155) void angle_5A (unsigned char angle);
+(0156) void angle_5B (unsigned char angle);
+(0157) void angle_5C (unsigned char angle);
+(0158) void angle_6A (unsigned char angle);
+(0159) void angle_6B (unsigned char angle);
+(0160) void angle_6C (unsigned char angle);
+(0161) void buzzer_on (void);
+(0162) void buzzer_off (void);
+(0163) */
+(0164) 
+(0165) /*
+(0166) Pin name	Port		Anding (make 0)		Oring (make 1)
+(0167) SP LEFT	PL1		1111 1101	0xFD		0000 0010	0x02
+(0168) 
+(0169) 1A		PD5		1101 1111	0xDF		0010 0000	0x20
+(0170) 1B		PL2		1111 1011	0xFB		0000 0100	0x04
+(0171) 1C		PG1		1111 1101	0xFD		0000 0010	0x02
+(0172) 2A		PL6		1011 1111	0xBF		0100 0000	0x40
+(0173) 2B		PD4		1110 1111	0xEF		0001 0000	0x10
+(0174) 2C		PL7		0111 1111	0x7F		1000 0000	0x80
+(0175) 3A		PH6		1011 1111	0xBF		0100 0000	0x40
+(0176) 3B		PH4		1110 1111	0xEF		0001 0000	0x10
+(0177) 3C		PH5		1101 1111	0xDF		0010 0000	0x20
+(0178) SP RIGHT	PJ7		0111 1111	0x7F		1000 0000	0x80
+(0179) 4A		PG0		1111 1110	0xFE		0000 0001	0x01
+(0180) 4B		PD7		0111 1111	0x7F		1000 0000	0x80
+(0181) 4C		PD6		1011 1111	0xBF		0100 0000	0x40
+(0182) 5A		PJ5		1101 1111	0xDF		0010 0000	0x20
+(0183) 5B		PJ6		1011 1111	0xBF		0100 0000	0x40
+(0184) 5C		PJ4		1110 1111	0xEF		0001 0000	0x10
+(0185) 6A		PJ3		1111 0111	0XF7		0000 1000	0x08
+(0186) 6B		PJ1		1111 1101	0xFD		0000 0010	0x02
+(0187) 6C		PJ2		1111 1011	0xFB		0000 0100	0x04
+(0188) 
+(0189) Remote control communication protocoal
+(0190) transmitted command		received data
+(0191) 1						right joystick x axis 8 bit analog position;	center:0x24; left: 0x3B; right: 0x04
+(0192) 2						right joystick y axis 8 bit analog position;	center:0x24; up: 0x3B; down: 0x04
+(0193) 3						left joystick x axis 8 bit analog position;		center:0x3A; left: 0x23; right: 0x04
+(0194) 4						left joystick y axis 8 bit analog position;		center:0x1F; up: 0x34; down: 0x04
+(0195) 5						right joystick button
+(0196) 6						left joystick button
+(0197) 7						digital switches left 1,2 and right 1,2
+(0198) 						bit7: Right 2; bit6: right 1; bit4: left 1; bit3: left 2
+(0199) 
+(0200) Received data will be stored in the array unsigned char remote_data [8]; from the location 1 to 7 in the same order as the command.
+(0201) */
+(0202) 
+(0203) #include <iom2560v.h>
+(0204) #include <macros.h>
+(0205) 
+(0206) #define angle(motor, angle) { degree = angle; angle_value_calculation(); angle_upper_byte_motor = angle_upper_byte; angle_lower_byte_motor = angle_lower_byte; }
+(0207) 
+(0208) unsigned char arm_number = 0;
+(0209) unsigned char angle_upper_byte = 0; 
+(0210) unsigned char angle_lower_byte = 0;
+(0211) unsigned char degree = 0;
+(0212) unsigned char _1A, _1B, _1C, _2A, _2B, _2C, _3A, _3B, _3C, _4A, _4B, _4C, _5A, _5B, _5C, _6A, _6B, _6C;
+(0213) unsigned char angle_upper_byte_1A, angle_lower_byte_1A, angle_upper_byte_1B, angle_lower_byte_1B, angle_upper_byte_1C, angle_lower_byte_1C;
+(0214) unsigned char angle_upper_byte_2A, angle_lower_byte_2A, angle_upper_byte_2B, angle_lower_byte_2B, angle_upper_byte_2C, angle_lower_byte_2C;
+(0215) unsigned char angle_upper_byte_3A, angle_lower_byte_3A, angle_upper_byte_3B, angle_lower_byte_3B, angle_upper_byte_3C, angle_lower_byte_3C;
+(0216) unsigned char angle_upper_byte_4A, angle_lower_byte_4A, angle_upper_byte_4B, angle_lower_byte_4B, angle_upper_byte_4C, angle_lower_byte_4C;
+(0217) unsigned char angle_upper_byte_5A, angle_lower_byte_5A, angle_upper_byte_5B, angle_lower_byte_5B, angle_upper_byte_5C, angle_lower_byte_5C;
+(0218) unsigned char angle_upper_byte_6A, angle_lower_byte_6A, angle_upper_byte_6B, angle_lower_byte_6B, angle_upper_byte_6C, angle_lower_byte_6C;
+(0219) unsigned int delay_count = 0;
+(0220) //variables relatd to the serial commuication or remote control
+(0221) unsigned int serial_communication_interval = 0;
+(0222) unsigned char serial_communication_channel_number  = 0;
+(0223) unsigned char remote_data [8]; //see remote channel allocation in the notes above
+(0224) unsigned char motion_busy = 0; //sets to one if any of the motion function is called.
+(0225) 
+(0226) void servo_on (void)
+(0227) { PORTB = PORTB | 0x01; }
+_servo_on:
+      9C 9A28      SBI	0x05,0
+      9D 9508      RET
+(0228) 
+(0229) void servo_off (void)
+(0230) { PORTB = PORTB & 0xFE; }
+_servo_off:
+      9E B185      IN	R24,0x05
+      9F 7F8E      ANDI	R24,0xFE
+      A0 B985      OUT	0x05,R24
+      A1 9508      RET
+(0231) 
+(0232) void reset_SP_LEFT (void)
+(0233) { PORTL = PORTL & 0xFD; }
+_reset_SP_LEFT:
+      A2 9180 010B LDS	R24,0x010B
+      A4 7F8D      ANDI	R24,0xFD
+      A5 9380 010B STS	0x010B,R24
+      A7 9508      RET
+(0234) 
+(0235) void set_SP_LEFT (void)
+(0236) { PORTL = PORTL | 0x02; }
+_set_SP_LEFT:
+      A8 9180 010B LDS	R24,0x010B
+      AA 6082      ORI	R24,2
+      AB 9380 010B STS	0x010B,R24
+      AD 9508      RET
+(0237) 
+(0238) void reset_1A (void)
+(0239) { PORTD = PORTD & 0xDF; }
+_reset_1A:
+      AE B18B      IN	R24,0x0B
+      AF 7D8F      ANDI	R24,0xDF
+      B0 B98B      OUT	0x0B,R24
+      B1 9508      RET
+(0240) 
+(0241) void set_1A (void)
+(0242) { PORTD = PORTD | 0x20; }
+_set_1A:
+      B2 9A5D      SBI	0x0B,5
+      B3 9508      RET
+(0243) 
+(0244) void reset_1B (void)
+(0245) { PORTL = PORTL & 0xFB; }
+_reset_1B:
+      B4 9180 010B LDS	R24,0x010B
+      B6 7F8B      ANDI	R24,0xFB
+      B7 9380 010B STS	0x010B,R24
+      B9 9508      RET
+(0246) 
+(0247) void set_1B (void)
+(0248) { PORTL = PORTL | 0x04; }
+_set_1B:
+      BA 9180 010B LDS	R24,0x010B
+      BC 6084      ORI	R24,4
+      BD 9380 010B STS	0x010B,R24
+      BF 9508      RET
+(0249) 
+(0250) void reset_1C (void)
+(0251) { PORTG = PORTG & 0xFD; }
+_reset_1C:
+      C0 B384      IN	R24,0x14
+      C1 7F8D      ANDI	R24,0xFD
+      C2 BB84      OUT	0x14,R24
+      C3 9508      RET
+(0252) 
+(0253) void set_1C (void)
+(0254) { PORTG = PORTG | 0x02; }
+_set_1C:
+      C4 9AA1      SBI	0x14,1
+      C5 9508      RET
+(0255) 
+(0256) void reset_2A (void)
+(0257) { PORTL = PORTL & 0xBF; }
+_reset_2A:
+      C6 9180 010B LDS	R24,0x010B
+      C8 7B8F      ANDI	R24,0xBF
+      C9 9380 010B STS	0x010B,R24
+      CB 9508      RET
+(0258) 
+(0259) void set_2A (void)
+(0260) { PORTL = PORTL | 0x40; }
+_set_2A:
+      CC 9180 010B LDS	R24,0x010B
+      CE 6480      ORI	R24,0x40
+      CF 9380 010B STS	0x010B,R24
+      D1 9508      RET
+(0261) 
+(0262) void reset_2B (void)
+(0263) { PORTD = PORTD & 0xEF; }
+_reset_2B:
+      D2 B18B      IN	R24,0x0B
+      D3 7E8F      ANDI	R24,0xEF
+      D4 B98B      OUT	0x0B,R24
+      D5 9508      RET
+(0264) 
+(0265) void set_2B (void)
+(0266) { PORTD = PORTD | 0x10; }
+_set_2B:
+      D6 9A5C      SBI	0x0B,4
+      D7 9508      RET
+(0267) 
+(0268) void reset_2C (void)
+(0269) { PORTL = PORTL & 0x7F; }
+_reset_2C:
+      D8 9180 010B LDS	R24,0x010B
+      DA 778F      ANDI	R24,0x7F
+      DB 9380 010B STS	0x010B,R24
+      DD 9508      RET
+(0270) 
+(0271) void set_2C (void)
+(0272) { PORTL = PORTL | 0x80; }
+_set_2C:
+      DE 9180 010B LDS	R24,0x010B
+      E0 6880      ORI	R24,0x80
+      E1 9380 010B STS	0x010B,R24
+      E3 9508      RET
+(0273) 
+(0274) void reset_3A (void)
+(0275) { PORTH = PORTH & 0xBF; }
+_reset_3A:
+      E4 9180 0102 LDS	R24,0x0102
+      E6 7B8F      ANDI	R24,0xBF
+      E7 9380 0102 STS	0x0102,R24
+      E9 9508      RET
+(0276) 
+(0277) void set_3A (void)
+(0278) { PORTH = PORTH | 0x40; }
+_set_3A:
+      EA 9180 0102 LDS	R24,0x0102
+      EC 6480      ORI	R24,0x40
+      ED 9380 0102 STS	0x0102,R24
+      EF 9508      RET
+(0279) 
+(0280) void reset_3B (void)
+(0281) { PORTH = PORTH & 0xEF; }
+_reset_3B:
+      F0 9180 0102 LDS	R24,0x0102
+      F2 7E8F      ANDI	R24,0xEF
+      F3 9380 0102 STS	0x0102,R24
+      F5 9508      RET
+(0282) 
+(0283) void set_3B (void)
+(0284) { PORTH = PORTH | 0x10; }
+_set_3B:
+      F6 9180 0102 LDS	R24,0x0102
+      F8 6180      ORI	R24,0x10
+      F9 9380 0102 STS	0x0102,R24
+      FB 9508      RET
+(0285) 
+(0286) void reset_3C (void)
+(0287) { PORTH = PORTH & 0xDF; }
+_reset_3C:
+      FC 9180 0102 LDS	R24,0x0102
+      FE 7D8F      ANDI	R24,0xDF
+      FF 9380 0102 STS	0x0102,R24
+     101 9508      RET
+(0288) 
+(0289) void set_3C (void)
+(0290) { PORTH = PORTH | 0x20; }
+_set_3C:
+     102 9180 0102 LDS	R24,0x0102
+     104 6280      ORI	R24,0x20
+     105 9380 0102 STS	0x0102,R24
+     107 9508      RET
+(0291) 
+(0292) void reset_SP_RIGHT (void)
+(0293) { PORTJ = PORTJ & 0x7F; }
+_reset_SP_RIGHT:
+     108 9180 0105 LDS	R24,0x0105
+     10A 778F      ANDI	R24,0x7F
+     10B 9380 0105 STS	0x0105,R24
+     10D 9508      RET
+(0294) 
+(0295) void set_SP_RIGHT (void)
+(0296) { PORTJ = PORTJ | 0x80; }
+_set_SP_RIGHT:
+     10E 9180 0105 LDS	R24,0x0105
+     110 6880      ORI	R24,0x80
+     111 9380 0105 STS	0x0105,R24
+     113 9508      RET
+(0297) 
+(0298) void reset_4A (void)
+(0299) { PORTG = PORTG & 0xFE; }
+_reset_4A:
+     114 B384      IN	R24,0x14
+     115 7F8E      ANDI	R24,0xFE
+     116 BB84      OUT	0x14,R24
+     117 9508      RET
+(0300) 
+(0301) void set_4A (void)
+(0302) { PORTG = PORTG | 0x01; }
+_set_4A:
+     118 9AA0      SBI	0x14,0
+     119 9508      RET
+(0303) 
+(0304) void reset_4B (void)
+(0305) { PORTD = PORTD & 0x7F; }
+_reset_4B:
+     11A B18B      IN	R24,0x0B
+     11B 778F      ANDI	R24,0x7F
+     11C B98B      OUT	0x0B,R24
+     11D 9508      RET
+(0306) 
+(0307) void set_4B (void)
+(0308) { PORTD = PORTD | 0x80; }
+_set_4B:
+     11E 9A5F      SBI	0x0B,7
+     11F 9508      RET
+(0309) 
+(0310) void reset_4C (void)
+(0311) { PORTD = PORTD & 0xBF; }
+_reset_4C:
+     120 B18B      IN	R24,0x0B
+     121 7B8F      ANDI	R24,0xBF
+     122 B98B      OUT	0x0B,R24
+     123 9508      RET
+(0312) 
+(0313) void set_4C (void)
+(0314) { PORTD = PORTD | 0x40; }
+_set_4C:
+     124 9A5E      SBI	0x0B,6
+     125 9508      RET
+(0315) 
+(0316) void reset_5A (void)
+(0317) { PORTJ = PORTJ & 0xDF; }
+_reset_5A:
+     126 9180 0105 LDS	R24,0x0105
+     128 7D8F      ANDI	R24,0xDF
+     129 9380 0105 STS	0x0105,R24
+     12B 9508      RET
+(0318) 
+(0319) void set_5A (void)
+(0320) { PORTJ = PORTJ | 0x20; }
+_set_5A:
+     12C 9180 0105 LDS	R24,0x0105
+     12E 6280      ORI	R24,0x20
+     12F 9380 0105 STS	0x0105,R24
+     131 9508      RET
+(0321) 
+(0322) void reset_5B (void)
+(0323) { PORTJ = PORTJ & 0xBF; }
+_reset_5B:
+     132 9180 0105 LDS	R24,0x0105
+     134 7B8F      ANDI	R24,0xBF
+     135 9380 0105 STS	0x0105,R24
+     137 9508      RET
+(0324) 
+(0325) void set_5B (void)
+(0326) { PORTJ = PORTJ | 0x40; }
+_set_5B:
+     138 9180 0105 LDS	R24,0x0105
+     13A 6480      ORI	R24,0x40
+     13B 9380 0105 STS	0x0105,R24
+     13D 9508      RET
+(0327) 
+(0328) void reset_5C (void)
+(0329) { PORTJ = PORTJ & 0xEF; }
+_reset_5C:
+     13E 9180 0105 LDS	R24,0x0105
+     140 7E8F      ANDI	R24,0xEF
+     141 9380 0105 STS	0x0105,R24
+     143 9508      RET
+(0330) 
+(0331) void set_5C (void)
+(0332) { PORTJ = PORTJ | 0x10; }
+_set_5C:
+     144 9180 0105 LDS	R24,0x0105
+     146 6180      ORI	R24,0x10
+     147 9380 0105 STS	0x0105,R24
+     149 9508      RET
+(0333) 
+(0334) void reset_6A (void)
+(0335) { PORTJ = PORTJ & 0xF7; }
+_reset_6A:
+     14A 9180 0105 LDS	R24,0x0105
+     14C 7F87      ANDI	R24,0xF7
+     14D 9380 0105 STS	0x0105,R24
+     14F 9508      RET
+(0336) 
+(0337) void set_6A (void)
+(0338) { PORTJ = PORTJ | 0x08; }
+_set_6A:
+     150 9180 0105 LDS	R24,0x0105
+     152 6088      ORI	R24,0x8
+     153 9380 0105 STS	0x0105,R24
+     155 9508      RET
+(0339) 
+(0340) void reset_6B (void)
+(0341) { PORTJ = PORTJ & 0xFD; }
+_reset_6B:
+     156 9180 0105 LDS	R24,0x0105
+     158 7F8D      ANDI	R24,0xFD
+     159 9380 0105 STS	0x0105,R24
+     15B 9508      RET
+(0342) 
+(0343) void set_6B (void)
+(0344) { PORTJ = PORTJ | 0x02; }
+_set_6B:
+     15C 9180 0105 LDS	R24,0x0105
+     15E 6082      ORI	R24,2
+     15F 9380 0105 STS	0x0105,R24
+     161 9508      RET
+(0345) 
+(0346) void reset_6C (void)
+(0347) { PORTJ = PORTJ & 0xFB; }
+_reset_6C:
+     162 9180 0105 LDS	R24,0x0105
+     164 7F8B      ANDI	R24,0xFB
+     165 9380 0105 STS	0x0105,R24
+     167 9508      RET
+(0348) 
+(0349) void set_6C (void)
+(0350) { PORTJ = PORTJ | 0x04; }
+_set_6C:
+     168 9180 0105 LDS	R24,0x0105
+     16A 6084      ORI	R24,4
+     16B 9380 0105 STS	0x0105,R24
+     16D 9508      RET
+_delay:
+  millisec             --> R10
+     16E 92AA      ST	R10,-Y
+     16F 92BA      ST	R11,-Y
+     170 0158      MOVW	R10,R16
+(0351) 
+(0352) void delay(int millisec)
+(0353) {
+(0354)  if(millisec <=0) return;
+     171 2422      CLR	R2
+     172 2433      CLR	R3
+     173 142A      CP	R2,R10
+     174 043B      CPC	R3,R11
+     175 F00C      BLT	0x0177
+     176 C014      RJMP	0x018B
+(0355)  delay_count = 0;
+     177 2422      CLR	R2
+     178 2433      CLR	R3
+     179 9230 0205 STS	delay_count+1,R3
+     17B 9220 0204 STS	delay_count,R2
+(0356)  while(delay_count*5 < millisec*2);
+     17D 9120 0204 LDS	R18,delay_count
+     17F 9130 0205 LDS	R19,delay_count+1
+     181 E005      LDI	R16,5
+     182 E010      LDI	R17,0
+     183 940E 0CF2 CALL	empy16s
+     185 0115      MOVW	R2,R10
+     186 0C22      LSL	R2
+     187 1C33      ROL	R3
+     188 1502      CP	R16,R2
+     189 0513      CPC	R17,R3
+     18A F390      BCS	0x017D
+     18B 90B9      LD	R11,Y+
+     18C 90A9      LD	R10,Y+
+     18D 9508      RET
+(0357) }
+(0358) 
+(0359) void delay_100ms(void)
+(0360) {
+(0361)  delay_count = 0;
+_delay_100ms:
+     18E 2422      CLR	R2
+     18F 2433      CLR	R3
+     190 9230 0205 STS	delay_count+1,R3
+     192 9220 0204 STS	delay_count,R2
+(0362)  while(delay_count < 40);
+     194 9180 0204 LDS	R24,delay_count
+     196 9190 0205 LDS	R25,delay_count+1
+     198 3288      CPI	R24,0x28
+     199 E0E0      LDI	R30,0
+     19A 079E      CPC	R25,R30
+     19B F3C0      BCS	0x0194
+     19C 9508      RET
+(0363) }
+(0364) 
+(0365) void delay_250ms(void)
+(0366) {
+(0367)  delay_count = 0;
+_delay_250ms:
+     19D 2422      CLR	R2
+     19E 2433      CLR	R3
+     19F 9230 0205 STS	delay_count+1,R3
+     1A1 9220 0204 STS	delay_count,R2
+(0368)  while(delay_count < 100);
+     1A3 9180 0204 LDS	R24,delay_count
+     1A5 9190 0205 LDS	R25,delay_count+1
+     1A7 3684      CPI	R24,0x64
+     1A8 E0E0      LDI	R30,0
+     1A9 079E      CPC	R25,R30
+     1AA F3C0      BCS	0x01A3
+     1AB 9508      RET
+(0369) }
+(0370) 
+(0371) void delay_500ms(void)
+(0372) {
+(0373)  delay_count = 0;
+_delay_500ms:
+     1AC 2422      CLR	R2
+     1AD 2433      CLR	R3
+     1AE 9230 0205 STS	delay_count+1,R3
+     1B0 9220 0204 STS	delay_count,R2
+(0374)  while(delay_count < 200);
+     1B2 9180 0204 LDS	R24,delay_count
+     1B4 9190 0205 LDS	R25,delay_count+1
+     1B6 3C88      CPI	R24,0xC8
+     1B7 E0E0      LDI	R30,0
+     1B8 079E      CPC	R25,R30
+     1B9 F3C0      BCS	0x01B2
+     1BA 9508      RET
+(0375) }
+(0376) 
+(0377) void delay_1s(void)
+(0378) {
+(0379)  delay_count = 0;
+_delay_1s:
+     1BB 2422      CLR	R2
+     1BC 2433      CLR	R3
+     1BD 9230 0205 STS	delay_count+1,R3
+     1BF 9220 0204 STS	delay_count,R2
+(0380)  while(delay_count < 400);
+     1C1 9180 0204 LDS	R24,delay_count
+     1C3 9190 0205 LDS	R25,delay_count+1
+     1C5 3980      CPI	R24,0x90
+     1C6 E0E1      LDI	R30,1
+     1C7 079E      CPC	R25,R30
+     1C8 F3C0      BCS	0x01C1
+     1C9 9508      RET
+(0381) }
+(0382) 
+(0383) void port_init(void)
+(0384) {
+(0385)  PORTA = 0x00;
+_port_init:
+     1CA 2422      CLR	R2
+     1CB B822      OUT	0x02,R2
+(0386)  DDRA  = 0xFF;
+     1CC EF8F      LDI	R24,0xFF
+     1CD B981      OUT	0x01,R24
+(0387)  PORTB = 0x00;
+     1CE B825      OUT	0x05,R2
+(0388)  DDRB  = 0x01;
+     1CF E081      LDI	R24,1
+     1D0 B984      OUT	0x04,R24
+(0389)  PORTC = 0x00; //m103 output only
+     1D1 B828      OUT	0x08,R2
+(0390)  DDRC  = 0xFF;
+     1D2 EF8F      LDI	R24,0xFF
+     1D3 B987      OUT	0x07,R24
+(0391)  PORTD = 0x00;
+     1D4 B82B      OUT	0x0B,R2
+(0392)  DDRD  = 0xF0;
+     1D5 EF80      LDI	R24,0xF0
+     1D6 B98A      OUT	0x0A,R24
+(0393)  PORTE = 0x00;
+     1D7 B82E      OUT	0x0E,R2
+(0394)  DDRE  = 0x00;
+     1D8 B82D      OUT	0x0D,R2
+(0395)  PORTF = 0x00;
+     1D9 BA21      OUT	0x11,R2
+(0396)  DDRF  = 0x00;
+     1DA BA20      OUT	0x10,R2
+(0397)  PORTG = 0x00;
+     1DB BA24      OUT	0x14,R2
+(0398)  DDRG  = 0x03;
+     1DC E083      LDI	R24,3
+     1DD BB83      OUT	0x13,R24
+(0399)  PORTH = 0x00;
+     1DE 9220 0102 STS	0x0102,R2
+(0400)  DDRH  = 0x70;
+     1E0 E780      LDI	R24,0x70
+     1E1 9380 0101 STS	0x0101,R24
+(0401)  PORTJ = 0x00;
+     1E3 9220 0105 STS	0x0105,R2
+(0402)  DDRJ  = 0xFE; //0xFE original
+     1E5 EF8E      LDI	R24,0xFE
+     1E6 9380 0104 STS	0x0104,R24
+(0403)  PORTK = 0x00;
+     1E8 9220 0108 STS	0x0108,R2
+(0404)  DDRK  = 0x00;
+     1EA 9220 0107 STS	0x0107,R2
+(0405)  PORTL = 0x00;
+     1EC 9220 010B STS	0x010B,R2
+(0406)  DDRL  = 0xC7;
+     1EE EC87      LDI	R24,0xC7
+     1EF 9380 010A STS	0x010A,R24
+     1F1 9508      RET
+(0407) }
+(0408) 
+(0409) //TIMER1 initialize - prescale:1
+(0410) // WGM: 0) Normal, TOP=0xFFFF
+(0411) // desired value: 400Hz
+(0412) // actual value: 400.007Hz (0.0%)
+(0413) void timer1_init(void)
+(0414) {
+(0415)  TCCR1B = 0x00; //stop
+_timer1_init:
+     1F2 2422      CLR	R2
+     1F3 9220 0081 STS	0x0081,R2
+(0416)  TCNT1H = 0x94; //setup
+     1F5 E984      LDI	R24,0x94
+     1F6 9380 0085 STS	0x0085,R24
+(0417)  TCNT1L = 0x01;
+     1F8 E081      LDI	R24,1
+     1F9 9380 0084 STS	0x0084,R24
+(0418)  OCR1AH = 0x6B;
+     1FB E68B      LDI	R24,0x6B
+     1FC 9380 0089 STS	0x0089,R24
+(0419)  OCR1AL = 0xFF;
+     1FE EF8F      LDI	R24,0xFF
+     1FF 9380 0088 STS	0x0088,R24
+(0420)  OCR1BH = 0x6B;
+     201 E68B      LDI	R24,0x6B
+     202 9380 008B STS	0x008B,R24
+(0421)  OCR1BL = 0xFF;
+     204 EF8F      LDI	R24,0xFF
+     205 9380 008A STS	0x008A,R24
+(0422)  OCR1CH = 0x00;
+     207 9220 008D STS	0x008D,R2
+(0423)  OCR1CL = 0x00;
+     209 9220 008C STS	0x008C,R2
+(0424)  ICR1H  = 0x6B;
+     20B E68B      LDI	R24,0x6B
+     20C 9380 0087 STS	0x0087,R24
+(0425)  ICR1L  = 0xFF;
+     20E EF8F      LDI	R24,0xFF
+     20F 9380 0086 STS	0x0086,R24
+(0426)  TCCR1A = 0x00;
+     211 9220 0080 STS	0x0080,R2
+(0427)  TCCR1C = 0x00;
+     213 9220 0082 STS	0x0082,R2
+(0428)  TCCR1B = 0x01; //start Timer
+     215 E081      LDI	R24,1
+     216 9380 0081 STS	0x0081,R24
+     218 9508      RET
+_timer1_compa_isr:
+     219 920A      ST	R0,-Y
+     21A 921A      ST	R1,-Y
+     21B 922A      ST	R2,-Y
+     21C 923A      ST	R3,-Y
+     21D 924A      ST	R4,-Y
+     21E 925A      ST	R5,-Y
+     21F 926A      ST	R6,-Y
+     220 927A      ST	R7,-Y
+     221 928A      ST	R8,-Y
+     222 929A      ST	R9,-Y
+     223 930A      ST	R16,-Y
+     224 931A      ST	R17,-Y
+     225 932A      ST	R18,-Y
+     226 933A      ST	R19,-Y
+     227 938A      ST	R24,-Y
+     228 939A      ST	R25,-Y
+     229 93AA      ST	R26,-Y
+     22A 93BA      ST	R27,-Y
+     22B 93EA      ST	R30,-Y
+     22C 93FA      ST	R31,-Y
+     22D B60F      IN	R0,0x3F
+     22E 920A      ST	R0,-Y
+(0429) }
+(0430) 
+(0431) #pragma interrupt_handler timer1_compa_isr:iv_TIM1_COMPA
+(0432) void timer1_compa_isr(void)
+(0433) {
+(0434)  //compare occured TCNT1=OCR1A
+(0435)  if (arm_number == 0) { reset_1A(); }
+     22F 9020 0200 LDS	R2,arm_number
+     231 2022      TST	R2
+     232 F409      BNE	0x0234
+     233 DE7A      RCALL	_reset_1A
+(0436)  if (arm_number == 1) { reset_2A(); }
+     234 9180 0200 LDS	R24,arm_number
+     236 3081      CPI	R24,1
+     237 F409      BNE	0x0239
+     238 DE8D      RCALL	_reset_2A
+(0437)  if (arm_number == 2) { reset_3A(); }
+     239 9180 0200 LDS	R24,arm_number
+     23B 3082      CPI	R24,2
+     23C F409      BNE	0x023E
+     23D DEA6      RCALL	_reset_3A
+(0438)  if (arm_number == 3) { reset_4A(); }
+     23E 9180 0200 LDS	R24,arm_number
+     240 3083      CPI	R24,3
+     241 F409      BNE	0x0243
+     242 DED1      RCALL	_reset_4A
+(0439)  if (arm_number == 4) { reset_5A(); }
+     243 9180 0200 LDS	R24,arm_number
+     245 3084      CPI	R24,4
+     246 F409      BNE	0x0248
+     247 DEDE      RCALL	_reset_5A
+(0440)  if (arm_number == 5) { reset_6A(); }
+     248 9180 0200 LDS	R24,arm_number
+     24A 3085      CPI	R24,5
+     24B F409      BNE	0x024D
+     24C DEFD      RCALL	_reset_6A
+     24D 9009      LD	R0,Y+
+     24E BE0F      OUT	0x3F,R0
+     24F 91F9      LD	R31,Y+
+     250 91E9      LD	R30,Y+
+     251 91B9      LD	R27,Y+
+     252 91A9      LD	R26,Y+
+     253 9199      LD	R25,Y+
+     254 9189      LD	R24,Y+
+     255 9139      LD	R19,Y+
+     256 9129      LD	R18,Y+
+     257 9119      LD	R17,Y+
+     258 9109      LD	R16,Y+
+     259 9099      LD	R9,Y+
+     25A 9089      LD	R8,Y+
+     25B 9079      LD	R7,Y+
+     25C 9069      LD	R6,Y+
+     25D 9059      LD	R5,Y+
+     25E 9049      LD	R4,Y+
+     25F 9039      LD	R3,Y+
+     260 9029      LD	R2,Y+
+     261 9019      LD	R1,Y+
+     262 9009      LD	R0,Y+
+     263 9518      RETI
+_timer1_compb_isr:
+     264 920A      ST	R0,-Y
+     265 921A      ST	R1,-Y
+     266 922A      ST	R2,-Y
+     267 923A      ST	R3,-Y
+     268 924A      ST	R4,-Y
+     269 925A      ST	R5,-Y
+     26A 926A      ST	R6,-Y
+     26B 927A      ST	R7,-Y
+     26C 928A      ST	R8,-Y
+     26D 929A      ST	R9,-Y
+     26E 930A      ST	R16,-Y
+     26F 931A      ST	R17,-Y
+     270 932A      ST	R18,-Y
+     271 933A      ST	R19,-Y
+     272 938A      ST	R24,-Y
+     273 939A      ST	R25,-Y
+     274 93AA      ST	R26,-Y
+     275 93BA      ST	R27,-Y
+     276 93EA      ST	R30,-Y
+     277 93FA      ST	R31,-Y
+     278 B60F      IN	R0,0x3F
+     279 920A      ST	R0,-Y
+(0441) }
+(0442) 
+(0443) #pragma interrupt_handler timer1_compb_isr:iv_TIM1_COMPB
+(0444) void timer1_compb_isr(void)
+(0445) {
+(0446)  //compare occured TCNT1=OCR1B
+(0447)  if (arm_number == 0) { reset_1B(); }
+     27A 9020 0200 LDS	R2,arm_number
+     27C 2022      TST	R2
+     27D F409      BNE	0x027F
+     27E DE35      RCALL	_reset_1B
+(0448)  if (arm_number == 1) { reset_2B(); }
+     27F 9180 0200 LDS	R24,arm_number
+     281 3081      CPI	R24,1
+     282 F409      BNE	0x0284
+     283 DE4E      RCALL	_reset_2B
+(0449)  if (arm_number == 2) { reset_3B(); }
+     284 9180 0200 LDS	R24,arm_number
+     286 3082      CPI	R24,2
+     287 F409      BNE	0x0289
+     288 DE67      RCALL	_reset_3B
+(0450)  if (arm_number == 3) { reset_4B(); }
+     289 9180 0200 LDS	R24,arm_number
+     28B 3083      CPI	R24,3
+     28C F409      BNE	0x028E
+     28D DE8C      RCALL	_reset_4B
+(0451)  if (arm_number == 4) { reset_5B(); }
+     28E 9180 0200 LDS	R24,arm_number
+     290 3084      CPI	R24,4
+     291 F409      BNE	0x0293
+     292 DE9F      RCALL	_reset_5B
+(0452)  if (arm_number == 5) { reset_6B(); }
+     293 9180 0200 LDS	R24,arm_number
+     295 3085      CPI	R24,5
+     296 F409      BNE	0x0298
+     297 DEBE      RCALL	_reset_6B
+     298 9009      LD	R0,Y+
+     299 BE0F      OUT	0x3F,R0
+     29A 91F9      LD	R31,Y+
+     29B 91E9      LD	R30,Y+
+     29C 91B9      LD	R27,Y+
+     29D 91A9      LD	R26,Y+
+     29E 9199      LD	R25,Y+
+     29F 9189      LD	R24,Y+
+     2A0 9139      LD	R19,Y+
+     2A1 9129      LD	R18,Y+
+     2A2 9119      LD	R17,Y+
+     2A3 9109      LD	R16,Y+
+     2A4 9099      LD	R9,Y+
+     2A5 9089      LD	R8,Y+
+     2A6 9079      LD	R7,Y+
+     2A7 9069      LD	R6,Y+
+     2A8 9059      LD	R5,Y+
+     2A9 9049      LD	R4,Y+
+     2AA 9039      LD	R3,Y+
+     2AB 9029      LD	R2,Y+
+     2AC 9019      LD	R1,Y+
+     2AD 9009      LD	R0,Y+
+     2AE 9518      RETI
+_timer1_compc_isr:
+     2AF 920A      ST	R0,-Y
+     2B0 921A      ST	R1,-Y
+     2B1 922A      ST	R2,-Y
+     2B2 923A      ST	R3,-Y
+     2B3 924A      ST	R4,-Y
+     2B4 925A      ST	R5,-Y
+     2B5 926A      ST	R6,-Y
+     2B6 927A      ST	R7,-Y
+     2B7 928A      ST	R8,-Y
+     2B8 929A      ST	R9,-Y
+     2B9 930A      ST	R16,-Y
+     2BA 931A      ST	R17,-Y
+     2BB 932A      ST	R18,-Y
+     2BC 933A      ST	R19,-Y
+     2BD 938A      ST	R24,-Y
+     2BE 939A      ST	R25,-Y
+     2BF 93AA      ST	R26,-Y
+     2C0 93BA      ST	R27,-Y
+     2C1 93EA      ST	R30,-Y
+     2C2 93FA      ST	R31,-Y
+     2C3 B60F      IN	R0,0x3F
+     2C4 920A      ST	R0,-Y
+(0453) }
+(0454) 
+(0455) #pragma interrupt_handler timer1_compc_isr:iv_TIM1_COMPC
+(0456) void timer1_compc_isr(void)
+(0457) {
+(0458)  //compare occured TCNT1=OCR1c
+(0459)  if (arm_number == 0) { reset_1C(); }
+     2C5 9020 0200 LDS	R2,arm_number
+     2C7 2022      TST	R2
+     2C8 F409      BNE	0x02CA
+     2C9 DDF6      RCALL	_reset_1C
+(0460)  if (arm_number == 1) { reset_2C(); }
+     2CA 9180 0200 LDS	R24,arm_number
+     2CC 3081      CPI	R24,1
+     2CD F409      BNE	0x02CF
+     2CE DE09      RCALL	_reset_2C
+(0461)  if (arm_number == 2) { reset_3C(); }
+     2CF 9180 0200 LDS	R24,arm_number
+     2D1 3082      CPI	R24,2
+     2D2 F409      BNE	0x02D4
+     2D3 DE28      RCALL	_reset_3C
+(0462)  if (arm_number == 3) { reset_4C(); }
+     2D4 9180 0200 LDS	R24,arm_number
+     2D6 3083      CPI	R24,3
+     2D7 F409      BNE	0x02D9
+     2D8 DE47      RCALL	_reset_4C
+(0463)  if (arm_number == 4) { reset_5C(); }
+     2D9 9180 0200 LDS	R24,arm_number
+     2DB 3084      CPI	R24,4
+     2DC F409      BNE	0x02DE
+     2DD DE60      RCALL	_reset_5C
+(0464)  if (arm_number == 5) { reset_6C(); }
+     2DE 9180 0200 LDS	R24,arm_number
+     2E0 3085      CPI	R24,5
+     2E1 F409      BNE	0x02E3
+     2E2 DE7F      RCALL	_reset_6C
+     2E3 9009      LD	R0,Y+
+     2E4 BE0F      OUT	0x3F,R0
+     2E5 91F9      LD	R31,Y+
+     2E6 91E9      LD	R30,Y+
+     2E7 91B9      LD	R27,Y+
+     2E8 91A9      LD	R26,Y+
+     2E9 9199      LD	R25,Y+
+     2EA 9189      LD	R24,Y+
+     2EB 9139      LD	R19,Y+
+     2EC 9129      LD	R18,Y+
+     2ED 9119      LD	R17,Y+
+     2EE 9109      LD	R16,Y+
+     2EF 9099      LD	R9,Y+
+     2F0 9089      LD	R8,Y+
+     2F1 9079      LD	R7,Y+
+     2F2 9069      LD	R6,Y+
+     2F3 9059      LD	R5,Y+
+     2F4 9049      LD	R4,Y+
+     2F5 9039      LD	R3,Y+
+     2F6 9029      LD	R2,Y+
+     2F7 9019      LD	R1,Y+
+     2F8 9009      LD	R0,Y+
+     2F9 9518      RETI
+_timer1_ovf_isr:
+     2FA 920A      ST	R0,-Y
+     2FB 921A      ST	R1,-Y
+     2FC 922A      ST	R2,-Y
+     2FD 923A      ST	R3,-Y
+     2FE 924A      ST	R4,-Y
+     2FF 925A      ST	R5,-Y
+     300 926A      ST	R6,-Y
+     301 927A      ST	R7,-Y
+     302 928A      ST	R8,-Y
+     303 929A      ST	R9,-Y
+     304 930A      ST	R16,-Y
+     305 931A      ST	R17,-Y
+     306 932A      ST	R18,-Y
+     307 933A      ST	R19,-Y
+     308 938A      ST	R24,-Y
+     309 939A      ST	R25,-Y
+     30A 93AA      ST	R26,-Y
+     30B 93BA      ST	R27,-Y
+     30C 93EA      ST	R30,-Y
+     30D 93FA      ST	R31,-Y
+     30E B60F      IN	R0,0x3F
+     30F 920A      ST	R0,-Y
+(0465) }
+(0466) 
+(0467) #pragma interrupt_handler timer1_ovf_isr:iv_TIM1_OVF
+(0468) void timer1_ovf_isr(void)
+(0469) {
+(0470)  //TIMER1 has overflowed
+(0471)  TCNT1H = 0x94; //reload counter high value
+     310 E984      LDI	R24,0x94
+     311 9380 0085 STS	0x0085,R24
+(0472)  TCNT1L = 0x01; //reload counter low value
+     313 E081      LDI	R24,1
+     314 9380 0084 STS	0x0084,R24
+(0473)  delay_count++;
+     316 9180 0204 LDS	R24,delay_count
+     318 9190 0205 LDS	R25,delay_count+1
+     31A 9601      ADIW	R24,1
+     31B 9390 0205 STS	delay_count+1,R25
+     31D 9380 0204 STS	delay_count,R24
+(0474)  arm_number ++;
+     31F 9180 0200 LDS	R24,arm_number
+     321 5F8F      SUBI	R24,0xFF
+     322 9380 0200 STS	arm_number,R24
+(0475)  if (arm_number>7)
+     324 E087      LDI	R24,7
+     325 9020 0200 LDS	R2,arm_number
+     327 1582      CP	R24,R2
+     328 F418      BCC	0x032C
+(0476)  {
+(0477)   	arm_number = 0;
+     329 2422      CLR	R2
+     32A 9220 0200 STS	arm_number,R2
+(0478)  }
+(0479)    
+(0480)  if (arm_number == 0)
+     32C 9020 0200 LDS	R2,arm_number
+     32E 2022      TST	R2
+     32F F4D9      BNE	0x034B
+(0481)  {
+(0482)   set_1A(); 
+     330 DD81      RCALL	_set_1A
+(0483)   set_1B(); 
+     331 DD88      RCALL	_set_1B
+(0484)   set_1C();
+     332 DD91      RCALL	_set_1C
+(0485)   OCR1AH = angle_upper_byte_1A;
+     333 9020 0235 LDS	R2,angle_upper_byte_1A
+     335 9220 0089 STS	0x0089,R2
+(0486)   OCR1AL = angle_lower_byte_1A;
+     337 9020 0234 LDS	R2,angle_lower_byte_1A
+     339 9220 0088 STS	0x0088,R2
+(0487)   OCR1BH = angle_upper_byte_1B;
+     33B 9020 0233 LDS	R2,angle_upper_byte_1B
+     33D 9220 008B STS	0x008B,R2
+(0488)   OCR1BL = angle_lower_byte_1B;
+     33F 9020 0232 LDS	R2,angle_lower_byte_1B
+     341 9220 008A STS	0x008A,R2
+(0489)   OCR1CH = angle_upper_byte_1C;
+     343 9020 0231 LDS	R2,angle_upper_byte_1C
+     345 9220 008D STS	0x008D,R2
+(0490)   OCR1CL = angle_lower_byte_1C;
+     347 9020 0230 LDS	R2,angle_lower_byte_1C
+     349 9220 008C STS	0x008C,R2
+(0491)  }
+(0492)  
+(0493)  if (arm_number == 1)
+     34B 9180 0200 LDS	R24,arm_number
+     34D 3081      CPI	R24,1
+     34E F4D9      BNE	0x036A
+(0494)  {
+(0495)   set_2A(); 
+     34F DD7C      RCALL	_set_2A
+(0496)   set_2B(); 
+     350 DD85      RCALL	_set_2B
+(0497)   set_2C();
+     351 DD8C      RCALL	_set_2C
+(0498)   OCR1AH = angle_upper_byte_2A;
+     352 9020 022F LDS	R2,angle_upper_byte_2A
+     354 9220 0089 STS	0x0089,R2
+(0499)   OCR1AL = angle_lower_byte_2A;
+     356 9020 022E LDS	R2,angle_lower_byte_2A
+     358 9220 0088 STS	0x0088,R2
+(0500)   OCR1BH = angle_upper_byte_2B;
+     35A 9020 022D LDS	R2,angle_upper_byte_2B
+     35C 9220 008B STS	0x008B,R2
+(0501)   OCR1BL = angle_lower_byte_2B;
+     35E 9020 022C LDS	R2,angle_lower_byte_2B
+     360 9220 008A STS	0x008A,R2
+(0502)   OCR1CH = angle_upper_byte_2C;
+     362 9020 022B LDS	R2,angle_upper_byte_2C
+     364 9220 008D STS	0x008D,R2
+(0503)   OCR1CL = angle_lower_byte_2C;
+     366 9020 022A LDS	R2,angle_lower_byte_2C
+     368 9220 008C STS	0x008C,R2
+(0504)  }
+(0505)  
+(0506)  if (arm_number == 2)
+     36A 9180 0200 LDS	R24,arm_number
+     36C 3082      CPI	R24,2
+     36D F4D9      BNE	0x0389
+(0507)  {
+(0508)   set_3A(); 
+     36E DD7B      RCALL	_set_3A
+(0509)   set_3B(); 
+     36F DD86      RCALL	_set_3B
+(0510)   set_3C();
+     370 DD91      RCALL	_set_3C
+(0511)   OCR1AH = angle_upper_byte_3A;
+     371 9020 0229 LDS	R2,angle_upper_byte_3A
+     373 9220 0089 STS	0x0089,R2
+(0512)   OCR1AL = angle_lower_byte_3A;
+     375 9020 0228 LDS	R2,angle_lower_byte_3A
+     377 9220 0088 STS	0x0088,R2
+(0513)   OCR1BH = angle_upper_byte_3B;
+     379 9020 0227 LDS	R2,angle_upper_byte_3B
+     37B 9220 008B STS	0x008B,R2
+(0514)   OCR1BL = angle_lower_byte_3B;
+     37D 9020 0226 LDS	R2,angle_lower_byte_3B
+     37F 9220 008A STS	0x008A,R2
+(0515)   OCR1CH = angle_upper_byte_3C;
+     381 9020 0225 LDS	R2,angle_upper_byte_3C
+     383 9220 008D STS	0x008D,R2
+(0516)   OCR1CL = angle_lower_byte_3C;
+     385 9020 0224 LDS	R2,angle_lower_byte_3C
+     387 9220 008C STS	0x008C,R2
+(0517)  }
+(0518)  
+(0519)  if (arm_number == 3)
+     389 9180 0200 LDS	R24,arm_number
+     38B 3083      CPI	R24,3
+     38C F4D9      BNE	0x03A8
+(0520)  {
+(0521)   set_4A(); 
+     38D DD8A      RCALL	_set_4A
+(0522)   set_4B(); 
+     38E DD8F      RCALL	_set_4B
+(0523)   set_4C();
+     38F DD94      RCALL	_set_4C
+(0524)   OCR1AH = angle_upper_byte_4A;
+     390 9020 0223 LDS	R2,angle_upper_byte_4A
+     392 9220 0089 STS	0x0089,R2
+(0525)   OCR1AL = angle_lower_byte_4A;
+     394 9020 0222 LDS	R2,angle_lower_byte_4A
+     396 9220 0088 STS	0x0088,R2
+(0526)   OCR1BH = angle_upper_byte_4B;
+     398 9020 0221 LDS	R2,angle_upper_byte_4B
+     39A 9220 008B STS	0x008B,R2
+(0527)   OCR1BL = angle_lower_byte_4B;
+     39C 9020 0220 LDS	R2,angle_lower_byte_4B
+     39E 9220 008A STS	0x008A,R2
+(0528)   OCR1CH = angle_upper_byte_4C;
+     3A0 9020 021F LDS	R2,angle_upper_byte_4C
+     3A2 9220 008D STS	0x008D,R2
+(0529)   OCR1CL = angle_lower_byte_4C;
+     3A4 9020 021E LDS	R2,angle_lower_byte_4C
+     3A6 9220 008C STS	0x008C,R2
+(0530)  }
+(0531)  
+(0532)  if (arm_number == 4)
+     3A8 9180 0200 LDS	R24,arm_number
+     3AA 3084      CPI	R24,4
+     3AB F4D9      BNE	0x03C7
+(0533)  {
+(0534)   set_5A(); 
+     3AC DD7F      RCALL	_set_5A
+(0535)   set_5B(); 
+     3AD DD8A      RCALL	_set_5B
+(0536)   set_5C();
+     3AE DD95      RCALL	_set_5C
+(0537)   OCR1AH = angle_upper_byte_5A;
+     3AF 9020 021D LDS	R2,angle_upper_byte_5A
+     3B1 9220 0089 STS	0x0089,R2
+(0538)   OCR1AL = angle_lower_byte_5A;
+     3B3 9020 021C LDS	R2,angle_lower_byte_5A
+     3B5 9220 0088 STS	0x0088,R2
+(0539)   OCR1BH = angle_upper_byte_5B;
+     3B7 9020 021B LDS	R2,angle_upper_byte_5B
+     3B9 9220 008B STS	0x008B,R2
+(0540)   OCR1BL = angle_lower_byte_5B;
+     3BB 9020 021A LDS	R2,angle_lower_byte_5B
+     3BD 9220 008A STS	0x008A,R2
+(0541)   OCR1CH = angle_upper_byte_5C;
+     3BF 9020 0219 LDS	R2,angle_upper_byte_5C
+     3C1 9220 008D STS	0x008D,R2
+(0542)   OCR1CL = angle_lower_byte_5C;
+     3C3 9020 0218 LDS	R2,angle_lower_byte_5C
+     3C5 9220 008C STS	0x008C,R2
+(0543)  }
+(0544)  
+(0545)  if (arm_number == 5)
+     3C7 9180 0200 LDS	R24,arm_number
+     3C9 3085      CPI	R24,5
+     3CA F4D9      BNE	0x03E6
+(0546)  {
+(0547)   set_6A(); 
+     3CB DD84      RCALL	_set_6A
+(0548)   set_6B(); 
+     3CC DD8F      RCALL	_set_6B
+(0549)   set_6C();
+     3CD DD9A      RCALL	_set_6C
+(0550)   OCR1AH = angle_upper_byte_6A;
+     3CE 9020 0217 LDS	R2,angle_upper_byte_6A
+     3D0 9220 0089 STS	0x0089,R2
+(0551)   OCR1AL = angle_lower_byte_6A;
+     3D2 9020 0216 LDS	R2,angle_lower_byte_6A
+     3D4 9220 0088 STS	0x0088,R2
+(0552)   OCR1BH = angle_upper_byte_6B;
+     3D6 9020 0215 LDS	R2,angle_upper_byte_6B
+     3D8 9220 008B STS	0x008B,R2
+(0553)   OCR1BL = angle_lower_byte_6B;
+     3DA 9020 0214 LDS	R2,angle_lower_byte_6B
+     3DC 9220 008A STS	0x008A,R2
+(0554)   OCR1CH = angle_upper_byte_6C;
+     3DE 9020 0213 LDS	R2,angle_upper_byte_6C
+     3E0 9220 008D STS	0x008D,R2
+(0555)   OCR1CL = angle_lower_byte_6C;
+     3E2 9020 0212 LDS	R2,angle_lower_byte_6C
+     3E4 9220 008C STS	0x008C,R2
+(0556)  }
+(0557)  //serial communication related code
+(0558)  serial_communication_interval ++;
+     3E6 9180 0206 LDS	R24,serial_communication_interval
+     3E8 9190 0207 LDS	R25,serial_communication_interval+1
+     3EA 9601      ADIW	R24,1
+     3EB 9390 0207 STS	serial_communication_interval+1,R25
+     3ED 9380 0206 STS	serial_communication_interval,R24
+(0559)   if (serial_communication_interval > 40) //gives time interval of 40*2.5ms = 100ms
+     3EF E288      LDI	R24,0x28
+     3F0 E090      LDI	R25,0
+     3F1 9020 0206 LDS	R2,serial_communication_interval
+     3F3 9030 0207 LDS	R3,serial_communication_interval+1
+     3F5 1582      CP	R24,R2
+     3F6 0593      CPC	R25,R3
+     3F7 F4B8      BCC	0x040F
+(0560)  {
+(0561)   serial_communication_interval = 0;
+     3F8 2422      CLR	R2
+     3F9 2433      CLR	R3
+     3FA 9230 0207 STS	serial_communication_interval+1,R3
+     3FC 9220 0206 STS	serial_communication_interval,R2
+(0562)   serial_communication_channel_number++;
+     3FE 9180 0208 LDS	R24,serial_communication_channel_number
+     400 5F8F      SUBI	R24,0xFF
+     401 9380 0208 STS	serial_communication_channel_number,R24
+(0563)   if(serial_communication_channel_number > 4) //set maximum number of command (can be set up to 7)
+     403 E084      LDI	R24,4
+     404 9020 0208 LDS	R2,serial_communication_channel_number
+     406 1582      CP	R24,R2
+     407 F418      BCC	0x040B
+(0564)   {
+(0565)   serial_communication_channel_number  = 3; //set first command to begin with (can be set up to 1)
+     408 E083      LDI	R24,3
+     409 9380 0208 STS	serial_communication_channel_number,R24
+(0566)   }
+(0567)   UDR0 = serial_communication_channel_number;
+     40B 9020 0208 LDS	R2,serial_communication_channel_number
+     40D 9220 00C6 STS	0x00C6,R2
+(0568)  }
+     40F 9009      LD	R0,Y+
+     410 BE0F      OUT	0x3F,R0
+     411 91F9      LD	R31,Y+
+     412 91E9      LD	R30,Y+
+     413 91B9      LD	R27,Y+
+     414 91A9      LD	R26,Y+
+     415 9199      LD	R25,Y+
+     416 9189      LD	R24,Y+
+     417 9139      LD	R19,Y+
+     418 9129      LD	R18,Y+
+     419 9119      LD	R17,Y+
+     41A 9109      LD	R16,Y+
+     41B 9099      LD	R9,Y+
+     41C 9089      LD	R8,Y+
+     41D 9079      LD	R7,Y+
+     41E 9069      LD	R6,Y+
+     41F 9059      LD	R5,Y+
+     420 9049      LD	R4,Y+
+     421 9039      LD	R3,Y+
+     422 9029      LD	R2,Y+
+     423 9019      LD	R1,Y+
+     424 9009      LD	R0,Y+
+     425 9518      RETI
+(0569) }
+(0570) 
+(0571) //UART0 initialize
+(0572) // desired baud rate: 9600
+(0573) // actual: baud rate:9600 (0.0%)
+(0574) // char size: 8 bit
+(0575) // parity: Disabled
+(0576) void uart0_init(void)
+(0577) {
+(0578)  UCSR0B = 0x00; //disable while setting baud rate
+_uart0_init:
+     426 2422      CLR	R2
+     427 9220 00C1 STS	0x00C1,R2
+(0579)  UCSR0A = 0x00;
+     429 9220 00C0 STS	0x00C0,R2
+(0580)  UCSR0C = 0x06;
+     42B E086      LDI	R24,6
+     42C 9380 00C2 STS	0x00C2,R24
+(0581)  UBRR0L = 0x47; //set baud rate lo
+     42E E487      LDI	R24,0x47
+     42F 9380 00C4 STS	0x00C4,R24
+(0582)  UBRR0H = 0x00; //set baud rate hi
+     431 9220 00C5 STS	0x00C5,R2
+(0583)  UCSR0B = 0x98;
+     433 E988      LDI	R24,0x98
+     434 9380 00C1 STS	0x00C1,R24
+     436 9508      RET
+_uart0_rx_isr:
+     437 922A      ST	R2,-Y
+     438 938A      ST	R24,-Y
+     439 939A      ST	R25,-Y
+     43A 93EA      ST	R30,-Y
+     43B 93FA      ST	R31,-Y
+     43C B62F      IN	R2,0x3F
+     43D 922A      ST	R2,-Y
+(0584) }
+(0585) 
+(0586) #pragma interrupt_handler uart0_rx_isr:iv_USART0_RXC
+(0587) void uart0_rx_isr(void)
+(0588) {
+(0589)  //uart has received a character in UDR
+(0590)  remote_data[serial_communication_channel_number] = UDR0;  
+     43E E08A      LDI	R24,0xA
+     43F E092      LDI	R25,2
+     440 91E0 0208 LDS	R30,serial_communication_channel_number
+     442 27FF      CLR	R31
+     443 0FE8      ADD	R30,R24
+     444 1FF9      ADC	R31,R25
+     445 9020 00C6 LDS	R2,0x00C6
+     447 8220      STD	Z+0,R2
+     448 9029      LD	R2,Y+
+     449 BE2F      OUT	0x3F,R2
+     44A 91F9      LD	R31,Y+
+     44B 91E9      LD	R30,Y+
+     44C 9199      LD	R25,Y+
+     44D 9189      LD	R24,Y+
+     44E 9029      LD	R2,Y+
+     44F 9518      RETI
+(0591) }
+(0592) 
+(0593) //call this routine to initialize all peripherals
+(0594) void init_devices(void)
+(0595) {
+(0596)  //stop errant interrupts until set up
+(0597)  CLI(); //disable all interrupts
+_init_devices:
+     450 94F8      BCLR	7
+(0598)  XMCRA = 0x00; //external memory
+     451 2422      CLR	R2
+     452 9220 0074 STS	0x0074,R2
+(0599)  XMCRB = 0x00; //external memory
+     454 9220 0075 STS	0x0075,R2
+(0600)  port_init();
+     456 DD73      RCALL	_port_init
+(0601)  timer1_init();
+     457 DD9A      RCALL	_timer1_init
+(0602)  uart0_init();
+     458 DFCD      RCALL	_uart0_init
+(0603) 
+(0604)  MCUCR  = 0x00;
+     459 2422      CLR	R2
+     45A BE25      OUT	0x35,R2
+(0605)  EICRA  = 0x00; //pin change int edge 0:3
+     45B 9220 0069 STS	0x0069,R2
+(0606)  EICRB  = 0x00; //pin change int edge 4:7
+     45D 9220 006A STS	0x006A,R2
+(0607)  PCICR  = 0x00; //pin change int enable
+     45F 9220 0068 STS	0x0068,R2
+(0608)  PCMSK0 = 0x00; //pin change mask
+     461 9220 006B STS	0x006B,R2
+(0609)  PCMSK1 = 0x00; //pin change mask
+     463 9220 006C STS	0x006C,R2
+(0610)  PCMSK2 = 0x00; //pin change mask
+     465 9220 006D STS	0x006D,R2
+(0611)  EIMSK  = 0x00;
+     467 BA2D      OUT	0x1D,R2
+(0612)  TIMSK0 = 0x00; //timer0 interrupt sources
+     468 9220 006E STS	0x006E,R2
+(0613)  TIMSK1 = 0x0F; //timer1 interrupt sources
+     46A E08F      LDI	R24,0xF
+     46B 9380 006F STS	0x006F,R24
+(0614)  TIMSK2 = 0x00; //timer2 interrupt sources
+     46D 9220 0070 STS	0x0070,R2
+(0615)  TIMSK3 = 0x00; //timer3 interrupt sources
+     46F 9220 0071 STS	0x0071,R2
+(0616)  TIMSK4 = 0x00; //timer4 interrupt sources
+     471 9220 0072 STS	0x0072,R2
+(0617)  TIMSK5 = 0x00; //timer5 interrupt sources
+     473 9220 0073 STS	0x0073,R2
+(0618)  
+(0619)  SEI(); //re-enable interrupts
+     475 9478      BSET	7
+     476 9508      RET
+(0620)  //all peripherals are now initialized
+(0621) }
+(0622) 
+(0623) void angle_value_calculation (void)
+(0624) {
+(0625)  unsigned int angle_value = 0;
+_angle_value_calculation:
+  temp                 --> R16
+  angle_value          --> R18
+     477 2722      CLR	R18
+     478 2733      CLR	R19
+(0626)  unsigned int temp = 0;
+     479 2700      CLR	R16
+     47A 2711      CLR	R17
+(0627)  if (degree > 180)
+     47B EB84      LDI	R24,0xB4
+     47C 9020 0203 LDS	R2,degree
+     47E 1582      CP	R24,R2
+     47F F410      BCC	0x0482
+(0628)  degree = 180; // limiting the scope of the servo rotation
+     480 9380 0203 STS	degree,R24
+(0629)  
+(0630)  angle_value = 0xBF39 + (64 * (unsigned char) degree); //actual constant is 64.4
+     482 9020 0203 LDS	R2,degree
+     484 E480      LDI	R24,0x40
+     485 9D82      MUL	R24,R2
+     486 0190      MOVW	R18,R0
+     487 5C27      SUBI	R18,0xC7
+     488 4430      SBCI	R19,0x40
+(0631)  
+(0632)  angle_lower_byte = (unsigned char) angle_value; //separating the lower byte
+     489 9320 0202 STS	angle_lower_byte,R18
+(0633)  
+(0634)  temp = angle_value >> 8;
+     48B 0189      MOVW	R16,R18
+     48C 2F01      MOV	R16,R17
+     48D 2711      CLR	R17
+(0635)  angle_upper_byte = (unsigned char) temp; //separating the upper byte
+     48E 9300 0201 STS	angle_upper_byte,R16
+     490 9508      RET
+_angle_1A:
+  angle                --> R10
+     491 92AA      ST	R10,-Y
+     492 2EA0      MOV	R10,R16
+(0636) }
+(0637) 
+(0638) 
+(0639) void angle_1A (unsigned char angle)
+(0640) {
+(0641)  _1A = degree = angle;
+     493 92A0 0203 STS	degree,R10
+     495 92A0 0247 STS	_1A,R10
+(0642)  angle_value_calculation();
+     497 DFDF      RCALL	_angle_value_calculation
+(0643)  angle_upper_byte_1A = angle_upper_byte;
+     498 9020 0201 LDS	R2,angle_upper_byte
+     49A 9220 0235 STS	angle_upper_byte_1A,R2
+(0644)  angle_lower_byte_1A = angle_lower_byte;
+     49C 9020 0202 LDS	R2,angle_lower_byte
+     49E 9220 0234 STS	angle_lower_byte_1A,R2
+     4A0 90A9      LD	R10,Y+
+     4A1 9508      RET
+_angle_1B:
+  angle                --> R10
+     4A2 92AA      ST	R10,-Y
+     4A3 2EA0      MOV	R10,R16
+(0645) }
+(0646) 
+(0647) void angle_1B (unsigned char angle)
+(0648) {
+(0649)  _1B = degree = angle;
+     4A4 92A0 0203 STS	degree,R10
+     4A6 92A0 0246 STS	_1B,R10
+(0650)  angle_value_calculation();
+     4A8 DFCE      RCALL	_angle_value_calculation
+(0651)  angle_upper_byte_1B = angle_upper_byte;
+     4A9 9020 0201 LDS	R2,angle_upper_byte
+     4AB 9220 0233 STS	angle_upper_byte_1B,R2
+(0652)  angle_lower_byte_1B = angle_lower_byte;
+     4AD 9020 0202 LDS	R2,angle_lower_byte
+     4AF 9220 0232 STS	angle_lower_byte_1B,R2
+     4B1 90A9      LD	R10,Y+
+     4B2 9508      RET
+_angle_1C:
+  angle                --> R10
+     4B3 92AA      ST	R10,-Y
+     4B4 2EA0      MOV	R10,R16
+(0653) }
+(0654) 
+(0655) void angle_1C (unsigned char angle)
+(0656) {
+(0657)  _1C = degree = angle;
+     4B5 92A0 0203 STS	degree,R10
+     4B7 92A0 0245 STS	_1C,R10
+(0658)  angle_value_calculation();
+     4B9 DFBD      RCALL	_angle_value_calculation
+(0659)  angle_upper_byte_1C = angle_upper_byte;
+     4BA 9020 0201 LDS	R2,angle_upper_byte
+     4BC 9220 0231 STS	angle_upper_byte_1C,R2
+(0660)  angle_lower_byte_1C = angle_lower_byte;
+     4BE 9020 0202 LDS	R2,angle_lower_byte
+     4C0 9220 0230 STS	angle_lower_byte_1C,R2
+     4C2 90A9      LD	R10,Y+
+     4C3 9508      RET
+_angle_2A:
+  angle                --> R10
+     4C4 92AA      ST	R10,-Y
+     4C5 2EA0      MOV	R10,R16
+(0661) }
+(0662) 
+(0663) void angle_2A (unsigned char angle)
+(0664) {
+(0665)  _2A = degree = angle;
+     4C6 92A0 0203 STS	degree,R10
+     4C8 92A0 0244 STS	_2A,R10
+(0666)  angle_value_calculation();
+     4CA DFAC      RCALL	_angle_value_calculation
+(0667)  angle_upper_byte_2A = angle_upper_byte;
+     4CB 9020 0201 LDS	R2,angle_upper_byte
+     4CD 9220 022F STS	angle_upper_byte_2A,R2
+(0668)  angle_lower_byte_2A = angle_lower_byte;
+     4CF 9020 0202 LDS	R2,angle_lower_byte
+     4D1 9220 022E STS	angle_lower_byte_2A,R2
+     4D3 90A9      LD	R10,Y+
+     4D4 9508      RET
+_angle_2B:
+  angle                --> R20
+     4D5 934A      ST	R20,-Y
+     4D6 935A      ST	R21,-Y
+     4D7 2F40      MOV	R20,R16
+(0669) }
+(0670) 
+(0671) void angle_2B (unsigned char angle)
+(0672) {
+(0673)  angle = angle+9;		//Setting this offset for error correction in servo 2B
+     4D8 5F47      SUBI	R20,0xF7
+(0674)  	   	 				//The above line is not required if the servo 2B is working correctly
+(0675) 	/* Such offsets are often introduced to remove or atleast minimize hardware errors with the slight change in code
+(0676) 	   This is one of the example, where instead of replacing a costly servo motor, we have set an offset to its value */
+(0677) 	   
+(0678)  _2B = degree = angle;
+     4D9 9340 0203 STS	degree,R20
+     4DB 9340 0243 STS	_2B,R20
+(0679)  angle_value_calculation();
+     4DD DF99      RCALL	_angle_value_calculation
+(0680)  angle_upper_byte_2B = angle_upper_byte;
+     4DE 9020 0201 LDS	R2,angle_upper_byte
+     4E0 9220 022D STS	angle_upper_byte_2B,R2
+(0681)  angle_lower_byte_2B = angle_lower_byte;
+     4E2 9020 0202 LDS	R2,angle_lower_byte
+     4E4 9220 022C STS	angle_lower_byte_2B,R2
+     4E6 9159      LD	R21,Y+
+     4E7 9149      LD	R20,Y+
+     4E8 9508      RET
+_angle_2C:
+  angle                --> R10
+     4E9 92AA      ST	R10,-Y
+     4EA 2EA0      MOV	R10,R16
+(0682) }
+(0683) 
+(0684) void angle_2C (unsigned char angle)
+(0685) {
+(0686)  _2C = degree = angle;
+     4EB 92A0 0203 STS	degree,R10
+     4ED 92A0 0242 STS	_2C,R10
+(0687)  angle_value_calculation();
+     4EF DF87      RCALL	_angle_value_calculation
+(0688)  angle_upper_byte_2C = angle_upper_byte;
+     4F0 9020 0201 LDS	R2,angle_upper_byte
+     4F2 9220 022B STS	angle_upper_byte_2C,R2
+(0689)  angle_lower_byte_2C = angle_lower_byte;
+     4F4 9020 0202 LDS	R2,angle_lower_byte
+     4F6 9220 022A STS	angle_lower_byte_2C,R2
+     4F8 90A9      LD	R10,Y+
+     4F9 9508      RET
+_angle_3A:
+  angle                --> R10
+     4FA 92AA      ST	R10,-Y
+     4FB 2EA0      MOV	R10,R16
+(0690) }
+(0691) 
+(0692) void angle_3A (unsigned char angle)
+(0693) {
+(0694)  _3A = degree = angle;
+     4FC 92A0 0203 STS	degree,R10
+     4FE 92A0 0241 STS	_3A,R10
+(0695)  angle_value_calculation();
+     500 DF76      RCALL	_angle_value_calculation
+(0696)  angle_upper_byte_3A = angle_upper_byte;
+     501 9020 0201 LDS	R2,angle_upper_byte
+     503 9220 0229 STS	angle_upper_byte_3A,R2
+(0697)  angle_lower_byte_3A = angle_lower_byte;
+     505 9020 0202 LDS	R2,angle_lower_byte
+     507 9220 0228 STS	angle_lower_byte_3A,R2
+     509 90A9      LD	R10,Y+
+     50A 9508      RET
+_angle_3B:
+  angle                --> R10
+     50B 92AA      ST	R10,-Y
+     50C 2EA0      MOV	R10,R16
+(0698) }
+(0699) 
+(0700) void angle_3B (unsigned char angle)
+(0701) {
+(0702)  _3B = degree = angle;
+     50D 92A0 0203 STS	degree,R10
+     50F 92A0 0240 STS	_3B,R10
+(0703)  angle_value_calculation();
+     511 DF65      RCALL	_angle_value_calculation
+(0704)  angle_upper_byte_3B = angle_upper_byte;
+     512 9020 0201 LDS	R2,angle_upper_byte
+     514 9220 0227 STS	angle_upper_byte_3B,R2
+(0705)  angle_lower_byte_3B = angle_lower_byte;
+     516 9020 0202 LDS	R2,angle_lower_byte
+     518 9220 0226 STS	angle_lower_byte_3B,R2
+     51A 90A9      LD	R10,Y+
+     51B 9508      RET
+_angle_3C:
+  angle                --> R10
+     51C 92AA      ST	R10,-Y
+     51D 2EA0      MOV	R10,R16
+(0706) }
+(0707) 
+(0708) void angle_3C (unsigned char angle)
+(0709) {
+(0710)  _3C = degree = angle;
+     51E 92A0 0203 STS	degree,R10
+     520 92A0 023F STS	_3C,R10
+(0711)  angle_value_calculation();
+     522 DF54      RCALL	_angle_value_calculation
+(0712)  angle_upper_byte_3C = angle_upper_byte;
+     523 9020 0201 LDS	R2,angle_upper_byte
+     525 9220 0225 STS	angle_upper_byte_3C,R2
+(0713)  angle_lower_byte_3C = angle_lower_byte;
+     527 9020 0202 LDS	R2,angle_lower_byte
+     529 9220 0224 STS	angle_lower_byte_3C,R2
+     52B 90A9      LD	R10,Y+
+     52C 9508      RET
+_angle_4A:
+  angle                --> R10
+     52D 92AA      ST	R10,-Y
+     52E 2EA0      MOV	R10,R16
+(0714) }
+(0715) 
+(0716) void angle_4A (unsigned char angle)
+(0717) {
+(0718)  _4A = degree = angle;
+     52F 92A0 0203 STS	degree,R10
+     531 92A0 023E STS	_4A,R10
+(0719)  angle_value_calculation();
+     533 DF43      RCALL	_angle_value_calculation
+(0720)  angle_upper_byte_4A = angle_upper_byte;
+     534 9020 0201 LDS	R2,angle_upper_byte
+     536 9220 0223 STS	angle_upper_byte_4A,R2
+(0721)  angle_lower_byte_4A = angle_lower_byte;
+     538 9020 0202 LDS	R2,angle_lower_byte
+     53A 9220 0222 STS	angle_lower_byte_4A,R2
+     53C 90A9      LD	R10,Y+
+     53D 9508      RET
+_angle_4B:
+  angle                --> R10
+     53E 92AA      ST	R10,-Y
+     53F 2EA0      MOV	R10,R16
+(0722) }
+(0723) 
+(0724) void angle_4B (unsigned char angle)
+(0725) {
+(0726)  _4B = angle;
+     540 92A0 023D STS	_4B,R10
+(0727)  degree = 180 - angle;
+     542 2C2A      MOV	R2,R10
+     543 2433      CLR	R3
+     544 EB84      LDI	R24,0xB4
+     545 E090      LDI	R25,0
+     546 1982      SUB	R24,R2
+     547 0993      SBC	R25,R3
+     548 9380 0203 STS	degree,R24
+(0728)  angle_value_calculation();
+     54A DF2C      RCALL	_angle_value_calculation
+(0729)  angle_upper_byte_4B = angle_upper_byte;
+     54B 9020 0201 LDS	R2,angle_upper_byte
+     54D 9220 0221 STS	angle_upper_byte_4B,R2
+(0730)  angle_lower_byte_4B = angle_lower_byte;
+     54F 9020 0202 LDS	R2,angle_lower_byte
+     551 9220 0220 STS	angle_lower_byte_4B,R2
+     553 90A9      LD	R10,Y+
+     554 9508      RET
+_angle_4C:
+  angle                --> R10
+     555 92AA      ST	R10,-Y
+     556 2EA0      MOV	R10,R16
+(0731) }
+(0732) 
+(0733) void angle_4C (unsigned char angle)
+(0734) {
+(0735)  _4C = angle;
+     557 92A0 023C STS	_4C,R10
+(0736)  degree = 180 - angle;
+     559 2C2A      MOV	R2,R10
+     55A 2433      CLR	R3
+     55B EB84      LDI	R24,0xB4
+     55C E090      LDI	R25,0
+     55D 1982      SUB	R24,R2
+     55E 0993      SBC	R25,R3
+     55F 9380 0203 STS	degree,R24
+(0737)  angle_value_calculation();
+     561 DF15      RCALL	_angle_value_calculation
+(0738)  angle_upper_byte_4C = angle_upper_byte;
+     562 9020 0201 LDS	R2,angle_upper_byte
+     564 9220 021F STS	angle_upper_byte_4C,R2
+(0739)  angle_lower_byte_4C = angle_lower_byte;
+     566 9020 0202 LDS	R2,angle_lower_byte
+     568 9220 021E STS	angle_lower_byte_4C,R2
+     56A 90A9      LD	R10,Y+
+     56B 9508      RET
+_angle_5A:
+  angle                --> R10
+     56C 92AA      ST	R10,-Y
+     56D 2EA0      MOV	R10,R16
+(0740) }
+(0741) 
+(0742) void angle_5A (unsigned char angle)
+(0743) {
+(0744)  _5A = degree = angle;
+     56E 92A0 0203 STS	degree,R10
+     570 92A0 023B STS	_5A,R10
+(0745)  angle_value_calculation();
+     572 DF04      RCALL	_angle_value_calculation
+(0746)  angle_upper_byte_5A = angle_upper_byte;
+     573 9020 0201 LDS	R2,angle_upper_byte
+     575 9220 021D STS	angle_upper_byte_5A,R2
+(0747)  angle_lower_byte_5A = angle_lower_byte;
+     577 9020 0202 LDS	R2,angle_lower_byte
+     579 9220 021C STS	angle_lower_byte_5A,R2
+     57B 90A9      LD	R10,Y+
+     57C 9508      RET
+_angle_5B:
+  angle                --> R10
+     57D 92AA      ST	R10,-Y
+     57E 2EA0      MOV	R10,R16
+(0748) }
+(0749) 
+(0750) void angle_5B (unsigned char angle)
+(0751) {
+(0752)  _5B = angle;
+     57F 92A0 023A STS	_5B,R10
+(0753)  degree = 180 - angle;
+     581 2C2A      MOV	R2,R10
+     582 2433      CLR	R3
+     583 EB84      LDI	R24,0xB4
+     584 E090      LDI	R25,0
+     585 1982      SUB	R24,R2
+     586 0993      SBC	R25,R3
+     587 9380 0203 STS	degree,R24
+(0754)  angle_value_calculation();
+     589 DEED      RCALL	_angle_value_calculation
+(0755)  angle_upper_byte_5B = angle_upper_byte;
+     58A 9020 0201 LDS	R2,angle_upper_byte
+     58C 9220 021B STS	angle_upper_byte_5B,R2
+(0756)  angle_lower_byte_5B = angle_lower_byte;
+     58E 9020 0202 LDS	R2,angle_lower_byte
+     590 9220 021A STS	angle_lower_byte_5B,R2
+     592 90A9      LD	R10,Y+
+     593 9508      RET
+_angle_5C:
+  angle                --> R10
+     594 92AA      ST	R10,-Y
+     595 2EA0      MOV	R10,R16
+(0757) }
+(0758) 
+(0759) void angle_5C (unsigned char angle)
+(0760) {
+(0761)  _5C = angle;
+     596 92A0 0239 STS	_5C,R10
+(0762)  degree = 180 - angle;
+     598 2C2A      MOV	R2,R10
+     599 2433      CLR	R3
+     59A EB84      LDI	R24,0xB4
+     59B E090      LDI	R25,0
+     59C 1982      SUB	R24,R2
+     59D 0993      SBC	R25,R3
+     59E 9380 0203 STS	degree,R24
+(0763)  angle_value_calculation();
+     5A0 DED6      RCALL	_angle_value_calculation
+(0764)  angle_upper_byte_5C = angle_upper_byte;
+     5A1 9020 0201 LDS	R2,angle_upper_byte
+     5A3 9220 0219 STS	angle_upper_byte_5C,R2
+(0765)  angle_lower_byte_5C = angle_lower_byte;
+     5A5 9020 0202 LDS	R2,angle_lower_byte
+     5A7 9220 0218 STS	angle_lower_byte_5C,R2
+     5A9 90A9      LD	R10,Y+
+     5AA 9508      RET
+_angle_6A:
+  angle                --> R10
+     5AB 92AA      ST	R10,-Y
+     5AC 2EA0      MOV	R10,R16
+(0766) }
+(0767) 
+(0768) void angle_6A (unsigned char angle)
+(0769) {
+(0770)  _6A = degree = angle;
+     5AD 92A0 0203 STS	degree,R10
+     5AF 92A0 0238 STS	_6A,R10
+(0771)  angle_value_calculation();
+     5B1 DEC5      RCALL	_angle_value_calculation
+(0772)  angle_upper_byte_6A = angle_upper_byte;
+     5B2 9020 0201 LDS	R2,angle_upper_byte
+     5B4 9220 0217 STS	angle_upper_byte_6A,R2
+(0773)  angle_lower_byte_6A = angle_lower_byte;
+     5B6 9020 0202 LDS	R2,angle_lower_byte
+     5B8 9220 0216 STS	angle_lower_byte_6A,R2
+     5BA 90A9      LD	R10,Y+
+     5BB 9508      RET
+_angle_6B:
+  angle                --> R10
+     5BC 92AA      ST	R10,-Y
+     5BD 2EA0      MOV	R10,R16
+(0774) }
+(0775) 
+(0776) void angle_6B (unsigned char angle)
+(0777) {
+(0778)  _6B = angle;
+     5BE 92A0 0237 STS	_6B,R10
+(0779)  degree = 180 - angle;
+     5C0 2C2A      MOV	R2,R10
+     5C1 2433      CLR	R3
+     5C2 EB84      LDI	R24,0xB4
+     5C3 E090      LDI	R25,0
+     5C4 1982      SUB	R24,R2
+     5C5 0993      SBC	R25,R3
+     5C6 9380 0203 STS	degree,R24
+(0780)  angle_value_calculation();
+     5C8 DEAE      RCALL	_angle_value_calculation
+(0781)  angle_upper_byte_6B = angle_upper_byte;
+     5C9 9020 0201 LDS	R2,angle_upper_byte
+     5CB 9220 0215 STS	angle_upper_byte_6B,R2
+(0782)  angle_lower_byte_6B = angle_lower_byte;
+     5CD 9020 0202 LDS	R2,angle_lower_byte
+     5CF 9220 0214 STS	angle_lower_byte_6B,R2
+     5D1 90A9      LD	R10,Y+
+     5D2 9508      RET
+_angle_6C:
+  angle                --> R10
+     5D3 92AA      ST	R10,-Y
+     5D4 2EA0      MOV	R10,R16
+(0783) }
+(0784) 
+(0785) void angle_6C (unsigned char angle)
+(0786) {
+(0787)  _6C = angle;
+     5D5 92A0 0236 STS	_6C,R10
+(0788)  degree = 180 - angle;
+     5D7 2C2A      MOV	R2,R10
+     5D8 2433      CLR	R3
+     5D9 EB84      LDI	R24,0xB4
+     5DA E090      LDI	R25,0
+     5DB 1982      SUB	R24,R2
+     5DC 0993      SBC	R25,R3
+     5DD 9380 0203 STS	degree,R24
+(0789)  angle_value_calculation();
+     5DF DE97      RCALL	_angle_value_calculation
+(0790)  angle_upper_byte_6C = angle_upper_byte;
+     5E0 9020 0201 LDS	R2,angle_upper_byte
+     5E2 9220 0213 STS	angle_upper_byte_6C,R2
+(0791)  angle_lower_byte_6C = angle_lower_byte;
+     5E4 9020 0202 LDS	R2,angle_lower_byte
+     5E6 9220 0212 STS	angle_lower_byte_6C,R2
+     5E8 90A9      LD	R10,Y+
+     5E9 9508      RET
+(0792) }
+(0793) 
+(0794) void buzzer_on (void)
+(0795) {
+(0796)  PORTC = PORTC | 0x08;
+_buzzer_on:
+     5EA 9A43      SBI	0x08,3
+     5EB 9508      RET
+(0797) }
+(0798) 
+(0799) void buzzer_off (void)
+(0800) {
+(0801)  PORTC = PORTC & 0xF7;
+_buzzer_off:
+     5EC B188      IN	R24,0x08
+     5ED 7F87      ANDI	R24,0xF7
+     5EE B988      OUT	0x08,R24
+     5EF 9508      RET
+FILE: C:\DOCUME~1\Administrator\Desktop\Embedded\icc_avr_hexapod\icc_avr_hexapod\hexapod.h
+(0001) /**
+(0002) 
+(0003)  hexapod.h :
+(0004)  This file contains the logical code for Hexapod motion and builds upon the file hexapod_firebirdv.h
+(0005)  hexapod_firebirdv.h contains platform-specific code for controlling the sensors and actuators using Atmega2560 ports.
+(0006) 
+(0007)  @author Group 10: Abhinav Maurya 10305016
+(0008)  		 	   	   Yogesh Kakde	  10305039
+(0009) 				   Lokesh Rajwani 10305066
+(0010)  
+(0011)  AVR Studio Version 4.17, Build 666
+(0012) 
+(0013)  Date: 6th November 2010
+(0014)  
+(0015)     Make sure that in the configuration options following settings are 
+(0016)  	done for proper operation of the code
+(0017) 
+(0018)  	Microcontroller: atmega2560
+(0019)  	Frequency: 11059200
+(0020)  	Optimization: -O0 (For more information read section: Selecting proper optimization options 
+(0021) 						below figure 4.22 in the hardware manual)
+(0022) *********************************************************************************/
+(0023) 
+(0024) 
+(0025) /********************************************************************************
+(0026) 
+(0027)    Copyright (c) 2010, ERTS Lab IIT Bombay erts@cse.iitb.ac.in               -*- c -*-
+(0028)    All rights reserved.
+(0029) 
+(0030)    Redistribution and use in source and binary forms, with or without
+(0031)    modification, are permitted provided that the following conditions are met:
+(0032) 
+(0033)    * Redistributions of source code must retain the above copyright
+(0034)      notice, this list of conditions and the following disclaimer.
+(0035) 
+(0036)    * Redistributions in binary form must reproduce the above copyright
+(0037)      notice, this list of conditions and the following disclaimer in
+(0038)      the documentation and/or other materials provided with the
+(0039)      distribution.
+(0040) 
+(0041)    * Neither the name of the copyright holders nor the names of
+(0042)      contributors may be used to endorse or promote products derived
+(0043)      from this software without specific prior written permission.
+(0044) 
+(0045)    * Source code can be used for academic purpose. 
+(0046) 	 For commercial use permission form the author needs to be taken.
+(0047) 
+(0048)   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+(0049)   AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+(0050)   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+(0051)   ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+(0052)   LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+(0053)   CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+(0054)   SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+(0055)   INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+(0056)   CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+(0057)   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+(0058)   POSSIBILITY OF SUCH DAMAGE. 
+(0059) 
+(0060) ********************************************************************************/
+(0061) 
+(0062) 
+(0063) 	// Application: ICC-AVR
+(0064) // Target: M2560
+(0065) // Crystal: 11.059Mhz
+(0066) 
+(0067) //List of functions supplied by this header file, hexapod.h
+(0068) /*
+(0069) void servo_calibration (void);
+(0070) void odd_A_servo (unsigned char angle);
+(0071) void even_A_servo (unsigned char angle);
+(0072) void A_servo (unsigned char angle);
+(0073) void odd_B_servo (unsigned char angle);
+(0074) void even_B_servo (unsigned char angle);
+(0075) void B_servo (unsigned char angle);
+(0076) void odd_C_servo (unsigned char angle);
+(0077) void even_C_servo (unsigned char angle);
+(0078) void C_servo (unsigned char angle);
+(0079) void odd_BC_servo (unsigned char angleB, unsigned char angleC);
+(0080) void even_BC_servo (unsigned char angleB, unsigned char angleC);
+(0081) void BC_servo (unsigned char angleB, unsigned char angleC);
+(0082) void odd_A_servo_forward (unsigned char diff);
+(0083) void even_A_servo_forward (unsigned char diff);
+(0084) void A_servo_forward (unsigned char diff);
+(0085) void odd_A_servo_backward (unsigned char diff);
+(0086) void even_A_servo_backward (unsigned char diff);
+(0087) void A_servo_backward (unsigned char diff);
+(0088) void even_A_servo_90 (void);
+(0089) void even_A_servo_65 (void);
+(0090) void even_A_servo_115 (void);
+(0091) void even_BC_servo_90 (void);
+(0092) void even_BC_servo_up_45 (void);
+(0093) void even_BC_servo_down_45 (void);
+(0094) void odd_A_servo_90 (void);
+(0095) void odd_A_servo_65 (void);
+(0096) void odd_A_servo_115 (void);
+(0097) void odd_BC_servo_90 (void);
+(0098) void odd_BC_servo_up_45 (void);
+(0099) void odd_BC_servo_down_45 (void);
+(0100) void rotate_clockwise_7_5 (void)
+(0101) void rotate_anticlockwise_7_5 (void);
+(0102) void forward (void);
+(0103) void forward_3_legs (void);
+(0104) void backward (void);
+(0105) void backward_3_legs (void);
+(0106) void robot_standup (void);
+(0107) void remote_control(void);
+(0108) */
+(0109) 
+(0110) //Functions to be coded
+(0111) /*
+(0112) void rotate_clockwise (unsigned int clock_angle);
+(0113) void rotate_anticlockwise (unsigned int anticlock_angle);
+(0114) void rotate (signed int angle);
+(0115) void move_12 (unsigned int distance);
+(0116) void move_23 (unsigned int distance);
+(0117) void move_45 (unsigned int distance);
+(0118) void move_56 (unsigned int distance);
+(0119) void move_14 (unsigned int distance);
+(0120) void move_36 (unsigned int distance);
+(0121) void forward (unsigned int distance);
+(0122) void backward (unsigned int distance);
+(0123) void move (unsigned char angle, unsigned int distance);
+(0124) void stroke (unsigned char angle, unsigned int distance);
+(0125) void curve (unsigned char tangent_angle, unsigned char segment_angle, unsigned int distance);
+(0126) */
+(0127) 
+(0128) #include <math.h>
+(0129) #include "hexapod_firebirdv.h"
+(0130) 
+(0131) void servo_calibration (void)
+(0132) {
+(0133) angle_1A(90); angle_1B(90); angle_1C(90); angle_2A(90); angle_2B(90); angle_2C(90);
+_servo_calibration:
+     5F0 E50A      LDI	R16,0x5A
+     5F1 DE9F      RCALL	_angle_1A
+     5F2 E50A      LDI	R16,0x5A
+     5F3 DEAE      RCALL	_angle_1B
+     5F4 E50A      LDI	R16,0x5A
+     5F5 DEBD      RCALL	_angle_1C
+     5F6 E50A      LDI	R16,0x5A
+     5F7 DECC      RCALL	_angle_2A
+     5F8 E50A      LDI	R16,0x5A
+     5F9 DEDB      RCALL	_angle_2B
+     5FA E50A      LDI	R16,0x5A
+     5FB DEED      RCALL	_angle_2C
+(0134) angle_3A(90); angle_3B(90); angle_3C(90); angle_4A(90); angle_4B(90); angle_4C(90);
+     5FC E50A      LDI	R16,0x5A
+     5FD DEFC      RCALL	_angle_3A
+     5FE E50A      LDI	R16,0x5A
+     5FF DF0B      RCALL	_angle_3B
+     600 E50A      LDI	R16,0x5A
+     601 DF1A      RCALL	_angle_3C
+     602 E50A      LDI	R16,0x5A
+     603 DF29      RCALL	_angle_4A
+     604 E50A      LDI	R16,0x5A
+     605 DF38      RCALL	_angle_4B
+     606 E50A      LDI	R16,0x5A
+     607 DF4D      RCALL	_angle_4C
+(0135) angle_5A(90); angle_5B(90); angle_5C(90); angle_6A(90); angle_6B(90); angle_6C(90);
+     608 E50A      LDI	R16,0x5A
+     609 DF62      RCALL	_angle_5A
+     60A E50A      LDI	R16,0x5A
+     60B DF71      RCALL	_angle_5B
+     60C E50A      LDI	R16,0x5A
+     60D DF86      RCALL	_angle_5C
+     60E E50A      LDI	R16,0x5A
+     60F DF9B      RCALL	_angle_6A
+     610 E50A      LDI	R16,0x5A
+     611 DFAA      RCALL	_angle_6B
+     612 E50A      LDI	R16,0x5A
+     613 DFBF      RCALL	_angle_6C
+     614 9508      RET
+_odd_A_servo:
+  angle                --> R10
+     615 92AA      ST	R10,-Y
+     616 2EA0      MOV	R10,R16
+(0136) }
+(0137) 
+(0138) /*
+(0139) Setting angle for A Motors:
+(0140) 90  - Perpendicular
+(0141) 65  - Clockwise
+(0142) 115 - Anticlockwise
+(0143) */
+(0144) void odd_A_servo (unsigned char angle)
+(0145) { angle_1A(angle); angle_3A(angle); angle_5A(angle); }
+     617 2D0A      MOV	R16,R10
+     618 DE78      RCALL	_angle_1A
+     619 2D0A      MOV	R16,R10
+     61A DEDF      RCALL	_angle_3A
+     61B 2D0A      MOV	R16,R10
+     61C DF4F      RCALL	_angle_5A
+     61D 90A9      LD	R10,Y+
+     61E 9508      RET
+_even_A_servo:
+  angle                --> R10
+     61F 92AA      ST	R10,-Y
+     620 2EA0      MOV	R10,R16
+(0146) 
+(0147) void even_A_servo (unsigned char angle)
+(0148) { angle_2A(angle); angle_4A(angle); angle_6A(angle); }
+     621 2D0A      MOV	R16,R10
+     622 DEA1      RCALL	_angle_2A
+     623 2D0A      MOV	R16,R10
+     624 DF08      RCALL	_angle_4A
+     625 2D0A      MOV	R16,R10
+     626 DF84      RCALL	_angle_6A
+     627 90A9      LD	R10,Y+
+     628 9508      RET
+_A_servo:
+  angle                --> R10
+     629 92AA      ST	R10,-Y
+     62A 2EA0      MOV	R10,R16
+(0149) 
+(0150) void A_servo (unsigned char angle)
+(0151) { angle_1A(angle); angle_2A(angle); angle_3A(angle); angle_4A(angle); angle_5A(angle); angle_6A(angle); }
+     62B 2D0A      MOV	R16,R10
+     62C DE64      RCALL	_angle_1A
+     62D 2D0A      MOV	R16,R10
+     62E DE95      RCALL	_angle_2A
+     62F 2D0A      MOV	R16,R10
+     630 DEC9      RCALL	_angle_3A
+     631 2D0A      MOV	R16,R10
+     632 DEFA      RCALL	_angle_4A
+     633 2D0A      MOV	R16,R10
+     634 DF37      RCALL	_angle_5A
+     635 2D0A      MOV	R16,R10
+     636 DF74      RCALL	_angle_6A
+     637 90A9      LD	R10,Y+
+     638 9508      RET
+_odd_B_servo:
+  angle                --> R10
+     639 92AA      ST	R10,-Y
+     63A 2EA0      MOV	R10,R16
+(0152) 
+(0153) /*
+(0154) Setting angle for B Motors:
+(0155) 90  - Horizontal
+(0156) 45  - Inclined
+(0157) 135 - Declined
+(0158) */
+(0159) void odd_B_servo (unsigned char angle)
+(0160) { angle_1B(angle); angle_3B(angle); angle_5B(angle); }
+     63B 2D0A      MOV	R16,R10
+     63C DE65      RCALL	_angle_1B
+     63D 2D0A      MOV	R16,R10
+     63E DECC      RCALL	_angle_3B
+     63F 2D0A      MOV	R16,R10
+     640 DF3C      RCALL	_angle_5B
+     641 90A9      LD	R10,Y+
+     642 9508      RET
+_even_B_servo:
+  angle                --> R10
+     643 92AA      ST	R10,-Y
+     644 2EA0      MOV	R10,R16
+(0161) 
+(0162) void even_B_servo (unsigned char angle)
+(0163) { angle_2B(angle); angle_4B(angle); angle_6B(angle); }
+     645 2D0A      MOV	R16,R10
+     646 DE8E      RCALL	_angle_2B
+     647 2D0A      MOV	R16,R10
+     648 DEF5      RCALL	_angle_4B
+     649 2D0A      MOV	R16,R10
+     64A DF71      RCALL	_angle_6B
+     64B 90A9      LD	R10,Y+
+     64C 9508      RET
+_B_servo:
+  angle                --> R10
+     64D 92AA      ST	R10,-Y
+     64E 2EA0      MOV	R10,R16
+(0164) 
+(0165) void B_servo (unsigned char angle)
+(0166) { angle_1B(angle); angle_2B(angle); angle_3B(angle); angle_4B(angle); angle_5B(angle); angle_6B(angle); }
+     64F 2D0A      MOV	R16,R10
+     650 DE51      RCALL	_angle_1B
+     651 2D0A      MOV	R16,R10
+     652 DE82      RCALL	_angle_2B
+     653 2D0A      MOV	R16,R10
+     654 DEB6      RCALL	_angle_3B
+     655 2D0A      MOV	R16,R10
+     656 DEE7      RCALL	_angle_4B
+     657 2D0A      MOV	R16,R10
+     658 DF24      RCALL	_angle_5B
+     659 2D0A      MOV	R16,R10
+     65A DF61      RCALL	_angle_6B
+     65B 90A9      LD	R10,Y+
+     65C 9508      RET
+_odd_C_servo:
+  angle                --> R10
+     65D 92AA      ST	R10,-Y
+     65E 2EA0      MOV	R10,R16
+(0167) 
+(0168) /*
+(0169) Setting angle for C Motors:
+(0170) 90  - Perpendicular
+(0171) 45  - Outward
+(0172) 135 - Inward
+(0173) */
+(0174) void odd_C_servo (unsigned char angle)
+(0175) { angle_1C(angle); angle_3C(angle); angle_5C(angle); }
+     65F 2D0A      MOV	R16,R10
+     660 DE52      RCALL	_angle_1C
+     661 2D0A      MOV	R16,R10
+     662 DEB9      RCALL	_angle_3C
+     663 2D0A      MOV	R16,R10
+     664 DF2F      RCALL	_angle_5C
+     665 90A9      LD	R10,Y+
+     666 9508      RET
+_even_C_servo:
+  angle                --> R10
+     667 92AA      ST	R10,-Y
+     668 2EA0      MOV	R10,R16
+(0176) 
+(0177) void even_C_servo (unsigned char angle)
+(0178) { angle_2C(angle); angle_4C(angle); angle_6C(angle); }
+     669 2D0A      MOV	R16,R10
+     66A DE7E      RCALL	_angle_2C
+     66B 2D0A      MOV	R16,R10
+     66C DEE8      RCALL	_angle_4C
+     66D 2D0A      MOV	R16,R10
+     66E DF64      RCALL	_angle_6C
+     66F 90A9      LD	R10,Y+
+     670 9508      RET
+_C_servo:
+  angle                --> R10
+     671 92AA      ST	R10,-Y
+     672 2EA0      MOV	R10,R16
+(0179) 
+(0180) void C_servo (unsigned char angle)
+(0181) { angle_1C(angle); angle_2C(angle); angle_3C(angle); angle_4C(angle); angle_5C(angle); angle_6C(angle); }
+     673 2D0A      MOV	R16,R10
+     674 DE3E      RCALL	_angle_1C
+     675 2D0A      MOV	R16,R10
+     676 DE72      RCALL	_angle_2C
+     677 2D0A      MOV	R16,R10
+     678 DEA3      RCALL	_angle_3C
+     679 2D0A      MOV	R16,R10
+     67A DEDA      RCALL	_angle_4C
+     67B 2D0A      MOV	R16,R10
+     67C DF17      RCALL	_angle_5C
+     67D 2D0A      MOV	R16,R10
+     67E DF54      RCALL	_angle_6C
+     67F 90A9      LD	R10,Y+
+     680 9508      RET
+_odd_BC_servo:
+  angleC               --> R10
+  angleB               --> R12
+     681 92AA      ST	R10,-Y
+     682 92CA      ST	R12,-Y
+     683 2EA2      MOV	R10,R18
+     684 2EC0      MOV	R12,R16
+(0182) 
+(0183) /*
+(0184) Setting angle for BC Motors:
+(0185) 90  - Perpendicular
+(0186) 45  - Clockwise
+(0187) 135 - Anticlockwise
+(0188) */
+(0189) void odd_BC_servo (unsigned char angleB, unsigned char angleC)
+(0190) { odd_B_servo(angleB); odd_C_servo(angleC); }
+     685 2D0C      MOV	R16,R12
+     686 DFB2      RCALL	_odd_B_servo
+     687 2D0A      MOV	R16,R10
+     688 DFD4      RCALL	_odd_C_servo
+     689 90C9      LD	R12,Y+
+     68A 90A9      LD	R10,Y+
+     68B 9508      RET
+_even_BC_servo:
+  angleC               --> R10
+  angleB               --> R12
+     68C 92AA      ST	R10,-Y
+     68D 92CA      ST	R12,-Y
+     68E 2EA2      MOV	R10,R18
+     68F 2EC0      MOV	R12,R16
+(0191) 
+(0192) void even_BC_servo (unsigned char angleB, unsigned char angleC)
+(0193) { even_B_servo(angleB); even_C_servo(angleC); }
+     690 2D0C      MOV	R16,R12
+     691 DFB1      RCALL	_even_B_servo
+     692 2D0A      MOV	R16,R10
+     693 DFD3      RCALL	_even_C_servo
+     694 90C9      LD	R12,Y+
+     695 90A9      LD	R10,Y+
+     696 9508      RET
+_BC_servo:
+  angleC               --> R10
+  angleB               --> R12
+     697 92AA      ST	R10,-Y
+     698 92CA      ST	R12,-Y
+     699 2EA2      MOV	R10,R18
+     69A 2EC0      MOV	R12,R16
+(0194) 
+(0195) void BC_servo (unsigned char angleB, unsigned char angleC)
+(0196) { B_servo(angleB); C_servo(angleC);  }
+     69B 2D0C      MOV	R16,R12
+     69C DFB0      RCALL	_B_servo
+     69D 2D0A      MOV	R16,R10
+     69E DFD2      RCALL	_C_servo
+     69F 90C9      LD	R12,Y+
+     6A0 90A9      LD	R10,Y+
+     6A1 9508      RET
+_odd_A_servo_forward:
+  diff                 --> R10
+     6A2 92AA      ST	R10,-Y
+     6A3 2EA0      MOV	R10,R16
+(0197) 
+(0198) //Setting angle for A Motors: Non-uniform for Forward Rectilinear Motion
+(0199) void odd_A_servo_forward (unsigned char diff)
+(0200) { angle_1A(_1A-diff); angle_3A(_3A-diff); angle_5A(_5A+diff); }
+     6A4 9100 0247 LDS	R16,_1A
+     6A6 190A      SUB	R16,R10
+     6A7 DDE9      RCALL	_angle_1A
+     6A8 9100 0241 LDS	R16,_3A
+     6AA 190A      SUB	R16,R10
+     6AB DE4E      RCALL	_angle_3A
+     6AC 9100 023B LDS	R16,_5A
+     6AE 0D0A      ADD	R16,R10
+     6AF DEBC      RCALL	_angle_5A
+     6B0 90A9      LD	R10,Y+
+     6B1 9508      RET
+_even_A_servo_forward:
+  diff                 --> R10
+     6B2 92AA      ST	R10,-Y
+     6B3 2EA0      MOV	R10,R16
+(0201) 
+(0202) void even_A_servo_forward (unsigned char diff)
+(0203) { angle_2A(_2A-diff); angle_4A(_4A+diff); angle_6A(_6A+diff); }
+     6B4 9100 0244 LDS	R16,_2A
+     6B6 190A      SUB	R16,R10
+     6B7 DE0C      RCALL	_angle_2A
+     6B8 9100 023E LDS	R16,_4A
+     6BA 0D0A      ADD	R16,R10
+     6BB DE71      RCALL	_angle_4A
+     6BC 9100 0238 LDS	R16,_6A
+     6BE 0D0A      ADD	R16,R10
+     6BF DEEB      RCALL	_angle_6A
+     6C0 90A9      LD	R10,Y+
+     6C1 9508      RET
+_A_servo_forward:
+  diff                 --> R10
+     6C2 92AA      ST	R10,-Y
+     6C3 2EA0      MOV	R10,R16
+(0204) 
+(0205) void A_servo_forward (unsigned char diff)
+(0206) { angle_1A(_1A-diff); angle_2A(_2A-diff); angle_3A(_3A-diff); angle_4A(_4A+diff); angle_5A(_5A+diff); angle_6A(_6A+diff); }
+     6C4 9100 0247 LDS	R16,_1A
+     6C6 190A      SUB	R16,R10
+     6C7 DDC9      RCALL	_angle_1A
+     6C8 9100 0244 LDS	R16,_2A
+     6CA 190A      SUB	R16,R10
+     6CB DDF8      RCALL	_angle_2A
+     6CC 9100 0241 LDS	R16,_3A
+     6CE 190A      SUB	R16,R10
+     6CF DE2A      RCALL	_angle_3A
+     6D0 9100 023E LDS	R16,_4A
+     6D2 0D0A      ADD	R16,R10
+     6D3 DE59      RCALL	_angle_4A
+     6D4 9100 023B LDS	R16,_5A
+     6D6 0D0A      ADD	R16,R10
+     6D7 DE94      RCALL	_angle_5A
+     6D8 9100 0238 LDS	R16,_6A
+     6DA 0D0A      ADD	R16,R10
+     6DB DECF      RCALL	_angle_6A
+     6DC 90A9      LD	R10,Y+
+     6DD 9508      RET
+_odd_A_servo_backward:
+  diff                 --> R10
+     6DE 92AA      ST	R10,-Y
+     6DF 2EA0      MOV	R10,R16
+(0207) 
+(0208) //Setting angle for A Motors: Non-uniform for Backward Rectilinear Motion
+(0209) void odd_A_servo_backward (unsigned char diff)
+(0210) { angle_1A(_1A+diff); angle_3A(_3A+diff); angle_5A(_5A-diff); }
+     6E0 9100 0247 LDS	R16,_1A
+     6E2 0D0A      ADD	R16,R10
+     6E3 DDAD      RCALL	_angle_1A
+     6E4 9100 0241 LDS	R16,_3A
+     6E6 0D0A      ADD	R16,R10
+     6E7 DE12      RCALL	_angle_3A
+     6E8 9100 023B LDS	R16,_5A
+     6EA 190A      SUB	R16,R10
+     6EB DE80      RCALL	_angle_5A
+     6EC 90A9      LD	R10,Y+
+     6ED 9508      RET
+_even_A_servo_backward:
+  diff                 --> R10
+     6EE 92AA      ST	R10,-Y
+     6EF 2EA0      MOV	R10,R16
+(0211) 
+(0212) void even_A_servo_backward (unsigned char diff)
+(0213) { angle_2A(_2A+diff); angle_4A(_4A-diff); angle_6A(_6A-diff); }
+     6F0 9100 0244 LDS	R16,_2A
+     6F2 0D0A      ADD	R16,R10
+     6F3 DDD0      RCALL	_angle_2A
+     6F4 9100 023E LDS	R16,_4A
+     6F6 190A      SUB	R16,R10
+     6F7 DE35      RCALL	_angle_4A
+     6F8 9100 0238 LDS	R16,_6A
+     6FA 190A      SUB	R16,R10
+     6FB DEAF      RCALL	_angle_6A
+     6FC 90A9      LD	R10,Y+
+     6FD 9508      RET
+_A_servo_backward:
+  diff                 --> R10
+     6FE 92AA      ST	R10,-Y
+     6FF 2EA0      MOV	R10,R16
+(0214) 
+(0215) void A_servo_backward (unsigned char diff)
+(0216) { angle_1A(_1A+diff); angle_2A(_2A+diff); angle_3A(_3A+diff); angle_4A(_4A-diff); angle_5A(_5A-diff); angle_6A(_6A-diff); }
+     700 9100 0247 LDS	R16,_1A
+     702 0D0A      ADD	R16,R10
+     703 DD8D      RCALL	_angle_1A
+     704 9100 0244 LDS	R16,_2A
+     706 0D0A      ADD	R16,R10
+     707 DDBC      RCALL	_angle_2A
+     708 9100 0241 LDS	R16,_3A
+     70A 0D0A      ADD	R16,R10
+     70B DDEE      RCALL	_angle_3A
+     70C 9100 023E LDS	R16,_4A
+     70E 190A      SUB	R16,R10
+     70F DE1D      RCALL	_angle_4A
+     710 9100 023B LDS	R16,_5A
+     712 190A      SUB	R16,R10
+     713 DE58      RCALL	_angle_5A
+     714 9100 0238 LDS	R16,_6A
+     716 190A      SUB	R16,R10
+     717 DE93      RCALL	_angle_6A
+     718 90A9      LD	R10,Y+
+     719 9508      RET
+_opp_14_A:
+  angleA               --> R10
+     71A 92AA      ST	R10,-Y
+     71B 2EA0      MOV	R10,R16
+(0217) 
+(0218) void opp_14_A (unsigned char angleA)
+(0219) { angle_1A(angleA); angle_4A(angleA); }
+     71C 2D0A      MOV	R16,R10
+     71D DD73      RCALL	_angle_1A
+     71E 2D0A      MOV	R16,R10
+     71F DE0D      RCALL	_angle_4A
+     720 90A9      LD	R10,Y+
+     721 9508      RET
+_opp_26_A:
+  angleA               --> R10
+     722 92AA      ST	R10,-Y
+     723 2EA0      MOV	R10,R16
+(0220) 
+(0221) void opp_26_A (unsigned char angleA)
+(0222) { angle_2A(angleA); angle_6A(angleA); }
+     724 2D0A      MOV	R16,R10
+     725 DD9E      RCALL	_angle_2A
+     726 2D0A      MOV	R16,R10
+     727 DE83      RCALL	_angle_6A
+     728 90A9      LD	R10,Y+
+     729 9508      RET
+_opp_35_A:
+  angleA               --> R10
+     72A 92AA      ST	R10,-Y
+     72B 2EA0      MOV	R10,R16
+(0223) 
+(0224) void opp_35_A (unsigned char angleA)
+(0225) { angle_3A(angleA); angle_5A(angleA); }
+     72C 2D0A      MOV	R16,R10
+     72D DDCC      RCALL	_angle_3A
+     72E 2D0A      MOV	R16,R10
+     72F DE3C      RCALL	_angle_5A
+     730 90A9      LD	R10,Y+
+     731 9508      RET
+_opp_14_A_forward:
+  diff                 --> R10
+     732 92AA      ST	R10,-Y
+     733 2EA0      MOV	R10,R16
+(0226) 
+(0227) void opp_14_A_forward (unsigned char diff)
+(0228) { angle_1A(_1A-diff); angle_4A(_4A+diff); }
+     734 9100 0247 LDS	R16,_1A
+     736 190A      SUB	R16,R10
+     737 DD59      RCALL	_angle_1A
+     738 9100 023E LDS	R16,_4A
+     73A 0D0A      ADD	R16,R10
+     73B DDF1      RCALL	_angle_4A
+     73C 90A9      LD	R10,Y+
+     73D 9508      RET
+_opp_26_A_forward:
+  diff                 --> R10
+     73E 92AA      ST	R10,-Y
+     73F 2EA0      MOV	R10,R16
+(0229) 
+(0230) void opp_26_A_forward (unsigned char diff)
+(0231) { angle_2A(_2A-diff); angle_6A(_6A+diff); }
+     740 9100 0244 LDS	R16,_2A
+     742 190A      SUB	R16,R10
+     743 DD80      RCALL	_angle_2A
+     744 9100 0238 LDS	R16,_6A
+     746 0D0A      ADD	R16,R10
+     747 DE63      RCALL	_angle_6A
+     748 90A9      LD	R10,Y+
+     749 9508      RET
+_opp_35_A_forward:
+  diff                 --> R10
+     74A 92AA      ST	R10,-Y
+     74B 2EA0      MOV	R10,R16
+(0232) 
+(0233) void opp_35_A_forward (unsigned char diff)
+(0234) { angle_3A(_3A-diff); angle_5A(_5A+diff); }
+     74C 9100 0241 LDS	R16,_3A
+     74E 190A      SUB	R16,R10
+     74F DDAA      RCALL	_angle_3A
+     750 9100 023B LDS	R16,_5A
+     752 0D0A      ADD	R16,R10
+     753 DE18      RCALL	_angle_5A
+     754 90A9      LD	R10,Y+
+     755 9508      RET
+_opp_14_BC:
+  angleC               --> R10
+  angleB               --> R12
+     756 92AA      ST	R10,-Y
+     757 92CA      ST	R12,-Y
+     758 2EA2      MOV	R10,R18
+     759 2EC0      MOV	R12,R16
+(0235) 
+(0236) void opp_14_BC (unsigned char angleB, unsigned char angleC)
+(0237) { angle_1B(angleB); angle_1C(angleC); angle_4B(angleB); angle_4C(angleC); }
+     75A 2D0C      MOV	R16,R12
+     75B DD46      RCALL	_angle_1B
+     75C 2D0A      MOV	R16,R10
+     75D DD55      RCALL	_angle_1C
+     75E 2D0C      MOV	R16,R12
+     75F DDDE      RCALL	_angle_4B
+     760 2D0A      MOV	R16,R10
+     761 DDF3      RCALL	_angle_4C
+     762 90C9      LD	R12,Y+
+     763 90A9      LD	R10,Y+
+     764 9508      RET
+_opp_26_BC:
+  angleC               --> R10
+  angleB               --> R12
+     765 92AA      ST	R10,-Y
+     766 92CA      ST	R12,-Y
+     767 2EA2      MOV	R10,R18
+     768 2EC0      MOV	R12,R16
+(0238) 
+(0239) void opp_26_BC (unsigned char angleB, unsigned char angleC)
+(0240) { angle_2B(angleB); angle_2C(angleC); angle_6B(angleB); angle_6C(angleC); }
+     769 2D0C      MOV	R16,R12
+     76A DD6A      RCALL	_angle_2B
+     76B 2D0A      MOV	R16,R10
+     76C DD7C      RCALL	_angle_2C
+     76D 2D0C      MOV	R16,R12
+     76E DE4D      RCALL	_angle_6B
+     76F 2D0A      MOV	R16,R10
+     770 DE62      RCALL	_angle_6C
+     771 90C9      LD	R12,Y+
+     772 90A9      LD	R10,Y+
+     773 9508      RET
+_opp_35_BC:
+  angleC               --> R10
+  angleB               --> R12
+     774 92AA      ST	R10,-Y
+     775 92CA      ST	R12,-Y
+     776 2EA2      MOV	R10,R18
+     777 2EC0      MOV	R12,R16
+(0241) 
+(0242) void opp_35_BC (unsigned char angleB, unsigned char angleC)
+(0243) { angle_3B(angleB); angle_3C(angleC); angle_5B(angleB); angle_5C(angleC); }
+     778 2D0C      MOV	R16,R12
+     779 DD91      RCALL	_angle_3B
+     77A 2D0A      MOV	R16,R10
+     77B DDA0      RCALL	_angle_3C
+     77C 2D0C      MOV	R16,R12
+     77D DDFF      RCALL	_angle_5B
+     77E 2D0A      MOV	R16,R10
+     77F DE14      RCALL	_angle_5C
+     780 90C9      LD	R12,Y+
+     781 90A9      LD	R10,Y+
+     782 9508      RET
+(0244) 
+(0245) //Specific Angles
+(0246) void even_A_servo_90 (void)
+(0247) { angle_2A(90); angle_4A(90); angle_6A(90); }
+_even_A_servo_90:
+     783 E50A      LDI	R16,0x5A
+     784 DD3F      RCALL	_angle_2A
+     785 E50A      LDI	R16,0x5A
+     786 DDA6      RCALL	_angle_4A
+     787 E50A      LDI	R16,0x5A
+     788 DE22      RCALL	_angle_6A
+     789 9508      RET
+(0248) 
+(0249) void even_A_servo_65 (void) //clockwise
+(0250) { angle_2A(65); angle_4A(65); angle_6A(65); }
+_even_A_servo_65:
+     78A E401      LDI	R16,0x41
+     78B DD38      RCALL	_angle_2A
+     78C E401      LDI	R16,0x41
+     78D DD9F      RCALL	_angle_4A
+     78E E401      LDI	R16,0x41
+     78F DE1B      RCALL	_angle_6A
+     790 9508      RET
+(0251) 
+(0252) void even_A_servo_115 (void)//anticlockwise
+(0253) { angle_2A(115); angle_4A(115); angle_6A(115); }
+_even_A_servo_115:
+     791 E703      LDI	R16,0x73
+     792 DD31      RCALL	_angle_2A
+     793 E703      LDI	R16,0x73
+     794 DD98      RCALL	_angle_4A
+     795 E703      LDI	R16,0x73
+     796 DE14      RCALL	_angle_6A
+     797 9508      RET
+(0254) 
+(0255) void even_BC_servo_90 (void)
+(0256) { angle_2B(90); angle_2C(90); angle_4B(90); angle_4C(90); angle_6B(90); angle_6C(90); }
+_even_BC_servo_90:
+     798 E50A      LDI	R16,0x5A
+     799 DD3B      RCALL	_angle_2B
+     79A E50A      LDI	R16,0x5A
+     79B DD4D      RCALL	_angle_2C
+     79C E50A      LDI	R16,0x5A
+     79D DDA0      RCALL	_angle_4B
+     79E E50A      LDI	R16,0x5A
+     79F DDB5      RCALL	_angle_4C
+     7A0 E50A      LDI	R16,0x5A
+     7A1 DE1A      RCALL	_angle_6B
+     7A2 E50A      LDI	R16,0x5A
+     7A3 DE2F      RCALL	_angle_6C
+     7A4 9508      RET
+(0257) 
+(0258) void even_BC_servo_up_45 (void)
+(0259) { angle_2B(45); angle_2C(45); angle_4B(45); angle_4C(45); angle_6B(45); angle_6C(45); }
+_even_BC_servo_up_45:
+     7A5 E20D      LDI	R16,0x2D
+     7A6 DD2E      RCALL	_angle_2B
+     7A7 E20D      LDI	R16,0x2D
+     7A8 DD40      RCALL	_angle_2C
+     7A9 E20D      LDI	R16,0x2D
+     7AA DD93      RCALL	_angle_4B
+     7AB E20D      LDI	R16,0x2D
+     7AC DDA8      RCALL	_angle_4C
+     7AD E20D      LDI	R16,0x2D
+     7AE DE0D      RCALL	_angle_6B
+     7AF E20D      LDI	R16,0x2D
+     7B0 DE22      RCALL	_angle_6C
+     7B1 9508      RET
+(0260) 
+(0261) void even_BC_servo_down_45 (void)
+(0262) { angle_2B(135); angle_2C(135); angle_4B(135); angle_4C(135); angle_6B(135); angle_6C(135); }
+_even_BC_servo_down_45:
+     7B2 E807      LDI	R16,0x87
+     7B3 DD21      RCALL	_angle_2B
+     7B4 E807      LDI	R16,0x87
+     7B5 DD33      RCALL	_angle_2C
+     7B6 E807      LDI	R16,0x87
+     7B7 DD86      RCALL	_angle_4B
+     7B8 E807      LDI	R16,0x87
+     7B9 DD9B      RCALL	_angle_4C
+     7BA E807      LDI	R16,0x87
+     7BB DE00      RCALL	_angle_6B
+     7BC E807      LDI	R16,0x87
+     7BD DE15      RCALL	_angle_6C
+     7BE 9508      RET
+(0263) 
+(0264) void odd_A_servo_90 (void)
+(0265) { angle_1A(90); angle_3A(90); angle_5A(90); }
+_odd_A_servo_90:
+     7BF E50A      LDI	R16,0x5A
+     7C0 DCD0      RCALL	_angle_1A
+     7C1 E50A      LDI	R16,0x5A
+     7C2 DD37      RCALL	_angle_3A
+     7C3 E50A      LDI	R16,0x5A
+     7C4 DDA7      RCALL	_angle_5A
+     7C5 9508      RET
+(0266) 
+(0267) void odd_A_servo_65 (void)//clockwise
+(0268) { angle_1A(65); angle_3A(65); angle_5A(65); }
+_odd_A_servo_65:
+     7C6 E401      LDI	R16,0x41
+     7C7 DCC9      RCALL	_angle_1A
+     7C8 E401      LDI	R16,0x41
+     7C9 DD30      RCALL	_angle_3A
+     7CA E401      LDI	R16,0x41
+     7CB DDA0      RCALL	_angle_5A
+     7CC 9508      RET
+(0269) 
+(0270) void odd_A_servo_115 (void) //anticlockwise
+(0271) { angle_1A(115); angle_3A(115); angle_5A(115); }
+_odd_A_servo_115:
+     7CD E703      LDI	R16,0x73
+     7CE DCC2      RCALL	_angle_1A
+     7CF E703      LDI	R16,0x73
+     7D0 DD29      RCALL	_angle_3A
+     7D1 E703      LDI	R16,0x73
+     7D2 DD99      RCALL	_angle_5A
+     7D3 9508      RET
+(0272) 
+(0273) void odd_BC_servo_90 (void)
+(0274) { angle_1B(90); angle_1C(90); angle_3B(90); angle_3C(90); angle_5B(90); angle_5C(90); }
+_odd_BC_servo_90:
+     7D4 E50A      LDI	R16,0x5A
+     7D5 DCCC      RCALL	_angle_1B
+     7D6 E50A      LDI	R16,0x5A
+     7D7 DCDB      RCALL	_angle_1C
+     7D8 E50A      LDI	R16,0x5A
+     7D9 DD31      RCALL	_angle_3B
+     7DA E50A      LDI	R16,0x5A
+     7DB DD40      RCALL	_angle_3C
+     7DC E50A      LDI	R16,0x5A
+     7DD DD9F      RCALL	_angle_5B
+     7DE E50A      LDI	R16,0x5A
+     7DF DDB4      RCALL	_angle_5C
+     7E0 9508      RET
+(0275) 
+(0276) void odd_BC_servo_up_45 (void)
+(0277) { angle_1B(45); angle_1C(45); angle_3B(45); angle_3C(45); angle_5B(45); angle_5C(45); }
+_odd_BC_servo_up_45:
+     7E1 E20D      LDI	R16,0x2D
+     7E2 DCBF      RCALL	_angle_1B
+     7E3 E20D      LDI	R16,0x2D
+     7E4 DCCE      RCALL	_angle_1C
+     7E5 E20D      LDI	R16,0x2D
+     7E6 DD24      RCALL	_angle_3B
+     7E7 E20D      LDI	R16,0x2D
+     7E8 DD33      RCALL	_angle_3C
+     7E9 E20D      LDI	R16,0x2D
+     7EA DD92      RCALL	_angle_5B
+     7EB E20D      LDI	R16,0x2D
+     7EC DDA7      RCALL	_angle_5C
+     7ED 9508      RET
+(0278) 
+(0279) void odd_BC_servo_down_45 (void)
+(0280) { angle_1B(135); angle_1C(135); angle_3B(135); angle_3C(135); angle_5B(135); angle_5C(135); }
+_odd_BC_servo_down_45:
+     7EE E807      LDI	R16,0x87
+     7EF DCB2      RCALL	_angle_1B
+     7F0 E807      LDI	R16,0x87
+     7F1 DCC1      RCALL	_angle_1C
+     7F2 E807      LDI	R16,0x87
+     7F3 DD17      RCALL	_angle_3B
+     7F4 E807      LDI	R16,0x87
+     7F5 DD26      RCALL	_angle_3C
+     7F6 E807      LDI	R16,0x87
+     7F7 DD85      RCALL	_angle_5B
+     7F8 E807      LDI	R16,0x87
+     7F9 DD9A      RCALL	_angle_5C
+     7FA 9508      RET
+(0281) 
+(0282) /*********************void rotate_clockwise_3v2 (void)
+(0283) {
+(0284)  motion_busy = 1; 
+(0285)  servo_calibration(); delay_250ms(); 
+(0286)  even_A_servo(77); even_BC_servo(45,45); delay_250ms(); 
+(0287)  even_BC_servo(90,90); delay_250ms(); 
+(0288)  odd_A_servo(77); odd_BC_servo(45,45); delay_250ms(); 
+(0289)  odd_BC_servo(90,90); delay_250ms(); 
+(0290)  even_A_servo(90); odd_A_servo(90);
+(0291)  motion_busy = 0; 
+(0292) }*///////////////////***////*/
+(0293) 
+(0294) 
+(0295) /*********************************************************************/
+(0296) /***************Code for CLOCKWISE ROTATATION*************************/
+(0297) 
+(0298)   //  A single rotation move using three legs at a time.
+(0299) void rotate_clockwise_3 (void)
+(0300) {
+(0301)  motion_busy = 1; 
+_rotate_clockwise_3:
+     7FB E081      LDI	R24,1
+     7FC 9380 0209 STS	motion_busy,R24
+(0302)  servo_calibration(); delay_250ms(); 
+     7FE DDF1      RCALL	_servo_calibration
+     7FF D99D      RCALL	_delay_250ms
+(0303)  even_A_servo(62); even_BC_servo(45,45); angle_2B(_2B-9); delay_250ms(); 
+     800 E30E      LDI	R16,0x3E
+     801 DE1D      RCALL	_even_A_servo
+     802 E22D      LDI	R18,0x2D
+     803 E20D      LDI	R16,0x2D
+     804 DE87      RCALL	_even_BC_servo
+     805 9100 0243 LDS	R16,_2B
+     807 5009      SUBI	R16,0x9
+     808 DCCC      RCALL	_angle_2B
+     809 D993      RCALL	_delay_250ms
+(0304)  even_BC_servo(90,90); angle_2B(_2B-9); delay_250ms(); 
+     80A E52A      LDI	R18,0x5A
+     80B E50A      LDI	R16,0x5A
+     80C DE7F      RCALL	_even_BC_servo
+     80D 9100 0243 LDS	R16,_2B
+     80F 5009      SUBI	R16,0x9
+     810 DCC4      RCALL	_angle_2B
+     811 D98B      RCALL	_delay_250ms
+(0305)  odd_A_servo(62); odd_BC_servo(45,45); delay_250ms(); 
+     812 E30E      LDI	R16,0x3E
+     813 DE01      RCALL	_odd_A_servo
+     814 E22D      LDI	R18,0x2D
+     815 E20D      LDI	R16,0x2D
+     816 DE6A      RCALL	_odd_BC_servo
+     817 D985      RCALL	_delay_250ms
+(0306)  odd_BC_servo(90,90); delay_250ms(); 
+     818 E52A      LDI	R18,0x5A
+     819 E50A      LDI	R16,0x5A
+     81A DE66      RCALL	_odd_BC_servo
+     81B D981      RCALL	_delay_250ms
+(0307)  servo_calibration(); angle_2B(_2B-9); delay_250ms();
+     81C DDD3      RCALL	_servo_calibration
+     81D 9100 0243 LDS	R16,_2B
+     81F 5009      SUBI	R16,0x9
+     820 DCB4      RCALL	_angle_2B
+     821 D97B      RCALL	_delay_250ms
+(0308)  motion_busy = 0;
+     822 2422      CLR	R2
+     823 9220 0209 STS	motion_busy,R2
+     825 9508      RET
+_rotate_clockwise:
+  count                --> R10
+  i                    --> R20
+  clock_angle          --> R10
+     826 940E 0D02 CALL	push_xgset300C
+     828 0158      MOVW	R10,R16
+(0309)  
+(0310)  /*Pls note that, the calibration offset of 2B servo, in case of rotation wasn't required,
+(0311)  Hence to overcome that, we had used angle_2B(_2B-9); to nullify the effect of offset defined in angle_2B function  */ 
+(0312) }
+(0313) 
+(0314) 
+(0315)  // Main rotate function to be used specifying the degrees to be rotated
+(0316) void rotate_clockwise (unsigned int clock_angle)
+(0317) {
+(0318)  int count = (clock_angle%180)/(90.0/12);
+     829 EB24      LDI	R18,0xB4
+     82A E030      LDI	R19,0
+     82B 0185      MOVW	R16,R10
+     82C 940E 0CC2 CALL	mod16u
+     82E 940E 0D4B CALL	uint2fp
+     830 0118      MOVW	R2,R16
+     831 0129      MOVW	R4,R18
+     832 EE04      LDI	R16,0xE4
+     833 E010      LDI	R17,0
+     834 940E 0CDE CALL	elpm32
+     836 933A      ST	R19,-Y
+     837 932A      ST	R18,-Y
+     838 931A      ST	R17,-Y
+     839 930A      ST	R16,-Y
+     83A 0181      MOVW	R16,R2
+     83B 0192      MOVW	R18,R4
+     83C 940E 0D74 CALL	fpdiv2
+     83E 940E 0D1F CALL	fpint
+     840 0158      MOVW	R10,R16
+(0319)  	 	   	 						//Thereby getting a precision of 90/12 degrees in one rotation.
+(0320)  int i;
+(0321)  for (i=0; i < count; i++)
+     841 2744      CLR	R20
+     842 2755      CLR	R21
+     843 C003      RJMP	0x0847
+(0322)  	  rotate_clockwise_3();
+     844 DFB6      RCALL	_rotate_clockwise_3
+     845 5F4F      SUBI	R20,0xFF
+     846 4F5F      SBCI	R21,0xFF
+     847 154A      CP	R20,R10
+     848 055B      CPC	R21,R11
+     849 F3D4      BLT	0x0844
+     84A 940C 0D07 JMP	pop_xgset300C
+(0323) }
+(0324) 
+(0325) /*********************************************************************/
+(0326) 
+(0327) 
+(0328) /*********************************************************************/
+(0329) /*************Code for ANTI-CLOCKWISE ROTATATION**********************/
+(0330) 
+(0331)   //  A single rotation move using three legs at a time.
+(0332) void rotate_anticlockwise_3 (void)
+(0333) {
+(0334)  motion_busy = 1; 
+_rotate_anticlockwise_3:
+     84C E081      LDI	R24,1
+     84D 9380 0209 STS	motion_busy,R24
+(0335)  servo_calibration(); delay_250ms(); 
+     84F DDA0      RCALL	_servo_calibration
+     850 D94C      RCALL	_delay_250ms
+(0336)  even_A_servo(118); even_BC_servo(45,45); angle_2B(_2B-9); delay_250ms(); 
+     851 E706      LDI	R16,0x76
+     852 DDCC      RCALL	_even_A_servo
+     853 E22D      LDI	R18,0x2D
+     854 E20D      LDI	R16,0x2D
+     855 DE36      RCALL	_even_BC_servo
+     856 9100 0243 LDS	R16,_2B
+     858 5009      SUBI	R16,0x9
+     859 DC7B      RCALL	_angle_2B
+     85A D942      RCALL	_delay_250ms
+(0337)  even_BC_servo(90,90); angle_2B(_2B-9); delay_250ms(); 
+     85B E52A      LDI	R18,0x5A
+     85C E50A      LDI	R16,0x5A
+     85D DE2E      RCALL	_even_BC_servo
+     85E 9100 0243 LDS	R16,_2B
+     860 5009      SUBI	R16,0x9
+     861 DC73      RCALL	_angle_2B
+     862 D93A      RCALL	_delay_250ms
+(0338)  odd_A_servo(118); odd_BC_servo(45,45); delay_250ms(); 
+     863 E706      LDI	R16,0x76
+     864 DDB0      RCALL	_odd_A_servo
+     865 E22D      LDI	R18,0x2D
+     866 E20D      LDI	R16,0x2D
+     867 DE19      RCALL	_odd_BC_servo
+     868 D934      RCALL	_delay_250ms
+(0339)  odd_BC_servo(90,90); delay_250ms(); 
+     869 E52A      LDI	R18,0x5A
+     86A E50A      LDI	R16,0x5A
+     86B DE15      RCALL	_odd_BC_servo
+     86C D930      RCALL	_delay_250ms
+(0340)  servo_calibration(); angle_2B(_2B-9); delay_250ms();
+     86D DD82      RCALL	_servo_calibration
+     86E 9100 0243 LDS	R16,_2B
+     870 5009      SUBI	R16,0x9
+     871 DC63      RCALL	_angle_2B
+     872 D92A      RCALL	_delay_250ms
+(0341)  motion_busy = 0;
+     873 2422      CLR	R2
+     874 9220 0209 STS	motion_busy,R2
+     876 9508      RET
+_rotate_anticlockwise:
+  count                --> R10
+  i                    --> R20
+  anticlock_angle      --> R10
+     877 940E 0D02 CALL	push_xgset300C
+     879 0158      MOVW	R10,R16
+(0342)  
+(0343)  /*Pls note that, the calibration offset of 2B servo, in case of rotation wasn't required,
+(0344)   Hence to overcome that, we had used angle_2B(_2B-9); to nullify the effect of offset defined in angle_2B function  */
+(0345) }
+(0346) 
+(0347)  // Main rotate function to be used specifying the degrees to be rotated
+(0348) void rotate_anticlockwise (unsigned int anticlock_angle)
+(0349) {
+(0350)  int count = (anticlock_angle%180)/(90.0/12);
+     87A EB24      LDI	R18,0xB4
+     87B E030      LDI	R19,0
+     87C 0185      MOVW	R16,R10
+     87D 940E 0CC2 CALL	mod16u
+     87F 940E 0D4B CALL	uint2fp
+     881 0118      MOVW	R2,R16
+     882 0129      MOVW	R4,R18
+     883 EE04      LDI	R16,0xE4
+     884 E010      LDI	R17,0
+     885 940E 0CDE CALL	elpm32
+     887 933A      ST	R19,-Y
+     888 932A      ST	R18,-Y
+     889 931A      ST	R17,-Y
+     88A 930A      ST	R16,-Y
+     88B 0181      MOVW	R16,R2
+     88C 0192      MOVW	R18,R4
+     88D 940E 0D74 CALL	fpdiv2
+     88F 940E 0D1F CALL	fpint
+     891 0158      MOVW	R10,R16
+(0351)  	 	   	 						//Thereby getting a precision of 90/12 degrees in one rotation.
+(0352)  int i;
+(0353)  for (i=0; i < count; i++)
+     892 2744      CLR	R20
+     893 2755      CLR	R21
+     894 C003      RJMP	0x0898
+(0354)  	  rotate_anticlockwise_3(); 
+     895 DFB6      RCALL	_rotate_anticlockwise_3
+     896 5F4F      SUBI	R20,0xFF
+     897 4F5F      SBCI	R21,0xFF
+     898 154A      CP	R20,R10
+     899 055B      CPC	R21,R11
+     89A F3D4      BLT	0x0895
+     89B 940C 0D07 JMP	pop_xgset300C
+(0355) }
+(0356) /*********************************************************************/
+(0357) 
+(0358) 
+(0359) /*********************************************************************/
+(0360) /*******************A general rotate function*************************/
+(0361) /*******************Rotation values valid from -180 degree to +180 degree***********/
+(0362) /*******
+(0363) void rotate (signed int angle)
+(0364) {
+(0365)  angle = angle % 180;
+(0366)  while(angle>=180)
+(0367)  		angle -= angle%180;
+(0368)  
+(0369)  if (angle == 0)
+(0370)  	return;
+(0371)  else if(angle > 0)
+(0372)  		  rotate_clockwise(angle);
+(0373)  else
+(0374)  	 	  rotate_anticlockwise(-angle);
+(0375) }**********/
+(0376) 
+(0377) 
+(0378) 
+(0379) 
+(0380) /****FORWARD USING 2 LEGS AT A TIME****************/
+(0381) 
+(0382) void forward (void)
+(0383) {
+(0384)  motion_busy = 1; 
+_forward:
+     89D E081      LDI	R24,1
+     89E 9380 0209 STS	motion_busy,R24
+(0385)  servo_calibration();
+     8A0 DD4F      RCALL	_servo_calibration
+(0386)  delay_250ms();
+     8A1 D8FB      RCALL	_delay_250ms
+(0387)  
+(0388)  //legs 2 and 4 move forward
+(0389)  angle_2B(45); angle_2C(45); angle_4B(45); angle_4C(45); //front pair BC servo up 45
+     8A2 E20D      LDI	R16,0x2D
+     8A3 DC31      RCALL	_angle_2B
+     8A4 E20D      LDI	R16,0x2D
+     8A5 DC43      RCALL	_angle_2C
+     8A6 E20D      LDI	R16,0x2D
+     8A7 DC96      RCALL	_angle_4B
+     8A8 E20D      LDI	R16,0x2D
+     8A9 DCAB      RCALL	_angle_4C
+(0390)  delay_250ms();
+     8AA D8F2      RCALL	_delay_250ms
+(0391)  angle_2A(60); angle_4A(120); //front pair move forward while legs are up
+     8AB E30C      LDI	R16,0x3C
+     8AC DC17      RCALL	_angle_2A
+     8AD E708      LDI	R16,0x78
+     8AE DC7E      RCALL	_angle_4A
+(0392)  delay_250ms();
+     8AF D8ED      RCALL	_delay_250ms
+(0393)  angle_2B(90); angle_2C(90); angle_4B(90); angle_4C(90); // put down legs
+     8B0 E50A      LDI	R16,0x5A
+     8B1 DC23      RCALL	_angle_2B
+     8B2 E50A      LDI	R16,0x5A
+     8B3 DC35      RCALL	_angle_2C
+     8B4 E50A      LDI	R16,0x5A
+     8B5 DC88      RCALL	_angle_4B
+     8B6 E50A      LDI	R16,0x5A
+     8B7 DC9D      RCALL	_angle_4C
+(0394)  delay_250ms();
+     8B8 D8E4      RCALL	_delay_250ms
+(0395)  
+(0396)  //legs 1 and 6 move forward
+(0397)  angle_1B(45); angle_1C(45); angle_6B(45); angle_6C(45); //middel pair BC servo up 45
+     8B9 E20D      LDI	R16,0x2D
+     8BA DBE7      RCALL	_angle_1B
+     8BB E20D      LDI	R16,0x2D
+     8BC DBF6      RCALL	_angle_1C
+     8BD E20D      LDI	R16,0x2D
+     8BE DCFD      RCALL	_angle_6B
+     8BF E20D      LDI	R16,0x2D
+     8C0 DD12      RCALL	_angle_6C
+(0398)  delay_250ms();
+     8C1 D8DB      RCALL	_delay_250ms
+(0399)  angle_1A(60); angle_6A(120); //middel pair move back while legs are up
+     8C2 E30C      LDI	R16,0x3C
+     8C3 DBCD      RCALL	_angle_1A
+     8C4 E708      LDI	R16,0x78
+     8C5 DCE5      RCALL	_angle_6A
+(0400)  delay_250ms();
+     8C6 D8D6      RCALL	_delay_250ms
+(0401)  angle_1B(90); angle_1C(90); angle_6B(90); angle_6C(90); // put down legs
+     8C7 E50A      LDI	R16,0x5A
+     8C8 DBD9      RCALL	_angle_1B
+     8C9 E50A      LDI	R16,0x5A
+     8CA DBE8      RCALL	_angle_1C
+     8CB E50A      LDI	R16,0x5A
+     8CC DCEF      RCALL	_angle_6B
+     8CD E50A      LDI	R16,0x5A
+     8CE DD04      RCALL	_angle_6C
+(0402)  delay_250ms();
+     8CF D8CD      RCALL	_delay_250ms
+(0403)  
+(0404)  //legs 3 and 5 move forward
+(0405)  angle_3B(45); angle_3C(45); angle_5B(45); angle_5C(45); //middel pair BC servo up 45
+     8D0 E20D      LDI	R16,0x2D
+     8D1 DC39      RCALL	_angle_3B
+     8D2 E20D      LDI	R16,0x2D
+     8D3 DC48      RCALL	_angle_3C
+     8D4 E20D      LDI	R16,0x2D
+     8D5 DCA7      RCALL	_angle_5B
+     8D6 E20D      LDI	R16,0x2D
+     8D7 DCBC      RCALL	_angle_5C
+(0406)  delay_250ms();
+     8D8 D8C4      RCALL	_delay_250ms
+(0407)  angle_3A(60); angle_5A(120); //middel pair move forward while legs are up
+     8D9 E30C      LDI	R16,0x3C
+     8DA DC1F      RCALL	_angle_3A
+     8DB E708      LDI	R16,0x78
+     8DC DC8F      RCALL	_angle_5A
+(0408)  delay_250ms();
+     8DD D8BF      RCALL	_delay_250ms
+(0409)  angle_3B(90); angle_3C(90); angle_5B(90); angle_5C(90); // put down legs
+     8DE E50A      LDI	R16,0x5A
+     8DF DC2B      RCALL	_angle_3B
+     8E0 E50A      LDI	R16,0x5A
+     8E1 DC3A      RCALL	_angle_3C
+     8E2 E50A      LDI	R16,0x5A
+     8E3 DC99      RCALL	_angle_5B
+     8E4 E50A      LDI	R16,0x5A
+     8E5 DCAE      RCALL	_angle_5C
+(0410)  delay_250ms(); 
+     8E6 D8B6      RCALL	_delay_250ms
+(0411)  
+(0412)  servo_calibration(); //push towards forward
+     8E7 DD08      RCALL	_servo_calibration
+(0413)  motion_busy = 0; 
+     8E8 2422      CLR	R2
+     8E9 9220 0209 STS	motion_busy,R2
+     8EB 9508      RET
+(0414) }
+(0415) 
+(0416) 
+(0417) /****FORWARD USING 3 LEGS AT A TIME****************/
+(0418) 
+(0419) void forward_3_legs (void)
+(0420) {
+(0421)  motion_busy = 1; 
+_forward_3_legs:
+     8EC E081      LDI	R24,1
+     8ED 9380 0209 STS	motion_busy,R24
+(0422)  
+(0423)  servo_calibration();
+     8EF DD00      RCALL	_servo_calibration
+(0424)  delay_250ms();
+     8F0 D8AC      RCALL	_delay_250ms
+(0425)  
+(0426)  //even legs move forward
+(0427)  even_BC_servo(45,45); //even BC servos raise limbs
+     8F1 E22D      LDI	R18,0x2D
+     8F2 E20D      LDI	R16,0x2D
+     8F3 DD98      RCALL	_even_BC_servo
+(0428)  delay_250ms();
+     8F4 D8A8      RCALL	_delay_250ms
+(0429)  even_A_servo_forward(20); //even A servos move raised limbs in forward direction
+     8F5 E104      LDI	R16,0x14
+     8F6 DDBB      RCALL	_even_A_servo_forward
+(0430)  delay_250ms();
+     8F7 D8A5      RCALL	_delay_250ms
+(0431)  even_BC_servo(90,90); // put down raised limbs
+     8F8 E52A      LDI	R18,0x5A
+     8F9 E50A      LDI	R16,0x5A
+     8FA DD91      RCALL	_even_BC_servo
+(0432)  delay_250ms();
+     8FB D8A1      RCALL	_delay_250ms
+(0433)  
+(0434)  //odd legs move forward
+(0435)  odd_BC_servo(45,45); //odd BC servos raise limbs
+     8FC E22D      LDI	R18,0x2D
+     8FD E20D      LDI	R16,0x2D
+     8FE DD82      RCALL	_odd_BC_servo
+(0436)  delay_250ms();
+     8FF D89D      RCALL	_delay_250ms
+(0437)  even_A_servo(90); //even A servos move chassis in forward direction
+     900 E50A      LDI	R16,0x5A
+     901 DD1D      RCALL	_even_A_servo
+(0438)  delay_250ms();
+     902 D89A      RCALL	_delay_250ms
+(0439)  //odd_BC_servo(90,90); // put down raised limbs
+(0440)  //delay_250ms();
+(0441)  
+(0442)  //odd legs move forward
+(0443)  //odd_BC_servo(45,45); //odd BC servos raise limbs
+(0444)  //delay_250ms();
+(0445)  odd_A_servo_forward(20); //odd A servos move raised limbs in forward direction
+     903 E104      LDI	R16,0x14
+     904 DD9D      RCALL	_odd_A_servo_forward
+(0446)  delay_250ms();
+     905 D897      RCALL	_delay_250ms
+(0447)  odd_BC_servo(90,90); // put down raised limbs
+     906 E52A      LDI	R18,0x5A
+     907 E50A      LDI	R16,0x5A
+     908 DD78      RCALL	_odd_BC_servo
+(0448)  delay_250ms();
+     909 D893      RCALL	_delay_250ms
+(0449)  
+(0450)  //even legs move forward
+(0451)  even_BC_servo(45,45); //even BC servos raise limbs
+     90A E22D      LDI	R18,0x2D
+     90B E20D      LDI	R16,0x2D
+     90C DD7F      RCALL	_even_BC_servo
+(0452)  delay_250ms();
+     90D D88F      RCALL	_delay_250ms
+(0453)  odd_A_servo(90); //odd A servos move chassis in forward direction
+     90E E50A      LDI	R16,0x5A
+     90F DD05      RCALL	_odd_A_servo
+(0454)  delay_250ms();
+     910 D88C      RCALL	_delay_250ms
+(0455)  even_BC_servo(90,90); // put down raised limbs
+     911 E52A      LDI	R18,0x5A
+     912 E50A      LDI	R16,0x5A
+     913 DD78      RCALL	_even_BC_servo
+(0456)  delay_250ms();
+     914 D888      RCALL	_delay_250ms
+(0457)  
+(0458)  servo_calibration(); //push towards forward
+     915 DCDA      RCALL	_servo_calibration
+(0459)  delay_250ms();
+     916 D886      RCALL	_delay_250ms
+(0460)  
+(0461)  motion_busy = 0; 
+     917 2422      CLR	R2
+     918 9220 0209 STS	motion_busy,R2
+     91A 9508      RET
+(0462) }
+(0463) 
+(0464) 
+(0465) 
+(0466) /****BACKWARD USING 2 LEGS AT A TIME****************/
+(0467) 
+(0468)  void backward (void)
+(0469)  {
+(0470)  motion_busy = 1; 
+_backward:
+     91B E081      LDI	R24,1
+     91C 9380 0209 STS	motion_busy,R24
+(0471)  servo_calibration();
+     91E DCD1      RCALL	_servo_calibration
+(0472)  delay_250ms(); 
+     91F D87D      RCALL	_delay_250ms
+(0473)  
+(0474)  //legs 2 and 4 move back
+(0475)  angle_2B(45); angle_2C(45); angle_4B(45); angle_4C(45); //front pair BC servo up 45
+     920 E20D      LDI	R16,0x2D
+     921 DBB3      RCALL	_angle_2B
+     922 E20D      LDI	R16,0x2D
+     923 DBC5      RCALL	_angle_2C
+     924 E20D      LDI	R16,0x2D
+     925 DC18      RCALL	_angle_4B
+     926 E20D      LDI	R16,0x2D
+     927 DC2D      RCALL	_angle_4C
+(0476)  delay_250ms(); 
+     928 D874      RCALL	_delay_250ms
+(0477)  angle_2A(120); angle_4A(60); //front pair move forward while legs are up
+     929 E708      LDI	R16,0x78
+     92A DB99      RCALL	_angle_2A
+     92B E30C      LDI	R16,0x3C
+     92C DC00      RCALL	_angle_4A
+(0478)  delay_250ms(); 
+     92D D86F      RCALL	_delay_250ms
+(0479)  angle_2B(90); angle_2C(90); angle_4B(90); angle_4C(90); // put down legs
+     92E E50A      LDI	R16,0x5A
+     92F DBA5      RCALL	_angle_2B
+     930 E50A      LDI	R16,0x5A
+     931 DBB7      RCALL	_angle_2C
+     932 E50A      LDI	R16,0x5A
+     933 DC0A      RCALL	_angle_4B
+     934 E50A      LDI	R16,0x5A
+     935 DC1F      RCALL	_angle_4C
+(0480)  delay_250ms(); 
+     936 D866      RCALL	_delay_250ms
+(0481)  
+(0482)  //legs 1 and 6 move back
+(0483)  angle_1B(45); angle_1C(45); angle_6B(45); angle_6C(45); //middel pair BC servo up 45
+     937 E20D      LDI	R16,0x2D
+     938 DB69      RCALL	_angle_1B
+     939 E20D      LDI	R16,0x2D
+     93A DB78      RCALL	_angle_1C
+     93B E20D      LDI	R16,0x2D
+     93C DC7F      RCALL	_angle_6B
+     93D E20D      LDI	R16,0x2D
+     93E DC94      RCALL	_angle_6C
+(0484)  delay_250ms(); 
+     93F D85D      RCALL	_delay_250ms
+(0485)  angle_1A(120); angle_6A(60); //middel pair move back while legs are up
+     940 E708      LDI	R16,0x78
+     941 DB4F      RCALL	_angle_1A
+     942 E30C      LDI	R16,0x3C
+     943 DC67      RCALL	_angle_6A
+(0486)  delay_250ms(); 
+     944 D858      RCALL	_delay_250ms
+(0487)  angle_1B(90); angle_1C(90); angle_6B(90); angle_6C(90); // put down legs
+     945 E50A      LDI	R16,0x5A
+     946 DB5B      RCALL	_angle_1B
+     947 E50A      LDI	R16,0x5A
+     948 DB6A      RCALL	_angle_1C
+     949 E50A      LDI	R16,0x5A
+     94A DC71      RCALL	_angle_6B
+     94B E50A      LDI	R16,0x5A
+     94C DC86      RCALL	_angle_6C
+(0488)  delay_250ms(); 
+     94D D84F      RCALL	_delay_250ms
+(0489)  
+(0490)  //legs 3 and 5 move back
+(0491)  angle_3B(45); angle_3C(45); angle_5B(45); angle_5C(45); //middel pair BC servo up 45
+     94E E20D      LDI	R16,0x2D
+     94F DBBB      RCALL	_angle_3B
+     950 E20D      LDI	R16,0x2D
+     951 DBCA      RCALL	_angle_3C
+     952 E20D      LDI	R16,0x2D
+     953 DC29      RCALL	_angle_5B
+     954 E20D      LDI	R16,0x2D
+     955 DC3E      RCALL	_angle_5C
+(0492)  delay_250ms(); 
+     956 D846      RCALL	_delay_250ms
+(0493)  angle_3A(120); angle_5A(60); //middel pair move forward while legs are up
+     957 E708      LDI	R16,0x78
+     958 DBA1      RCALL	_angle_3A
+     959 E30C      LDI	R16,0x3C
+     95A DC11      RCALL	_angle_5A
+(0494)  delay_250ms(); 
+     95B D841      RCALL	_delay_250ms
+(0495)  angle_3B(90); angle_3C(90); angle_5B(90); angle_5C(90); // put down legs
+     95C E50A      LDI	R16,0x5A
+     95D DBAD      RCALL	_angle_3B
+     95E E50A      LDI	R16,0x5A
+     95F DBBC      RCALL	_angle_3C
+     960 E50A      LDI	R16,0x5A
+     961 DC1B      RCALL	_angle_5B
+     962 E50A      LDI	R16,0x5A
+     963 DC30      RCALL	_angle_5C
+(0496)  delay_250ms();  
+     964 D838      RCALL	_delay_250ms
+(0497)  
+(0498)  servo_calibration(); angle_3B(_3B+9); delay_250ms(); //push towards back
+     965 DC8A      RCALL	_servo_calibration
+     966 9100 0240 LDS	R16,_3B
+     968 5F07      SUBI	R16,0xF7
+     969 DBA1      RCALL	_angle_3B
+     96A D832      RCALL	_delay_250ms
+(0499)  motion_busy = 0; 
+     96B 2422      CLR	R2
+     96C 9220 0209 STS	motion_busy,R2
+     96E 9508      RET
+(0500) }
+(0501) 
+(0502) 
+(0503) /****BACKWARD USING 3 LEGS AT A TIME****************/
+(0504) 
+(0505) void backward_3_legs (void)
+(0506)  {
+(0507)  motion_busy = 1; 
+_backward_3_legs:
+     96F E081      LDI	R24,1
+     970 9380 0209 STS	motion_busy,R24
+(0508)  
+(0509)  servo_calibration();
+     972 DC7D      RCALL	_servo_calibration
+(0510)  delay_250ms();
+     973 D829      RCALL	_delay_250ms
+(0511)  
+(0512)  //even legs move forward
+(0513)  even_BC_servo(45,45); //even BC servos raise limbs
+     974 E22D      LDI	R18,0x2D
+     975 E20D      LDI	R16,0x2D
+     976 DD15      RCALL	_even_BC_servo
+(0514)  delay_250ms();
+     977 D825      RCALL	_delay_250ms
+(0515)  even_A_servo_backward(20); //even A servos move raised limbs in forward direction
+     978 E104      LDI	R16,0x14
+     979 DD74      RCALL	_even_A_servo_backward
+(0516)  delay_250ms();
+     97A D822      RCALL	_delay_250ms
+(0517)  even_BC_servo(90,90); // put down raised limbs
+     97B E52A      LDI	R18,0x5A
+     97C E50A      LDI	R16,0x5A
+     97D DD0E      RCALL	_even_BC_servo
+(0518)  delay_250ms();
+     97E D81E      RCALL	_delay_250ms
+(0519)  
+(0520)  //odd legs move forward
+(0521)  odd_BC_servo(45,45); //odd BC servos raise limbs
+     97F E22D      LDI	R18,0x2D
+     980 E20D      LDI	R16,0x2D
+     981 DCFF      RCALL	_odd_BC_servo
+(0522)  delay_250ms();
+     982 D81A      RCALL	_delay_250ms
+(0523)  even_A_servo(90); //even A servos move chassis in forward direction
+     983 E50A      LDI	R16,0x5A
+     984 DC9A      RCALL	_even_A_servo
+(0524)  delay_250ms();
+     985 D817      RCALL	_delay_250ms
+(0525)  //odd_BC_servo(90,90); // put down raised limbs
+(0526)  //delay_250ms();
+(0527)  
+(0528)  //odd legs move forward
+(0529)  //odd_BC_servo(45,45); //odd BC servos raise limbs
+(0530)  //delay_250ms();
+(0531)  odd_A_servo_backward(20); //odd A servos move raised limbs in forward direction
+     986 E104      LDI	R16,0x14
+     987 DD56      RCALL	_odd_A_servo_backward
+(0532)  delay_250ms();
+     988 D814      RCALL	_delay_250ms
+(0533)  odd_BC_servo(90,90); // put down raised limbs
+     989 E52A      LDI	R18,0x5A
+     98A E50A      LDI	R16,0x5A
+     98B DCF5      RCALL	_odd_BC_servo
+(0534)  delay_250ms();
+     98C D810      RCALL	_delay_250ms
+(0535)  
+(0536)  //even legs move forward
+(0537)  even_BC_servo(45,45); //even BC servos raise limbs
+     98D E22D      LDI	R18,0x2D
+     98E E20D      LDI	R16,0x2D
+     98F DCFC      RCALL	_even_BC_servo
+(0538)  delay_250ms();
+     990 D80C      RCALL	_delay_250ms
+(0539)  odd_A_servo(90); //odd A servos move chassis in forward direction
+     991 E50A      LDI	R16,0x5A
+     992 DC82      RCALL	_odd_A_servo
+(0540)  delay_250ms();
+     993 D809      RCALL	_delay_250ms
+(0541)  even_BC_servo(90,90); // put down raised limbs
+     994 E52A      LDI	R18,0x5A
+     995 E50A      LDI	R16,0x5A
+     996 DCF5      RCALL	_even_BC_servo
+(0542)  delay_250ms();
+     997 D805      RCALL	_delay_250ms
+(0543)  
+(0544)  servo_calibration(); //push towards forward
+     998 DC57      RCALL	_servo_calibration
+(0545)  delay_250ms();
+     999 D803      RCALL	_delay_250ms
+(0546)  
+(0547)  motion_busy = 0; 
+     99A 2422      CLR	R2
+     99B 9220 0209 STS	motion_busy,R2
+     99D 9508      RET
+(0548) }
+(0549) 
+(0550) 
+(0551) 
+(0552) void robot_standup (void) //warning: do not call this function while robot is standing or servos will get damaged
+(0553) {
+(0554) motion_busy = 1; 
+_robot_standup:
+     99E E081      LDI	R24,1
+     99F 9380 0209 STS	motion_busy,R24
+(0555) //servo_calibration();
+(0556) angle_1B(1); angle_1C(110); angle_2B(1); angle_2C(110); angle_3B(1); angle_3C(110);
+     9A1 E001      LDI	R16,1
+     9A2 DAFF      RCALL	_angle_1B
+     9A3 E60E      LDI	R16,0x6E
+     9A4 DB0E      RCALL	_angle_1C
+     9A5 E001      LDI	R16,1
+     9A6 DB2E      RCALL	_angle_2B
+     9A7 E60E      LDI	R16,0x6E
+     9A8 DB40      RCALL	_angle_2C
+     9A9 E001      LDI	R16,1
+     9AA DB60      RCALL	_angle_3B
+     9AB E60E      LDI	R16,0x6E
+     9AC DB6F      RCALL	_angle_3C
+(0557) angle_4B(179); angle_4C(70); angle_5B(179); angle_5C(70); angle_6B(179); angle_6C(70);
+     9AD EB03      LDI	R16,0xB3
+     9AE DB8F      RCALL	_angle_4B
+     9AF E406      LDI	R16,0x46
+     9B0 DBA4      RCALL	_angle_4C
+     9B1 EB03      LDI	R16,0xB3
+     9B2 DBCA      RCALL	_angle_5B
+     9B3 E406      LDI	R16,0x46
+     9B4 DBDF      RCALL	_angle_5C
+     9B5 EB03      LDI	R16,0xB3
+     9B6 DC05      RCALL	_angle_6B
+     9B7 E406      LDI	R16,0x46
+     9B8 DC1A      RCALL	_angle_6C
+(0558) delay_1s();
+     9B9 D801      RCALL	_delay_1s
+(0559) delay_1s();
+     9BA D800      RCALL	_delay_1s
+(0560) servo_calibration();
+     9BB DC34      RCALL	_servo_calibration
+(0561) motion_busy = 0; 
+     9BC 2422      CLR	R2
+     9BD 9220 0209 STS	motion_busy,R2
+     9BF 9508      RET
+_remote_control:
+  flag1                --> R20
+     9C0 940E 0D0C CALL	push_xgsetF000
+(0562) }
+(0563) 
+(0564) void remote_control(void)
+(0565) {
+(0566)   unsigned char flag1 = 0;
+     9C2 2744      CLR	R20
+(0567)   PORTA = remote_data[4]; //move left joystick up and down and see if there is any change in the bargraph display.
+     9C3 9020 020E LDS	R2,0x020E
+     9C5 B822      OUT	0x02,R2
+(0568)   flag1 = 0; //resetting the flag
+(0569)  
+(0570)   if((flag1 == 0) && (motion_busy == 0)) //forward, 1 beep
+     9C6 2344      TST	R20
+     9C7 F459      BNE	0x09D3
+     9C8 9020 0209 LDS	R2,motion_busy
+     9CA 2022      TST	R2
+     9CB F439      BNE	0x09D3
+(0571)   {
+(0572)   if(remote_data[4] > 0x29)
+     9CC E289      LDI	R24,0x29
+     9CD 9020 020E LDS	R2,0x020E
+     9CF 1582      CP	R24,R2
+     9D0 F410      BCC	0x09D3
+(0573)    {
+(0574)     flag1 = 1;
+     9D1 E041      LDI	R20,1
+(0575)     forward();
+     9D2 DECA      RCALL	_forward
+(0576)     //buzzer_on(); delay_250ms(); buzzer_off(); //use it to debug remote onnection
+(0577)    }   
+(0578)   }
+(0579)   
+(0580)   if((flag1 == 0) && (motion_busy == 0)) //back, 2 beep
+     9D3 2344      TST	R20
+     9D4 F451      BNE	0x09DF
+     9D5 9020 0209 LDS	R2,motion_busy
+     9D7 2022      TST	R2
+     9D8 F431      BNE	0x09DF
+(0581)   {
+(0582)   if(remote_data[4] < 0x15)
+     9D9 9180 020E LDS	R24,0x020E
+     9DB 3185      CPI	R24,0x15
+     9DC F410      BCC	0x09DF
+(0583)    {
+(0584)     flag1 = 1;
+     9DD E041      LDI	R20,1
+(0585) 	backward();
+     9DE DF3C      RCALL	_backward
+(0586) 	//buzzer_on(); delay_250ms(); buzzer_off();delay_250ms(); buzzer_on(); delay_250ms(); buzzer_off(); //use it to debug remote onnection
+(0587)    }
+(0588)   }
+(0589)   
+(0590)   if((flag1 == 0) && (motion_busy == 0)) //anticlockwise (left), 3 beep
+     9DF 2344      TST	R20
+     9E0 F459      BNE	0x09EC
+     9E1 9020 0209 LDS	R2,motion_busy
+     9E3 2022      TST	R2
+     9E4 F439      BNE	0x09EC
+(0591)   {
+(0592)   if(remote_data[3] > 0x2D)
+     9E5 E28D      LDI	R24,0x2D
+     9E6 9020 020D LDS	R2,remote_data+3
+     9E8 1582      CP	R24,R2
+     9E9 F410      BCC	0x09EC
+(0593)    {
+(0594)     flag1 = 1;
+     9EA E041      LDI	R20,1
+(0595) 	rotate_anticlockwise_3();
+     9EB DE60      RCALL	_rotate_anticlockwise_3
+(0596) 	//buzzer_on(); delay_250ms(); buzzer_off();delay_250ms(); buzzer_on(); delay_250ms(); buzzer_off(); delay_250ms(); buzzer_on(); delay_250ms(); buzzer_off(); //use it to debug remote onnection
+(0597)    }
+(0598)  }
+(0599)   
+(0600)   if((flag1 == 0) && (motion_busy == 0)) //clockwise (right), 4 beep
+     9EC 2344      TST	R20
+     9ED F451      BNE	0x09F8
+     9EE 9020 0209 LDS	R2,motion_busy
+     9F0 2022      TST	R2
+     9F1 F431      BNE	0x09F8
+(0601)   {
+(0602)   if(remote_data[3] < 0x19)
+     9F2 9180 020D LDS	R24,remote_data+3
+     9F4 3189      CPI	R24,0x19
+     9F5 F410      BCC	0x09F8
+(0603)    {
+(0604)     flag1 = 1;
+     9F6 E041      LDI	R20,1
+(0605) 	rotate_clockwise_3();
+     9F7 DE03      RCALL	_rotate_clockwise_3
+(0606) 	//buzzer_on(); delay_250ms(); buzzer_off();delay_250ms(); buzzer_on(); delay_250ms(); buzzer_off(); delay_250ms(); buzzer_on(); delay_250ms(); buzzer_off();delay_250ms(); buzzer_on(); delay_250ms(); buzzer_off(); //use it to debug remote onnection
+(0607)    }
+(0608)   }
+(0609)   
+(0610)   if((flag1 == 0) && (motion_busy == 0)) //stop 1 long beep
+     9F8 2344      TST	R20
+     9F9 F511      BNE	0x0A1C
+     9FA 9020 0209 LDS	R2,motion_busy
+     9FC 2022      TST	R2
+     9FD F4F1      BNE	0x0A1C
+(0611)   {
+(0612)   if((0x19 < remote_data[3] < 0x2D) && (0x15 < remote_data[4] < 0x29)) 
+     9FE 9020 020D LDS	R2,remote_data+3
+     A00 E189      LDI	R24,0x19
+     A01 1582      CP	R24,R2
+     A02 F418      BCC	0x0A06
+     A03 E061      LDI	R22,1
+     A04 E070      LDI	R23,0
+     A05 C002      RJMP	0x0A08
+     A06 2766      CLR	R22
+     A07 2777      CLR	R23
+     A08 326D      CPI	R22,0x2D
+     A09 E0E0      LDI	R30,0
+     A0A 077E      CPC	R23,R30
+     A0B F484      BGE	0x0A1C
+     A0C 9020 020E LDS	R2,0x020E
+     A0E E185      LDI	R24,0x15
+     A0F 1582      CP	R24,R2
+     A10 F418      BCC	0x0A14
+     A11 E061      LDI	R22,1
+     A12 E070      LDI	R23,0
+     A13 C002      RJMP	0x0A16
+     A14 2766      CLR	R22
+     A15 2777      CLR	R23
+     A16 3269      CPI	R22,0x29
+     A17 E0E0      LDI	R30,0
+     A18 077E      CPC	R23,R30
+     A19 F414      BGE	0x0A1C
+(0613)    {
+(0614)     flag1 = 1;
+     A1A E041      LDI	R20,1
+(0615) 	servo_calibration();
+     A1B DBD4      RCALL	_servo_calibration
+(0616) 	//buzzer_on(); delay_250ms(); delay_250ms(); delay_250ms(); buzzer_off(); //use it to debug remote onnection
+(0617)    }
+(0618)   }
+     A1C 940C 0D11 JMP	pop_xgsetF000
+FILE: C:\DOCUME~1\Administrator\Desktop\Embedded\icc_avr_hexapod\icc_avr_hexapod\main.c
+(0001) /**
+(0002) 
+(0003)  main.c :	Main Program
+(0004)  This file uses the two header files being created hexapod.h and hexapod_firebirdv.h
+(0005)  This piece of code demonstrates the motion of hexapod and also how the letters can be scribed out
+(0006)  with the help of hexapod and a pen attached to it, just by tracing the letter through its motion.
+(0007) 
+(0008)  @author Group 10: Abhinav Maurya 10305016
+(0009)  		 	   	   Yogesh Kakde	  10305039
+(0010) 				   Lokesh Rajwani 10305066
+(0011)  
+(0012)  AVR Studio Version 4.17, Build 666
+(0013) 
+(0014)  Date: 6th November 2010
+(0015)  
+(0016)     Make sure that in the configuration options following settings are 
+(0017)  	done for proper operation of the code
+(0018) 
+(0019)  	Microcontroller: atmega2560
+(0020)  	Frequency: 11059200
+(0021)  	Optimization: -O0 (For more information read section: Selecting proper optimization options 
+(0022) 						below figure 4.22 in the hardware manual)
+(0023) *********************************************************************************/
+(0024) 
+(0025) 
+(0026) /********************************************************************************
+(0027) 
+(0028)    Copyright (c) 2010, ERTS Lab IIT Bombay erts@cse.iitb.ac.in               -*- c -*-
+(0029)    All rights reserved.
+(0030) 
+(0031)    Redistribution and use in source and binary forms, with or without
+(0032)    modification, are permitted provided that the following conditions are met:
+(0033) 
+(0034)    * Redistributions of source code must retain the above copyright
+(0035)      notice, this list of conditions and the following disclaimer.
+(0036) 
+(0037)    * Redistributions in binary form must reproduce the above copyright
+(0038)      notice, this list of conditions and the following disclaimer in
+(0039)      the documentation and/or other materials provided with the
+(0040)      distribution.
+(0041) 
+(0042)    * Neither the name of the copyright holders nor the names of
+(0043)      contributors may be used to endorse or promote products derived
+(0044)      from this software without specific prior written permission.
+(0045) 
+(0046)    * Source code can be used for academic purpose. 
+(0047) 	 For commercial use permission form the author needs to be taken.
+(0048) 
+(0049)   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+(0050)   AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+(0051)   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+(0052)   ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+(0053)   LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+(0054)   CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+(0055)   SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+(0056)   INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+(0057)   CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+(0058)   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+(0059)   POSSIBILITY OF SUCH DAMAGE. 
+(0060) 
+(0061) ********************************************************************************/
+(0062) 
+(0063) 
+(0064) 	// Application: ICC-AVR
+(0065) // Target: M2560
+(0066) // Crystal: 11.059Mhz
+(0067) 
+(0068) 
+(0069) 
+(0070) #include "hexapod.h"
+(0071) 
+(0072) //These functions provide forward motions in each adjacent limbs direction
+(0073) //Although these functions are not currently used, but are provided as a secondary functions.
+(0074) 
+(0075) void forward_1_4 (void);  		  		 /** 	 	  1    4	   		 **/
+(0076) void forward_4_5 (void);
+(0077) void forward_3_2 (void);				 /**	  2  	       5		 **/
+(0078) void forward_2_1 (void);
+(0079) void forward_5_6 (void);				 /** 	 	  3    6	   		 **/
+(0080) 
+(0081) 
+(0082) //The functions declared below are the functions which will scribe out letters as indicated by their names.
+(0083) //Such functions can be extended even to scribe out numbers and shapes.
+(0084) void write_H(int n);
+(0085) void write_X(int n);
+(0086) 
+(0087) 
+(0088) 
+(0089) /*******MAIN PROGRAM***********/
+(0090) void main(void)
+(0091) {
+(0092)  int i;
+(0093)  init_devices();
+_main:
+  i                    --> R20
+     A1E DA31      RCALL	_init_devices
+(0094)  //insert your functional code here...
+(0095)  servo_calibration(); //must be called as the first instruction
+     A1F DBD0      RCALL	_servo_calibration
+(0096)  servo_on();//turning on the servo supply
+     A20 940E 009C CALL	_servo_on
+(0097) 
+(0098) 
+(0099)  ////////********DEMO 1***********////////// 
+(0100)  delay(5000);
+     A22 E808      LDI	R16,0x88
+     A23 E113      LDI	R17,0x13
+     A24 940E 016E CALL	_delay
+(0101)  
+(0102)  //The code below rotates the hexapod by 360 degrees
+(0103)  rotate_clockwise(90);
+     A26 E50A      LDI	R16,0x5A
+     A27 E010      LDI	R17,0
+     A28 DDFD      RCALL	_rotate_clockwise
+(0104)  rotate_clockwise(90);
+     A29 E50A      LDI	R16,0x5A
+     A2A E010      LDI	R17,0
+     A2B DDFA      RCALL	_rotate_clockwise
+(0105)  rotate_clockwise(90);
+     A2C E50A      LDI	R16,0x5A
+     A2D E010      LDI	R17,0
+     A2E DDF7      RCALL	_rotate_clockwise
+(0106)  rotate_clockwise(90);
+     A2F E50A      LDI	R16,0x5A
+     A30 E010      LDI	R17,0
+     A31 DDF4      RCALL	_rotate_clockwise
+(0107)  
+(0108)  
+(0109)  ////////********DEMO 2***********//////////
+(0110)  delay(5000);
+     A32 E808      LDI	R16,0x88
+     A33 E113      LDI	R17,0x13
+     A34 940E 016E CALL	_delay
+(0111)  
+(0112)  //The code below traverses the hexapod forward and then backward
+(0113)  for(i=0;i<5;i++){
+     A36 2744      CLR	R20
+     A37 2755      CLR	R21
+(0114)   forward();
+     A38 DE64      RCALL	_forward
+(0115)   while(motion_busy == 1);
+     A39 9180 0209 LDS	R24,motion_busy
+     A3B 3081      CPI	R24,1
+     A3C F3E1      BEQ	0x0A39
+     A3D 5F4F      SUBI	R20,0xFF
+     A3E 4F5F      SBCI	R21,0xFF
+     A3F 3045      CPI	R20,5
+     A40 E0E0      LDI	R30,0
+     A41 075E      CPC	R21,R30
+     A42 F3AC      BLT	0x0A38
+(0116)  }
+(0117)  
+(0118)  delay(5000);
+     A43 E808      LDI	R16,0x88
+     A44 E113      LDI	R17,0x13
+     A45 940E 016E CALL	_delay
+(0119)  for(i=0;i<10;i++){
+     A47 2744      CLR	R20
+     A48 2755      CLR	R21
+(0120)   backward();
+     A49 DED1      RCALL	_backward
+(0121)   while(motion_busy == 1);
+     A4A 9180 0209 LDS	R24,motion_busy
+     A4C 3081      CPI	R24,1
+     A4D F3E1      BEQ	0x0A4A
+     A4E 5F4F      SUBI	R20,0xFF
+     A4F 4F5F      SBCI	R21,0xFF
+     A50 304A      CPI	R20,0xA
+     A51 E0E0      LDI	R30,0
+     A52 075E      CPC	R21,R30
+     A53 F3AC      BLT	0x0A49
+(0122)  }
+(0123)  
+(0124)  
+(0125)  ////////********DEMO 3***********//////////
+(0126)  ////////********To write H********/////////
+(0127)  delay(5000);
+     A54 E808      LDI	R16,0x88
+     A55 E113      LDI	R17,0x13
+     A56 940E 016E CALL	_delay
+(0128)  write_H(4);
+     A58 E004      LDI	R16,4
+     A59 E010      LDI	R17,0
+     A5A D1D3      RCALL	_write_H
+     A5B 9508      RET
+(0129) }
+(0130) 
+(0131) 
+(0132) 
+(0133) 
+(0134) 
+(0135) 
+(0136) /****************FUNCTION DEFINITIONS***************/
+(0137) /***********DEFINING USER-DEFINED FUNCTIONS*********/
+(0138) //The following functions may be modified, added depending upon the project needs
+(0139) 
+(0140) void forward_1_4 (void)
+(0141) {
+(0142)  motion_busy = 1; 
+_forward_1_4:
+     A5C E081      LDI	R24,1
+     A5D 9380 0209 STS	motion_busy,R24
+(0143)  servo_calibration();
+     A5F DB90      RCALL	_servo_calibration
+(0144)  delay_250ms();
+     A60 940E 019D CALL	_delay_250ms
+(0145)  
+(0146)  //legs 2 and 4 move forward
+(0147)  angle_2B(45); angle_2C(45); angle_4B(45); angle_4C(45); //front pair BC servo up 45
+     A62 E20D      LDI	R16,0x2D
+     A63 DA71      RCALL	_angle_2B
+     A64 E20D      LDI	R16,0x2D
+     A65 DA83      RCALL	_angle_2C
+     A66 E20D      LDI	R16,0x2D
+     A67 DAD6      RCALL	_angle_4B
+     A68 E20D      LDI	R16,0x2D
+     A69 DAEB      RCALL	_angle_4C
+(0148)  delay_250ms();
+     A6A 940E 019D CALL	_delay_250ms
+(0149)  angle_2A(60); angle_4A(120); //front pair move forward while legs are up
+     A6C E30C      LDI	R16,0x3C
+     A6D DA56      RCALL	_angle_2A
+     A6E E708      LDI	R16,0x78
+     A6F DABD      RCALL	_angle_4A
+(0150)  delay_250ms();
+     A70 940E 019D CALL	_delay_250ms
+(0151)  angle_2B(90); angle_2C(90); angle_4B(90); angle_4C(90); // put down legs
+     A72 E50A      LDI	R16,0x5A
+     A73 DA61      RCALL	_angle_2B
+     A74 E50A      LDI	R16,0x5A
+     A75 DA73      RCALL	_angle_2C
+     A76 E50A      LDI	R16,0x5A
+     A77 DAC6      RCALL	_angle_4B
+     A78 E50A      LDI	R16,0x5A
+     A79 DADB      RCALL	_angle_4C
+(0152)  delay_250ms();
+     A7A 940E 019D CALL	_delay_250ms
+(0153)  
+(0154)  //legs 1 and 6 move forward
+(0155)  angle_1B(45); angle_1C(45); angle_6B(45); angle_6C(45); //middel pair BC servo up 45
+     A7C E20D      LDI	R16,0x2D
+     A7D DA24      RCALL	_angle_1B
+     A7E E20D      LDI	R16,0x2D
+     A7F DA33      RCALL	_angle_1C
+     A80 E20D      LDI	R16,0x2D
+     A81 DB3A      RCALL	_angle_6B
+     A82 E20D      LDI	R16,0x2D
+     A83 DB4F      RCALL	_angle_6C
+(0156)  delay_250ms();
+     A84 940E 019D CALL	_delay_250ms
+(0157)  angle_1A(60); angle_6A(120); //middel pair move back while legs are up
+     A86 E30C      LDI	R16,0x3C
+     A87 DA09      RCALL	_angle_1A
+     A88 E708      LDI	R16,0x78
+     A89 DB21      RCALL	_angle_6A
+(0158)  delay_250ms();
+     A8A 940E 019D CALL	_delay_250ms
+(0159)  angle_1B(90); angle_1C(90); angle_6B(90); angle_6C(90); // put down legs
+     A8C E50A      LDI	R16,0x5A
+     A8D DA14      RCALL	_angle_1B
+     A8E E50A      LDI	R16,0x5A
+     A8F DA23      RCALL	_angle_1C
+     A90 E50A      LDI	R16,0x5A
+     A91 DB2A      RCALL	_angle_6B
+     A92 E50A      LDI	R16,0x5A
+     A93 DB3F      RCALL	_angle_6C
+(0160)  delay_250ms();
+     A94 940E 019D CALL	_delay_250ms
+(0161)  
+(0162)  //legs 3 and 5 move forward
+(0163)  angle_3B(45); angle_3C(45); angle_5B(45); angle_5C(45); //middel pair BC servo up 45
+     A96 E20D      LDI	R16,0x2D
+     A97 DA73      RCALL	_angle_3B
+     A98 E20D      LDI	R16,0x2D
+     A99 DA82      RCALL	_angle_3C
+     A9A E20D      LDI	R16,0x2D
+     A9B DAE1      RCALL	_angle_5B
+     A9C E20D      LDI	R16,0x2D
+     A9D DAF6      RCALL	_angle_5C
+(0164)  delay_250ms();
+     A9E 940E 019D CALL	_delay_250ms
+(0165)  angle_3A(60); angle_5A(120); //middel pair move forward while legs are up
+     AA0 E30C      LDI	R16,0x3C
+     AA1 DA58      RCALL	_angle_3A
+     AA2 E708      LDI	R16,0x78
+     AA3 DAC8      RCALL	_angle_5A
+(0166)  delay_250ms();
+     AA4 940E 019D CALL	_delay_250ms
+(0167)  angle_3B(90); angle_3C(90); angle_5B(90); angle_5C(90); // put down legs
+     AA6 E50A      LDI	R16,0x5A
+     AA7 DA63      RCALL	_angle_3B
+     AA8 E50A      LDI	R16,0x5A
+     AA9 DA72      RCALL	_angle_3C
+     AAA E50A      LDI	R16,0x5A
+     AAB DAD1      RCALL	_angle_5B
+     AAC E50A      LDI	R16,0x5A
+     AAD DAE6      RCALL	_angle_5C
+(0168)  delay_250ms(); 
+     AAE 940E 019D CALL	_delay_250ms
+(0169)  
+(0170)  servo_calibration(); //push towards forward
+     AB0 DB3F      RCALL	_servo_calibration
+(0171)  motion_busy = 0; 
+     AB1 2422      CLR	R2
+     AB2 9220 0209 STS	motion_busy,R2
+     AB4 9508      RET
+(0172) }
+(0173) 
+(0174) void forward_4_5 (void)
+(0175) {
+(0176)  motion_busy = 1; 
+_forward_4_5:
+     AB5 E081      LDI	R24,1
+     AB6 9380 0209 STS	motion_busy,R24
+(0177)  servo_calibration();
+     AB8 DB37      RCALL	_servo_calibration
+(0178)  delay_250ms();
+     AB9 940E 019D CALL	_delay_250ms
+(0179)  
+(0180)  //legs 1 and 5 move forward
+(0181)  angle_1B(45); angle_1C(45); angle_5B(45); angle_5C(45); //front pair BC servo up 45
+     ABB E20D      LDI	R16,0x2D
+     ABC D9E5      RCALL	_angle_1B
+     ABD E20D      LDI	R16,0x2D
+     ABE D9F4      RCALL	_angle_1C
+     ABF E20D      LDI	R16,0x2D
+     AC0 DABC      RCALL	_angle_5B
+     AC1 E20D      LDI	R16,0x2D
+     AC2 DAD1      RCALL	_angle_5C
+(0182)  delay_250ms();
+     AC3 940E 019D CALL	_delay_250ms
+(0183)  angle_1A(80); angle_5A(120); //front pair move forward while legs are up
+     AC5 E500      LDI	R16,0x50
+     AC6 D9CA      RCALL	_angle_1A
+     AC7 E708      LDI	R16,0x78
+     AC8 DAA3      RCALL	_angle_5A
+(0184)  delay_250ms();
+     AC9 940E 019D CALL	_delay_250ms
+(0185)  angle_1B(90); angle_1C(90); angle_5B(90); angle_5C(90); // put down legs
+     ACB E50A      LDI	R16,0x5A
+     ACC D9D5      RCALL	_angle_1B
+     ACD E50A      LDI	R16,0x5A
+     ACE D9E4      RCALL	_angle_1C
+     ACF E50A      LDI	R16,0x5A
+     AD0 DAAC      RCALL	_angle_5B
+     AD1 E50A      LDI	R16,0x5A
+     AD2 DAC1      RCALL	_angle_5C
+(0186)  delay_250ms();
+     AD3 940E 019D CALL	_delay_250ms
+(0187)  
+(0188)  //legs 4 and 3 move forward
+(0189)  angle_4B(45); angle_4C(45); angle_3B(45); angle_3C(45); //middel pair BC servo up 45
+     AD5 E20D      LDI	R16,0x2D
+     AD6 DA67      RCALL	_angle_4B
+     AD7 E20D      LDI	R16,0x2D
+     AD8 DA7C      RCALL	_angle_4C
+     AD9 E20D      LDI	R16,0x2D
+     ADA DA30      RCALL	_angle_3B
+     ADB E20D      LDI	R16,0x2D
+     ADC DA3F      RCALL	_angle_3C
+(0190)  delay_250ms();
+     ADD 940E 019D CALL	_delay_250ms
+(0191)  angle_4A(80); angle_3A(120); //middel pair move back while legs are up
+     ADF E500      LDI	R16,0x50
+     AE0 DA4C      RCALL	_angle_4A
+     AE1 E708      LDI	R16,0x78
+     AE2 DA17      RCALL	_angle_3A
+(0192)  delay_250ms();
+     AE3 940E 019D CALL	_delay_250ms
+(0193)  angle_4B(90); angle_4C(90); angle_3B(90); angle_3C(90); // put down legs
+     AE5 E50A      LDI	R16,0x5A
+     AE6 DA57      RCALL	_angle_4B
+     AE7 E50A      LDI	R16,0x5A
+     AE8 DA6C      RCALL	_angle_4C
+     AE9 E50A      LDI	R16,0x5A
+     AEA DA20      RCALL	_angle_3B
+     AEB E50A      LDI	R16,0x5A
+     AEC DA2F      RCALL	_angle_3C
+(0194)  delay_250ms();
+     AED 940E 019D CALL	_delay_250ms
+(0195)  
+(0196)  //legs 2 and 6 move forward
+(0197)  angle_2B(45); angle_2C(45); angle_6B(45); angle_6C(45); //middel pair BC servo up 45
+     AEF E20D      LDI	R16,0x2D
+     AF0 D9E4      RCALL	_angle_2B
+     AF1 E20D      LDI	R16,0x2D
+     AF2 D9F6      RCALL	_angle_2C
+     AF3 E20D      LDI	R16,0x2D
+     AF4 DAC7      RCALL	_angle_6B
+     AF5 E20D      LDI	R16,0x2D
+     AF6 DADC      RCALL	_angle_6C
+(0198)  delay_250ms();
+     AF7 940E 019D CALL	_delay_250ms
+(0199)  angle_2A(80); angle_6A(120); //middel pair move forward while legs are up
+     AF9 E500      LDI	R16,0x50
+     AFA D9C9      RCALL	_angle_2A
+     AFB E708      LDI	R16,0x78
+     AFC DAAE      RCALL	_angle_6A
+(0200)  delay_250ms();
+     AFD 940E 019D CALL	_delay_250ms
+(0201)  angle_2B(90); angle_2C(90); angle_6B(90); angle_6C(90); // put down legs
+     AFF E50A      LDI	R16,0x5A
+     B00 D9D4      RCALL	_angle_2B
+     B01 E50A      LDI	R16,0x5A
+     B02 D9E6      RCALL	_angle_2C
+     B03 E50A      LDI	R16,0x5A
+     B04 DAB7      RCALL	_angle_6B
+     B05 E50A      LDI	R16,0x5A
+     B06 DACC      RCALL	_angle_6C
+(0202)  delay_250ms(); 
+     B07 940E 019D CALL	_delay_250ms
+(0203)  
+(0204)  servo_calibration(); //push towards forward
+     B09 DAE6      RCALL	_servo_calibration
+(0205)  motion_busy = 0; 
+     B0A 2422      CLR	R2
+     B0B 9220 0209 STS	motion_busy,R2
+     B0D 9508      RET
+(0206) }
+(0207) 
+(0208) void forward_3_2 (void)
+(0209) {
+(0210)  motion_busy = 1; 
+_forward_3_2:
+     B0E E081      LDI	R24,1
+     B0F 9380 0209 STS	motion_busy,R24
+(0211)  servo_calibration();
+     B11 DADE      RCALL	_servo_calibration
+(0212)  delay_250ms();
+     B12 940E 019D CALL	_delay_250ms
+(0213)  
+(0214)  //legs 6 and 2 move forward
+(0215)  angle_6B(45); angle_6C(45); angle_2B(45); angle_2C(45); //front pair BC servo up 45
+     B14 E20D      LDI	R16,0x2D
+     B15 DAA6      RCALL	_angle_6B
+     B16 E20D      LDI	R16,0x2D
+     B17 DABB      RCALL	_angle_6C
+     B18 E20D      LDI	R16,0x2D
+     B19 D9BB      RCALL	_angle_2B
+     B1A E20D      LDI	R16,0x2D
+     B1B D9CD      RCALL	_angle_2C
+(0216)  delay_250ms();
+     B1C 940E 019D CALL	_delay_250ms
+(0217)  angle_6A(60); angle_2A(120); //front pair move forward while legs are up
+     B1E E30C      LDI	R16,0x3C
+     B1F DA8B      RCALL	_angle_6A
+     B20 E708      LDI	R16,0x78
+     B21 D9A2      RCALL	_angle_2A
+(0218)  delay_250ms();
+     B22 940E 019D CALL	_delay_250ms
+(0219)  angle_6B(90); angle_6C(90); angle_2B(90); angle_2C(90); // put down legs
+     B24 E50A      LDI	R16,0x5A
+     B25 DA96      RCALL	_angle_6B
+     B26 E50A      LDI	R16,0x5A
+     B27 DAAB      RCALL	_angle_6C
+     B28 E50A      LDI	R16,0x5A
+     B29 D9AB      RCALL	_angle_2B
+     B2A E50A      LDI	R16,0x5A
+     B2B D9BD      RCALL	_angle_2C
+(0220)  delay_250ms();
+     B2C 940E 019D CALL	_delay_250ms
+(0221)  
+(0222)  //legs 3 and 4 move forward
+(0223)  angle_3B(45); angle_3C(45); angle_4B(45); angle_4C(45); //middel pair BC servo up 45
+     B2E E20D      LDI	R16,0x2D
+     B2F D9DB      RCALL	_angle_3B
+     B30 E20D      LDI	R16,0x2D
+     B31 D9EA      RCALL	_angle_3C
+     B32 E20D      LDI	R16,0x2D
+     B33 DA0A      RCALL	_angle_4B
+     B34 E20D      LDI	R16,0x2D
+     B35 DA1F      RCALL	_angle_4C
+(0224)  delay_250ms();
+     B36 940E 019D CALL	_delay_250ms
+(0225)  angle_3A(60); angle_4A(120); //middel pair move back while legs are up
+     B38 E30C      LDI	R16,0x3C
+     B39 D9C0      RCALL	_angle_3A
+     B3A E708      LDI	R16,0x78
+     B3B D9F1      RCALL	_angle_4A
+(0226)  delay_250ms();
+     B3C 940E 019D CALL	_delay_250ms
+(0227)  angle_3B(90); angle_3C(90); angle_4B(90); angle_4C(90); // put down legs
+     B3E E50A      LDI	R16,0x5A
+     B3F D9CB      RCALL	_angle_3B
+     B40 E50A      LDI	R16,0x5A
+     B41 D9DA      RCALL	_angle_3C
+     B42 E50A      LDI	R16,0x5A
+     B43 D9FA      RCALL	_angle_4B
+     B44 E50A      LDI	R16,0x5A
+     B45 DA0F      RCALL	_angle_4C
+(0228)  delay_250ms();
+     B46 940E 019D CALL	_delay_250ms
+(0229)  
+(0230)  //legs 5 and 1 move forward
+(0231)  angle_5B(45); angle_5C(45); angle_1B(45); angle_1C(45); //middel pair BC servo up 45
+     B48 E20D      LDI	R16,0x2D
+     B49 DA33      RCALL	_angle_5B
+     B4A E20D      LDI	R16,0x2D
+     B4B DA48      RCALL	_angle_5C
+     B4C E20D      LDI	R16,0x2D
+     B4D D954      RCALL	_angle_1B
+     B4E E20D      LDI	R16,0x2D
+     B4F D963      RCALL	_angle_1C
+(0232)  delay_250ms();
+     B50 940E 019D CALL	_delay_250ms
+(0233)  angle_5A(60); angle_1A(120); //middel pair move forward while legs are up
+     B52 E30C      LDI	R16,0x3C
+     B53 DA18      RCALL	_angle_5A
+     B54 E708      LDI	R16,0x78
+     B55 D93B      RCALL	_angle_1A
+(0234)  delay_250ms();
+     B56 940E 019D CALL	_delay_250ms
+(0235)  angle_5B(90); angle_5C(90); angle_1B(90); angle_1C(90); // put down legs
+     B58 E50A      LDI	R16,0x5A
+     B59 DA23      RCALL	_angle_5B
+     B5A E50A      LDI	R16,0x5A
+     B5B DA38      RCALL	_angle_5C
+     B5C E50A      LDI	R16,0x5A
+     B5D D944      RCALL	_angle_1B
+     B5E E50A      LDI	R16,0x5A
+     B5F D953      RCALL	_angle_1C
+(0236)  delay_250ms(); 
+     B60 940E 019D CALL	_delay_250ms
+(0237)  
+(0238)  servo_calibration(); //push towards forward
+     B62 DA8D      RCALL	_servo_calibration
+(0239)  motion_busy = 0; 
+     B63 2422      CLR	R2
+     B64 9220 0209 STS	motion_busy,R2
+     B66 9508      RET
+(0240) }
+(0241) 
+(0242) void forward_2_1 (void)
+(0243) {
+(0244)  motion_busy = 1; 
+_forward_2_1:
+     B67 E081      LDI	R24,1
+     B68 9380 0209 STS	motion_busy,R24
+(0245)  servo_calibration();
+     B6A DA85      RCALL	_servo_calibration
+(0246)  delay_250ms();
+     B6B 940E 019D CALL	_delay_250ms
+(0247)  
+(0248)  //legs 3 and 1 move forward
+(0249)  angle_3B(45); angle_3C(45); angle_1B(45); angle_1C(45); //front pair BC servo up 45
+     B6D E20D      LDI	R16,0x2D
+     B6E D99C      RCALL	_angle_3B
+     B6F E20D      LDI	R16,0x2D
+     B70 D9AB      RCALL	_angle_3C
+     B71 E20D      LDI	R16,0x2D
+     B72 D92F      RCALL	_angle_1B
+     B73 E20D      LDI	R16,0x2D
+     B74 D93E      RCALL	_angle_1C
+(0250)  delay_250ms();
+     B75 940E 019D CALL	_delay_250ms
+(0251)  angle_3A(60); angle_1A(120); //front pair move forward while legs are up
+     B77 E30C      LDI	R16,0x3C
+     B78 D981      RCALL	_angle_3A
+     B79 E708      LDI	R16,0x78
+     B7A D916      RCALL	_angle_1A
+(0252)  delay_250ms();
+     B7B 940E 019D CALL	_delay_250ms
+(0253)  angle_3B(90); angle_3C(90); angle_1B(90); angle_1C(90); // put down legs
+     B7D E50A      LDI	R16,0x5A
+     B7E D98C      RCALL	_angle_3B
+     B7F E50A      LDI	R16,0x5A
+     B80 D99B      RCALL	_angle_3C
+     B81 E50A      LDI	R16,0x5A
+     B82 D91F      RCALL	_angle_1B
+     B83 E50A      LDI	R16,0x5A
+     B84 D92E      RCALL	_angle_1C
+(0254)  delay_250ms();
+     B85 940E 019D CALL	_delay_250ms
+(0255)  
+(0256)  //legs 2 and 5 move forward
+(0257)  angle_2B(45); angle_2C(45); angle_5B(45); angle_5C(45); //middel pair BC servo up 45
+     B87 E20D      LDI	R16,0x2D
+     B88 D94C      RCALL	_angle_2B
+     B89 E20D      LDI	R16,0x2D
+     B8A D95E      RCALL	_angle_2C
+     B8B E20D      LDI	R16,0x2D
+     B8C D9F0      RCALL	_angle_5B
+     B8D E20D      LDI	R16,0x2D
+     B8E DA05      RCALL	_angle_5C
+(0258)  delay_250ms();
+     B8F 940E 019D CALL	_delay_250ms
+(0259)  angle_2A(60); angle_5A(120); //middel pair move back while legs are up
+     B91 E30C      LDI	R16,0x3C
+     B92 D931      RCALL	_angle_2A
+     B93 E708      LDI	R16,0x78
+     B94 D9D7      RCALL	_angle_5A
+(0260)  delay_250ms();
+     B95 940E 019D CALL	_delay_250ms
+(0261)  angle_2B(90); angle_2C(90); angle_5B(90); angle_5C(90); // put down legs
+     B97 E50A      LDI	R16,0x5A
+     B98 D93C      RCALL	_angle_2B
+     B99 E50A      LDI	R16,0x5A
+     B9A D94E      RCALL	_angle_2C
+     B9B E50A      LDI	R16,0x5A
+     B9C D9E0      RCALL	_angle_5B
+     B9D E50A      LDI	R16,0x5A
+     B9E D9F5      RCALL	_angle_5C
+(0262)  delay_250ms();
+     B9F 940E 019D CALL	_delay_250ms
+(0263)  
+(0264)  //legs 6 and 4 move forward
+(0265)  angle_6B(45); angle_6C(45); angle_4B(45); angle_4C(45); //middel pair BC servo up 45
+     BA1 E20D      LDI	R16,0x2D
+     BA2 DA19      RCALL	_angle_6B
+     BA3 E20D      LDI	R16,0x2D
+     BA4 DA2E      RCALL	_angle_6C
+     BA5 E20D      LDI	R16,0x2D
+     BA6 D997      RCALL	_angle_4B
+     BA7 E20D      LDI	R16,0x2D
+     BA8 D9AC      RCALL	_angle_4C
+(0266)  delay_250ms();
+     BA9 940E 019D CALL	_delay_250ms
+(0267)  angle_6A(60); angle_4A(120); //middel pair move forward while legs are up
+     BAB E30C      LDI	R16,0x3C
+     BAC D9FE      RCALL	_angle_6A
+     BAD E708      LDI	R16,0x78
+     BAE D97E      RCALL	_angle_4A
+(0268)  delay_250ms();
+     BAF 940E 019D CALL	_delay_250ms
+(0269)  angle_6B(90); angle_6C(90); angle_4B(90); angle_4C(90); // put down legs
+     BB1 E50A      LDI	R16,0x5A
+     BB2 DA09      RCALL	_angle_6B
+     BB3 E50A      LDI	R16,0x5A
+     BB4 DA1E      RCALL	_angle_6C
+     BB5 E50A      LDI	R16,0x5A
+     BB6 D987      RCALL	_angle_4B
+     BB7 E50A      LDI	R16,0x5A
+     BB8 D99C      RCALL	_angle_4C
+(0270)  delay_250ms(); 
+     BB9 940E 019D CALL	_delay_250ms
+(0271)  
+(0272)  servo_calibration(); //push towards forward
+     BBB DA34      RCALL	_servo_calibration
+(0273)  motion_busy = 0; 
+     BBC 2422      CLR	R2
+     BBD 9220 0209 STS	motion_busy,R2
+     BBF 9508      RET
+(0274) }
+(0275) 
+(0276) void forward_5_6 (void)
+(0277) {
+(0278)  motion_busy = 1; 
+_forward_5_6:
+     BC0 E081      LDI	R24,1
+     BC1 9380 0209 STS	motion_busy,R24
+(0279)  servo_calibration();
+     BC3 DA2C      RCALL	_servo_calibration
+(0280)  delay_250ms();
+     BC4 940E 019D CALL	_delay_250ms
+(0281)  
+(0282)  //legs 4 and 6 move forward
+(0283)  angle_4B(45); angle_4C(45); angle_6B(45); angle_6C(45); //front pair BC servo up 45
+     BC6 E20D      LDI	R16,0x2D
+     BC7 D976      RCALL	_angle_4B
+     BC8 E20D      LDI	R16,0x2D
+     BC9 D98B      RCALL	_angle_4C
+     BCA E20D      LDI	R16,0x2D
+     BCB D9F0      RCALL	_angle_6B
+     BCC E20D      LDI	R16,0x2D
+     BCD DA05      RCALL	_angle_6C
+(0284)  delay_250ms();
+     BCE 940E 019D CALL	_delay_250ms
+(0285)  angle_4A(60); angle_6A(120); //front pair move forward while legs are up
+     BD0 E30C      LDI	R16,0x3C
+     BD1 D95B      RCALL	_angle_4A
+     BD2 E708      LDI	R16,0x78
+     BD3 D9D7      RCALL	_angle_6A
+(0286)  delay_250ms();
+     BD4 940E 019D CALL	_delay_250ms
+(0287)  angle_4B(90); angle_4C(90); angle_6B(90); angle_6C(90); // put down legs
+     BD6 E50A      LDI	R16,0x5A
+     BD7 D966      RCALL	_angle_4B
+     BD8 E50A      LDI	R16,0x5A
+     BD9 D97B      RCALL	_angle_4C
+     BDA E50A      LDI	R16,0x5A
+     BDB D9E0      RCALL	_angle_6B
+     BDC E50A      LDI	R16,0x5A
+     BDD D9F5      RCALL	_angle_6C
+(0288)  delay_250ms();
+     BDE 940E 019D CALL	_delay_250ms
+(0289)  
+(0290)  //legs 5 and 2 move forward
+(0291)  angle_5B(45); angle_5C(45); angle_2B(45); angle_2C(45); //middel pair BC servo up 45
+     BE0 E20D      LDI	R16,0x2D
+     BE1 D99B      RCALL	_angle_5B
+     BE2 E20D      LDI	R16,0x2D
+     BE3 D9B0      RCALL	_angle_5C
+     BE4 E20D      LDI	R16,0x2D
+     BE5 D8EF      RCALL	_angle_2B
+     BE6 E20D      LDI	R16,0x2D
+     BE7 D901      RCALL	_angle_2C
+(0292)  delay_250ms();
+     BE8 940E 019D CALL	_delay_250ms
+(0293)  angle_5A(60); angle_2A(120); //middel pair move back while legs are up
+     BEA E30C      LDI	R16,0x3C
+     BEB D980      RCALL	_angle_5A
+     BEC E708      LDI	R16,0x78
+     BED D8D6      RCALL	_angle_2A
+(0294)  delay_250ms();
+     BEE 940E 019D CALL	_delay_250ms
+(0295)  angle_5B(90); angle_5C(90); angle_2B(90); angle_2C(90); // put down legs
+     BF0 E50A      LDI	R16,0x5A
+     BF1 D98B      RCALL	_angle_5B
+     BF2 E50A      LDI	R16,0x5A
+     BF3 D9A0      RCALL	_angle_5C
+     BF4 E50A      LDI	R16,0x5A
+     BF5 D8DF      RCALL	_angle_2B
+     BF6 E50A      LDI	R16,0x5A
+     BF7 D8F1      RCALL	_angle_2C
+(0296)  delay_250ms();
+     BF8 940E 019D CALL	_delay_250ms
+(0297)  
+(0298)  //legs 1 and 3 move forward
+(0299)  angle_1B(45); angle_1C(45); angle_3B(45); angle_3C(45); //middel pair BC servo up 45
+     BFA E20D      LDI	R16,0x2D
+     BFB D8A6      RCALL	_angle_1B
+     BFC E20D      LDI	R16,0x2D
+     BFD D8B5      RCALL	_angle_1C
+     BFE E20D      LDI	R16,0x2D
+     BFF D90B      RCALL	_angle_3B
+     C00 E20D      LDI	R16,0x2D
+     C01 D91A      RCALL	_angle_3C
+(0300)  delay_250ms();
+     C02 940E 019D CALL	_delay_250ms
+(0301)  angle_1A(60); angle_3A(120); //middel pair move forward while legs are up
+     C04 E30C      LDI	R16,0x3C
+     C05 D88B      RCALL	_angle_1A
+     C06 E708      LDI	R16,0x78
+     C07 D8F2      RCALL	_angle_3A
+(0302)  delay_250ms();
+     C08 940E 019D CALL	_delay_250ms
+(0303)  angle_1B(90); angle_1C(90); angle_3B(90); angle_3C(90); // put down legs
+     C0A E50A      LDI	R16,0x5A
+     C0B D896      RCALL	_angle_1B
+     C0C E50A      LDI	R16,0x5A
+     C0D D8A5      RCALL	_angle_1C
+     C0E E50A      LDI	R16,0x5A
+     C0F D8FB      RCALL	_angle_3B
+     C10 E50A      LDI	R16,0x5A
+     C11 D90A      RCALL	_angle_3C
+(0304)  delay_250ms(); 
+     C12 940E 019D CALL	_delay_250ms
+(0305)  
+(0306)  servo_calibration(); //push towards forward
+     C14 D9DB      RCALL	_servo_calibration
+(0307)  motion_busy = 0; 
+     C15 2422      CLR	R2
+     C16 9220 0209 STS	motion_busy,R2
+     C18 9508      RET
+_next_letter:
+  i                    --> R20
+     C19 934A      ST	R20,-Y
+     C1A 935A      ST	R21,-Y
+(0308) }
+(0309) 
+(0310) 
+(0311) /*****************************************************************
+(0312) 	The functions below describe the scribing of letters.
+(0313) 	Each letter starts when hexapod is at upright position
+(0314) 	and after scribing out the letter, the hexapod ends with
+(0315) 	facing right position. So, to start off with next letter
+(0316) 	again, next_letter() function must be called which not only
+(0317) 	resets the hexapod position to facing UP but also keeps
+(0318) 	some distance from the previous letter scribbed out.
+(0319) *****************************************************************/
+(0320) 
+(0321) void next_letter()
+(0322) {
+(0323)  int i;
+(0324)  for(i=0;i<10;i++)
+     C1B 2744      CLR	R20
+     C1C 2755      CLR	R21
+(0325)  {
+(0326)  forward_3_legs();
+     C1D DCCE      RCALL	_forward_3_legs
+(0327)  while(motion_busy == 1);
+     C1E 9180 0209 LDS	R24,motion_busy
+     C20 3081      CPI	R24,1
+     C21 F3E1      BEQ	0x0C1E
+     C22 5F4F      SUBI	R20,0xFF
+     C23 4F5F      SBCI	R21,0xFF
+     C24 304A      CPI	R20,0xA
+     C25 E0E0      LDI	R30,0
+     C26 075E      CPC	R21,R30
+     C27 F3AC      BLT	0x0C1D
+(0328)  } 
+(0329)  rotate_anticlockwise(90);
+     C28 E50A      LDI	R16,0x5A
+     C29 E010      LDI	R17,0
+     C2A DC4C      RCALL	_rotate_anticlockwise
+     C2B 9159      LD	R21,Y+
+     C2C 9149      LD	R20,Y+
+     C2D 9508      RET
+_write_H:
+  i                    --> R20
+  n                    --> R10
+     C2E 940E 0D02 CALL	push_xgset300C
+     C30 0158      MOVW	R10,R16
+(0330) }
+(0331) 
+(0332) //parameter n resembles to size of letter being scribed out
+(0333) 
+(0334) /***************  H  ***************/
+(0335) void write_H(int n)
+(0336) {
+(0337)  int i;
+(0338)  for(i=0;i<2*n;i++)
+     C31 2744      CLR	R20
+     C32 2755      CLR	R21
+     C33 C007      RJMP	0x0C3B
+(0339)  {
+(0340)  forward();
+     C34 DC68      RCALL	_forward
+(0341)  while(motion_busy == 1);
+     C35 9180 0209 LDS	R24,motion_busy
+     C37 3081      CPI	R24,1
+     C38 F3E1      BEQ	0x0C35
+     C39 5F4F      SUBI	R20,0xFF
+     C3A 4F5F      SBCI	R21,0xFF
+     C3B 0115      MOVW	R2,R10
+     C3C 0C22      LSL	R2
+     C3D 1C33      ROL	R3
+     C3E 1542      CP	R20,R2
+     C3F 0553      CPC	R21,R3
+     C40 F39C      BLT	0x0C34
+(0342)  }
+(0343)  
+(0344)  for(i=0;i<n;i++)
+     C41 2744      CLR	R20
+     C42 2755      CLR	R21
+     C43 C007      RJMP	0x0C4B
+(0345)  {
+(0346)  backward();
+     C44 DCD6      RCALL	_backward
+(0347)  while(motion_busy == 1);
+     C45 9180 0209 LDS	R24,motion_busy
+     C47 3081      CPI	R24,1
+     C48 F3E1      BEQ	0x0C45
+     C49 5F4F      SUBI	R20,0xFF
+     C4A 4F5F      SBCI	R21,0xFF
+     C4B 154A      CP	R20,R10
+     C4C 055B      CPC	R21,R11
+     C4D F3B4      BLT	0x0C44
+(0348)  }
+(0349)  
+(0350)  rotate_clockwise(90);
+     C4E E50A      LDI	R16,0x5A
+     C4F E010      LDI	R17,0
+     C50 DBD5      RCALL	_rotate_clockwise
+(0351)  
+(0352)  for(i=0;i<n;i++)
+     C51 2744      CLR	R20
+     C52 2755      CLR	R21
+     C53 C007      RJMP	0x0C5B
+(0353)  {
+(0354)  forward();
+     C54 DC48      RCALL	_forward
+(0355)  while(motion_busy == 1);
+     C55 9180 0209 LDS	R24,motion_busy
+     C57 3081      CPI	R24,1
+     C58 F3E1      BEQ	0x0C55
+     C59 5F4F      SUBI	R20,0xFF
+     C5A 4F5F      SBCI	R21,0xFF
+     C5B 154A      CP	R20,R10
+     C5C 055B      CPC	R21,R11
+     C5D F3B4      BLT	0x0C54
+(0356)  }
+(0357)  
+(0358)  rotate_anticlockwise(90);
+     C5E E50A      LDI	R16,0x5A
+     C5F E010      LDI	R17,0
+     C60 DC16      RCALL	_rotate_anticlockwise
+(0359)  
+(0360)  for(i=0;i<n;i++)
+     C61 2744      CLR	R20
+     C62 2755      CLR	R21
+     C63 C007      RJMP	0x0C6B
+(0361)  {
+(0362)  forward();
+     C64 DC38      RCALL	_forward
+(0363)  while(motion_busy == 1);
+     C65 9180 0209 LDS	R24,motion_busy
+     C67 3081      CPI	R24,1
+     C68 F3E1      BEQ	0x0C65
+     C69 5F4F      SUBI	R20,0xFF
+     C6A 4F5F      SBCI	R21,0xFF
+     C6B 154A      CP	R20,R10
+     C6C 055B      CPC	R21,R11
+     C6D F3B4      BLT	0x0C64
+(0364)  }
+(0365)  
+(0366)  for(i=0;i<2*n;i++)
+     C6E 2744      CLR	R20
+     C6F 2755      CLR	R21
+     C70 C007      RJMP	0x0C78
+(0367)  {
+(0368)  backward();
+     C71 DCA9      RCALL	_backward
+(0369)  while(motion_busy == 1);
+     C72 9180 0209 LDS	R24,motion_busy
+     C74 3081      CPI	R24,1
+     C75 F3E1      BEQ	0x0C72
+     C76 5F4F      SUBI	R20,0xFF
+     C77 4F5F      SBCI	R21,0xFF
+     C78 0115      MOVW	R2,R10
+     C79 0C22      LSL	R2
+     C7A 1C33      ROL	R3
+     C7B 1542      CP	R20,R2
+     C7C 0553      CPC	R21,R3
+     C7D F39C      BLT	0x0C71
+(0370)  }
+(0371)  
+(0372)  rotate_anticlockwise(90);
+     C7E E50A      LDI	R16,0x5A
+     C7F E010      LDI	R17,0
+     C80 DBF6      RCALL	_rotate_anticlockwise
+     C81 940C 0D07 JMP	pop_xgset300C
+_write_X:
+  i                    --> R20
+  n                    --> R10
+     C83 940E 0D02 CALL	push_xgset300C
+     C85 0158      MOVW	R10,R16
+(0373) }
+(0374) 
+(0375) /***************  X  ***************/
+(0376) void write_X(int n)
+(0377) {
+(0378)  int i;
+(0379)  for(i=0;i<2*n;i++)
+     C86 2744      CLR	R20
+     C87 2755      CLR	R21
+     C88 C007      RJMP	0x0C90
+(0380)  {
+(0381)  forward_4_5();
+     C89 DE2B      RCALL	_forward_4_5
+(0382)  while(motion_busy == 1);
+     C8A 9180 0209 LDS	R24,motion_busy
+     C8C 3081      CPI	R24,1
+     C8D F3E1      BEQ	0x0C8A
+     C8E 5F4F      SUBI	R20,0xFF
+     C8F 4F5F      SBCI	R21,0xFF
+     C90 0115      MOVW	R2,R10
+     C91 0C22      LSL	R2
+     C92 1C33      ROL	R3
+     C93 1542      CP	R20,R2
+     C94 0553      CPC	R21,R3
+     C95 F39C      BLT	0x0C89
+(0383)  }
+(0384)  
+(0385)  for(i=0;i<n;i++)
+     C96 2744      CLR	R20
+     C97 2755      CLR	R21
+     C98 C007      RJMP	0x0CA0
+(0386)  {
+(0387)  forward_3_2();
+     C99 DE74      RCALL	_forward_3_2
+(0388)  while(motion_busy == 1);
+     C9A 9180 0209 LDS	R24,motion_busy
+     C9C 3081      CPI	R24,1
+     C9D F3E1      BEQ	0x0C9A
+     C9E 5F4F      SUBI	R20,0xFF
+     C9F 4F5F      SBCI	R21,0xFF
+     CA0 154A      CP	R20,R10
+     CA1 055B      CPC	R21,R11
+     CA2 F3B4      BLT	0x0C99
+(0389)  }
+(0390)  
+(0391)  for(i=0;i<n;i++)
+     CA3 2744      CLR	R20
+     CA4 2755      CLR	R21
+     CA5 C007      RJMP	0x0CAD
+(0392)  {
+(0393)  forward_2_1();
+     CA6 DEC0      RCALL	_forward_2_1
+(0394)  while(motion_busy == 1);
+     CA7 9180 0209 LDS	R24,motion_busy
+     CA9 3081      CPI	R24,1
+     CAA F3E1      BEQ	0x0CA7
+     CAB 5F4F      SUBI	R20,0xFF
+     CAC 4F5F      SBCI	R21,0xFF
+     CAD 154A      CP	R20,R10
+     CAE 055B      CPC	R21,R11
+     CAF F3B4      BLT	0x0CA6
+(0395)  }
+(0396)  
+(0397)  for(i=0;i<2*n;i++)
+     CB0 2744      CLR	R20
+     CB1 2755      CLR	R21
+     CB2 C007      RJMP	0x0CBA
+(0398)  {
+(0399)  forward_5_6();
+     CB3 DF0C      RCALL	_forward_5_6
+(0400)  while(motion_busy == 1);
+FILE: <library>
+     CB4 9180 0209 LDS	R24,motion_busy
+     CB6 3081      CPI	R24,1
+     CB7 F3E1      BEQ	0x0CB4
+     CB8 5F4F      SUBI	R20,0xFF
+     CB9 4F5F      SBCI	R21,0xFF
+     CBA 0115      MOVW	R2,R10
+     CBB 0C22      LSL	R2
+     CBC 1C33      ROL	R3
+     CBD 1542      CP	R20,R2
+     CBE 0553      CPC	R21,R3
+     CBF F39C      BLT	0x0CB3
+     CC0 940C 0D07 JMP	pop_xgset300C
+mod16u:
+     CC2 9468      BSET	6
+     CC3 C001      RJMP	xdiv16u
+div16u:
+     CC4 94E8      BCLR	6
+xdiv16u:
+     CC5 92EA      ST	R14,-Y
+     CC6 92FA      ST	R15,-Y
+     CC7 938A      ST	R24,-Y
+     CC8 24EE      CLR	R14
+     CC9 24FF      CLR	R15
+     CCA E180      LDI	R24,0x10
+     CCB 0F00      LSL	R16
+     CCC 1F11      ROL	R17
+     CCD 1CEE      ROL	R14
+     CCE 1CFF      ROL	R15
+     CCF 16E2      CP	R14,R18
+     CD0 06F3      CPC	R15,R19
+     CD1 F018      BCS	0x0CD5
+     CD2 1AE2      SUB	R14,R18
+     CD3 0AF3      SBC	R15,R19
+     CD4 9503      INC	R16
+     CD5 958A      DEC	R24
+     CD6 F7A1      BNE	0x0CCB
+     CD7 F416      BRTC	0x0CDA
+     CD8 2D0E      MOV	R16,R14
+     CD9 2D1F      MOV	R17,R15
+     CDA 9189      LD	R24,Y+
+     CDB 90F9      LD	R15,Y+
+     CDC 90E9      LD	R14,Y+
+     CDD 9508      RET
+elpm32:
+     CDE 93EA      ST	R30,-Y
+     CDF 93FA      ST	R31,-Y
+     CE0 920A      ST	R0,-Y
+     CE1 2FE0      MOV	R30,R16
+     CE2 2FF1      MOV	R31,R17
+     CE3 95D8      ELPM
+     CE4 2D00      MOV	R16,R0
+     CE5 9631      ADIW	R30,1
+     CE6 95D8      ELPM
+     CE7 2D10      MOV	R17,R0
+     CE8 9631      ADIW	R30,1
+     CE9 95D8      ELPM
+     CEA 2D20      MOV	R18,R0
+     CEB 9631      ADIW	R30,1
+     CEC 95D8      ELPM
+     CED 2D30      MOV	R19,R0
+     CEE 9009      LD	R0,Y+
+     CEF 91F9      LD	R31,Y+
+     CF0 91E9      LD	R30,Y+
+     CF1 9508      RET
+empy16s:
+     CF2 920A      ST	R0,-Y
+     CF3 921A      ST	R1,-Y
+     CF4 938A      ST	R24,-Y
+     CF5 939A      ST	R25,-Y
+     CF6 9F02      MUL	R16,R18
+     CF7 01C0      MOVW	R24,R0
+     CF8 9F12      MUL	R17,R18
+     CF9 0D90      ADD	R25,R0
+     CFA 9F03      MUL	R16,R19
+     CFB 0D90      ADD	R25,R0
+     CFC 018C      MOVW	R16,R24
+     CFD 9199      LD	R25,Y+
+     CFE 9189      LD	R24,Y+
+     CFF 9019      LD	R1,Y+
+     D00 9009      LD	R0,Y+
+     D01 9508      RET
+push_xgset300C:
+     D02 935A      ST	R21,-Y
+     D03 934A      ST	R20,-Y
+     D04 92BA      ST	R11,-Y
+     D05 92AA      ST	R10,-Y
+     D06 9508      RET
+pop_xgset300C:
+     D07 90A9      LD	R10,Y+
+     D08 90B9      LD	R11,Y+
+     D09 9149      LD	R20,Y+
+     D0A 9159      LD	R21,Y+
+     D0B 9508      RET
+push_xgsetF000:
+     D0C 937A      ST	R23,-Y
+     D0D 936A      ST	R22,-Y
+     D0E 935A      ST	R21,-Y
+     D0F 934A      ST	R20,-Y
+     D10 9508      RET
+pop_xgsetF000:
+     D11 9149      LD	R20,Y+
+     D12 9159      LD	R21,Y+
+     D13 9169      LD	R22,Y+
+     D14 9179      LD	R23,Y+
+     D15 9508      RET
+neg32:
+     D16 9500      COM	R16
+     D17 9510      COM	R17
+     D18 9520      COM	R18
+     D19 9530      COM	R19
+     D1A 5F0F      SUBI	R16,0xFF
+     D1B 4F1F      SBCI	R17,0xFF
+     D1C 4F2F      SBCI	R18,0xFF
+     D1D 4F3F      SBCI	R19,0xFF
+     D1E 9508      RET
+fpint:
+     D1F 934A      ST	R20,-Y
+     D20 935A      ST	R21,-Y
+     D21 936A      ST	R22,-Y
+     D22 940E 0E2B CALL	unpacku
+     D24 F0F1      BEQ	0x0D43
+     D25 2355      TST	R21
+     D26 F0C2      BMI	0x0D3F
+     D27 314F      CPI	R20,0x1F
+     D28 F4A8      BCC	0x0D3E
+     D29 3147      CPI	R20,0x17
+     D2A F0C1      BEQ	0x0D43
+     D2B F450      BCC	0x0D36
+     D2C 9541      NEG	R20
+     D2D 5E49      SUBI	R20,0xE9
+     D2E C005      RJMP	0x0D34
+     D2F 9535      ASR	R19
+     D30 9527      ROR	R18
+     D31 9517      ROR	R17
+     D32 9507      ROR	R16
+     D33 954A      DEC	R20
+     D34 F7D1      BNE	0x0D2F
+     D35 C00D      RJMP	0x0D43
+     D36 5147      SUBI	R20,0x17
+     D37 0F00      LSL	R16
+     D38 1F11      ROL	R17
+     D39 1F22      ROL	R18
+     D3A 1F33      ROL	R19
+     D3B 954A      DEC	R20
+     D3C F7D1      BNE	0x0D37
+     D3D C005      RJMP	0x0D43
+     D3E E73F      LDI	R19,0x7F
+     D3F 2F23      MOV	R18,R19
+     D40 2F13      MOV	R17,R19
+     D41 2F03      MOV	R16,R19
+     D42 C004      RJMP	0x0D47
+     D43 2366      TST	R22
+     D44 F011      BEQ	0x0D47
+     D45 940E 0D16 CALL	neg32
+     D47 9169      LD	R22,Y+
+     D48 9159      LD	R21,Y+
+     D49 9149      LD	R20,Y+
+     D4A 9508      RET
+uint2fp:
+     D4B 9468      BSET	6
+     D4C C001      RJMP	0x0D4E
+int2fp:
+     D4D 94E8      BCLR	6
+     D4E 2722      CLR	R18
+     D4F 2733      CLR	R19
+     D50 F046      BRTS	0x0D59
+     D51 FD17      SBRC	R17,7
+     D52 9520      COM	R18
+     D53 FD17      SBRC	R17,7
+     D54 9530      COM	R19
+     D55 C003      RJMP	0x0D59
+ulong2fp:
+     D56 9468      BSET	6
+     D57 C001      RJMP	0x0D59
+long2fp:
+     D58 94E8      BCLR	6
+     D59 934A      ST	R20,-Y
+     D5A 935A      ST	R21,-Y
+     D5B 936A      ST	R22,-Y
+     D5C E147      LDI	R20,0x17
+     D5D 2766      CLR	R22
+     D5E 2755      CLR	R21
+     D5F F02E      BRTS	0x0D65
+     D60 2333      TST	R19
+     D61 F41A      BPL	0x0D65
+     D62 940E 0D16 CALL	neg32
+     D64 E860      LDI	R22,0x80
+     D65 940E 0E40 CALL	normalize_and_pack
+     D67 9169      LD	R22,Y+
+     D68 9159      LD	R21,Y+
+     D69 9149      LD	R20,Y+
+     D6A 9508      RET
+fpdiv1:
+     D6B 93FA      ST	R31,-Y
+     D6C 93EA      ST	R30,-Y
+     D6D 81EA      LDD	R30,Y+2
+     D6E 81FB      LDD	R31,Y+3
+     D6F D027      RCALL	0x0D97
+     D70 91E9      LD	R30,Y+
+     D71 91F9      LD	R31,Y+
+     D72 9622      ADIW	R28,2
+     D73 9508      RET
+fpdiv2:
+     D74 93FA      ST	R31,-Y
+     D75 93EA      ST	R30,-Y
+     D76 2FEC      MOV	R30,R28
+     D77 2FFD      MOV	R31,R29
+     D78 9632      ADIW	R30,2
+     D79 D01D      RCALL	0x0D97
+     D7A 91E9      LD	R30,Y+
+     D7B 91F9      LD	R31,Y+
+     D7C 9624      ADIW	R28,4
+     D7D 9508      RET
+fpdiv1x:
+     D7E 93FA      ST	R31,-Y
+     D7F 93EA      ST	R30,-Y
+     D80 81EA      LDD	R30,Y+2
+     D81 81FB      LDD	R31,Y+3
+     D82 D014      RCALL	0x0D97
+     D83 91E9      LD	R30,Y+
+     D84 91F9      LD	R31,Y+
+     D85 8339      STD	Y+1,R19
+     D86 8328      STD	Y+0,R18
+     D87 931A      ST	R17,-Y
+     D88 930A      ST	R16,-Y
+     D89 9508      RET
+fpdiv2x:
+     D8A 93FA      ST	R31,-Y
+     D8B 93EA      ST	R30,-Y
+     D8C 2FEC      MOV	R30,R28
+     D8D 2FFD      MOV	R31,R29
+     D8E 9632      ADIW	R30,2
+     D8F D007      RCALL	0x0D97
+     D90 91E9      LD	R30,Y+
+     D91 91F9      LD	R31,Y+
+     D92 833B      STD	Y+3,R19
+     D93 832A      STD	Y+2,R18
+     D94 8319      STD	Y+1,R17
+     D95 8308      STD	Y+0,R16
+     D96 9508      RET
+     D97 924A      ST	R4,-Y
+     D98 925A      ST	R5,-Y
+     D99 926A      ST	R6,-Y
+     D9A 927A      ST	R7,-Y
+     D9B 928A      ST	R8,-Y
+     D9C 929A      ST	R9,-Y
+     D9D 92AA      ST	R10,-Y
+     D9E 92BA      ST	R11,-Y
+     D9F 92CA      ST	R12,-Y
+     DA0 92DA      ST	R13,-Y
+     DA1 92EA      ST	R14,-Y
+     DA2 92FA      ST	R15,-Y
+     DA3 934A      ST	R20,-Y
+     DA4 935A      ST	R21,-Y
+     DA5 936A      ST	R22,-Y
+     DA6 937A      ST	R23,-Y
+     DA7 938A      ST	R24,-Y
+     DA8 939A      ST	R25,-Y
+     DA9 933A      ST	R19,-Y
+     DAA 932A      ST	R18,-Y
+     DAB 931A      ST	R17,-Y
+     DAC 930A      ST	R16,-Y
+     DAD 8100      LDD	R16,Z+0
+     DAE 8111      LDD	R17,Z+1
+     DAF 8122      LDD	R18,Z+2
+     DB0 8133      LDD	R19,Z+3
+     DB1 940E 0E2B CALL	unpacku
+     DB3 F409      BNE	0x0DB5
+     DB4 C061      RJMP	0x0E16
+     DB5 2EE6      MOV	R14,R22
+     DB6 2ED5      MOV	R13,R21
+     DB7 2EC4      MOV	R12,R20
+     DB8 2EB3      MOV	R11,R19
+     DB9 2EA2      MOV	R10,R18
+     DBA 2E91      MOV	R9,R17
+     DBB 2E80      MOV	R8,R16
+     DBC 9109      LD	R16,Y+
+     DBD 9119      LD	R17,Y+
+     DBE 9129      LD	R18,Y+
+     DBF 9139      LD	R19,Y+
+     DC0 940E 0E2B CALL	unpacku
+     DC2 F191      BEQ	0x0DF5
+     DC3 256E      EOR	R22,R14
+     DC4 194C      SUB	R20,R12
+     DC5 095D      SBC	R21,R13
+     DC6 3840      CPI	R20,0x80
+     DC7 0753      CPC	R21,R19
+     DC8 F00C      BLT	0x0DCA
+     DC9 C03E      RJMP	0x0E08
+     DCA 3841      CPI	R20,0x81
+     DCB EF7F      LDI	R23,0xFF
+     DCC 0757      CPC	R21,R23
+     DCD F40C      BGE	0x0DCF
+     DCE C042      RJMP	0x0E11
+     DCF E280      LDI	R24,0x20
+     DD0 2477      CLR	R7
+     DD1 2E63      MOV	R6,R19
+     DD2 2E52      MOV	R5,R18
+     DD3 2E41      MOV	R4,R17
+     DD4 2F30      MOV	R19,R16
+     DD5 2722      CLR	R18
+     DD6 2711      CLR	R17
+     DD7 2700      CLR	R16
+     DD8 9466      LSR	R6
+     DD9 9457      ROR	R5
+     DDA 9447      ROR	R4
+     DDB 9537      ROR	R19
+     DDC 9527      ROR	R18
+     DDD 0F00      LSL	R16
+     DDE 1F11      ROL	R17
+     DDF 1F22      ROL	R18
+     DE0 1F33      ROL	R19
+     DE1 1C44      ROL	R4
+     DE2 1C55      ROL	R5
+     DE3 1C66      ROL	R6
+     DE4 1C77      ROL	R7
+     DE5 F028      BCS	0x0DEB
+     DE6 1848      SUB	R4,R8
+     DE7 0859      SBC	R5,R9
+     DE8 086A      SBC	R6,R10
+     DE9 087B      SBC	R7,R11
+     DEA C004      RJMP	0x0DEF
+     DEB 0C48      ADD	R4,R8
+     DEC 1C59      ADC	R5,R9
+     DED 1C6A      ADC	R6,R10
+     DEE 1C7B      ADC	R7,R11
+     DEF F00A      BMI	0x0DF1
+     DF0 6001      ORI	R16,1
+     DF1 958A      DEC	R24
+     DF2 F751      BNE	0x0DDD
+     DF3 940E 0E40 CALL	normalize_and_pack
+     DF5 9199      LD	R25,Y+
+     DF6 9189      LD	R24,Y+
+     DF7 9179      LD	R23,Y+
+     DF8 9169      LD	R22,Y+
+     DF9 9159      LD	R21,Y+
+     DFA 9149      LD	R20,Y+
+     DFB 90F9      LD	R15,Y+
+     DFC 90E9      LD	R14,Y+
+     DFD 90D9      LD	R13,Y+
+     DFE 90C9      LD	R12,Y+
+     DFF 90B9      LD	R11,Y+
+     E00 90A9      LD	R10,Y+
+     E01 9099      LD	R9,Y+
+     E02 9089      LD	R8,Y+
+     E03 9079      LD	R7,Y+
+     E04 9069      LD	R6,Y+
+     E05 9059      LD	R5,Y+
+     E06 9049      LD	R4,Y+
+     E07 9508      RET
+     E08 EF0F      LDI	R16,0xFF
+     E09 2F10      MOV	R17,R16
+     E0A E72F      LDI	R18,0x7F
+     E0B E73F      LDI	R19,0x7F
+     E0C 2366      TST	R22
+     E0D F339      BEQ	0x0DF5
+     E0E 940E 0D16 CALL	neg32
+     E10 CFE4      RJMP	0x0DF5
+     E11 2700      CLR	R16
+     E12 2F10      MOV	R17,R16
+     E13 2F20      MOV	R18,R16
+     E14 2F30      MOV	R19,R16
+     E15 CFDF      RJMP	0x0DF5
+     E16 9109      LD	R16,Y+
+     E17 9119      LD	R17,Y+
+     E18 9129      LD	R18,Y+
+     E19 9139      LD	R19,Y+
+     E1A CFED      RJMP	0x0E08
+unpacks:
+     E1B D00F      RCALL	unpacku
+     E1C F029      BEQ	0x0E22
+     E1D 2366      TST	R22
+     E1E F011      BEQ	0x0E21
+     E1F 940E 0D16 CALL	neg32
+     E21 9498      BCLR	1
+     E22 9508      RET
+tstR16_R19:
+     E23 2300      TST	R16
+     E24 F429      BNE	0x0E2A
+     E25 2311      TST	R17
+     E26 F419      BNE	0x0E2A
+     E27 2322      TST	R18
+     E28 F409      BNE	0x0E2A
+     E29 2333      TST	R19
+     E2A 9508      RET
+unpacku:
+     E2B DFF7      RCALL	tstR16_R19
+     E2C F079      BEQ	0x0E3C
+     E2D 2F63      MOV	R22,R19
+     E2E 7860      ANDI	R22,0x80
+     E2F 0F22      LSL	R18
+     E30 1F33      ROL	R19
+     E31 2F43      MOV	R20,R19
+     E32 E75F      LDI	R21,0x7F
+     E33 1B45      SUB	R20,R21
+     E34 2755      CLR	R21
+     E35 4050      SBCI	R21,0
+     E36 9526      LSR	R18
+     E37 E830      LDI	R19,0x80
+     E38 2B23      OR	R18,R19
+     E39 2733      CLR	R19
+     E3A 9498      BCLR	1
+     E3B 9508      RET
+     E3C 2744      CLR	R20
+     E3D 2755      CLR	R21
+     E3E 2766      CLR	R22
+     E3F 9508      RET
+normalize_and_pack:
+     E40 DFE2      RCALL	tstR16_R19
+     E41 F121      BEQ	0x0E66
+     E42 939A      ST	R25,-Y
+     E43 938A      ST	R24,-Y
+     E44 E78E      LDI	R24,0x7E
+     E45 E090      LDI	R25,0
+     E46 2333      TST	R19
+     E47 F051      BEQ	0x0E52
+     E48 9536      LSR	R19
+     E49 9527      ROR	R18
+     E4A 9517      ROR	R17
+     E4B 9507      ROR	R16
+     E4C 1748      CP	R20,R24
+     E4D 0759      CPC	R21,R25
+     E4E F4C4      BGE	0x0E67
+     E4F 5F4F      SUBI	R20,0xFF
+     E50 4F5F      SBCI	R21,0xFF
+     E51 CFF4      RJMP	0x0E46
+     E52 9580      COM	R24
+     E53 9590      COM	R25
+     E54 9601      ADIW	R24,1
+     E55 2322      TST	R18
+     E56 F0AA      BMI	0x0E6C
+     E57 0F00      LSL	R16
+     E58 1F11      ROL	R17
+     E59 1F22      ROL	R18
+     E5A 1748      CP	R20,R24
+     E5B 0759      CPC	R21,R25
+     E5C F01C      BLT	0x0E60
+     E5D 5041      SUBI	R20,1
+     E5E 4050      SBCI	R21,0
+     E5F CFF5      RJMP	0x0E55
+     E60 2700      CLR	R16
+     E61 2711      CLR	R17
+     E62 2722      CLR	R18
+     E63 2733      CLR	R19
+     E64 9189      LD	R24,Y+
+     E65 9199      LD	R25,Y+
+     E66 9508      RET
+     E67 2733      CLR	R19
+     E68 EF0F      LDI	R16,0xFF
+     E69 2F10      MOV	R17,R16
+     E6A E72F      LDI	R18,0x7F
+     E6B 2F32      MOV	R19,R18
+     E6C 9189      LD	R24,Y+
+     E6D 9199      LD	R25,Y+
+pack:
+     E6E DFB4      RCALL	tstR16_R19
+     E6F F039      BEQ	0x0E77
+     E70 5841      SUBI	R20,0x81
+     E71 4F5F      SBCI	R21,0xFF
+     E72 2F34      MOV	R19,R20
+     E73 0F22      LSL	R18
+     E74 9536      LSR	R19
+     E75 9527      ROR	R18
+     E76 2B36      OR	R19,R22
+     E77 9508      RET
+fpneg:
+     E78 DFAA      RCALL	tstR16_R19
+     E79 F021      BEQ	0x0E7E
+     E7A 930F      PUSH	R16
+     E7B E800      LDI	R16,0x80
+     E7C 2730      EOR	R19,R16
+     E7D 910F      POP	R16
+     E7E 9508      RET
+fpneg2:
+     E7F DFF8      RCALL	fpneg
+     E80 933A      ST	R19,-Y
+     E81 932A      ST	R18,-Y
+     E82 931A      ST	R17,-Y
+     E83 930A      ST	R16,-Y
+     E84 9508      RET
+saveR8toR25:
+     E85 928A      ST	R8,-Y
+     E86 929A      ST	R9,-Y
+     E87 92AA      ST	R10,-Y
+     E88 92BA      ST	R11,-Y
+     E89 92CA      ST	R12,-Y
+     E8A 92DA      ST	R13,-Y
+     E8B 92EA      ST	R14,-Y
+     E8C 92FA      ST	R15,-Y
+     E8D 934A      ST	R20,-Y
+     E8E 935A      ST	R21,-Y
+     E8F 936A      ST	R22,-Y
+     E90 937A      ST	R23,-Y
+     E91 938A      ST	R24,-Y
+     E92 939A      ST	R25,-Y
+     E93 9508      RET
+restoreR8toR25:
+     E94 9199      LD	R25,Y+
+     E95 9189      LD	R24,Y+
+     E96 9179      LD	R23,Y+
+     E97 9169      LD	R22,Y+
+     E98 9159      LD	R21,Y+
+     E99 9149      LD	R20,Y+
+     E9A 90F9      LD	R15,Y+
+     E9B 90E9      LD	R14,Y+
+     E9C 90D9      LD	R13,Y+
+     E9D 90C9      LD	R12,Y+
+     E9E 90B9      LD	R11,Y+
+     E9F 90A9      LD	R10,Y+
+     EA0 9099      LD	R9,Y+
+     EA1 9089      LD	R8,Y+
+     EA2 9508      RET

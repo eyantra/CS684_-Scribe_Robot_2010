@@ -1,0 +1,838 @@
+/**
+
+ hexapod.h :
+ This file contains the logical code for Hexapod motion and builds upon the file hexapod_firebirdv.h
+ hexapod_firebirdv.h contains platform-specific code for controlling the sensors and actuators using Atmega2560 ports.
+
+ @author Group 10: Abhinav Maurya 10305016
+ 		 	   	   Yogesh Kakde	  10305039
+				   Lokesh Rajwani 10305066
+ 
+ AVR Studio Version 4.17, Build 666
+
+ Date: 6th November 2010
+ 
+    Make sure that in the configuration options following settings are 
+ 	done for proper operation of the code
+
+ 	Microcontroller: atmega2560
+ 	Frequency: 11059200
+ 	Optimization: -O0 (For more information read section: Selecting proper optimization options 
+						below figure 4.22 in the hardware manual)
+*********************************************************************************/
+
+
+/********************************************************************************
+
+   Copyright (c) 2010, ERTS Lab IIT Bombay erts@cse.iitb.ac.in               -*- c -*-
+   All rights reserved.
+
+   Redistribution and use in source and binary forms, with or without
+   modification, are permitted provided that the following conditions are met:
+
+   * Redistributions of source code must retain the above copyright
+     notice, this list of conditions and the following disclaimer.
+
+   * Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in
+     the documentation and/or other materials provided with the
+     distribution.
+
+   * Neither the name of the copyright holders nor the names of
+     contributors may be used to endorse or promote products derived
+     from this software without specific prior written permission.
+
+   * Source code can be used for academic purpose. 
+	 For commercial use permission form the author needs to be taken.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+  POSSIBILITY OF SUCH DAMAGE. 
+
+********************************************************************************/
+
+
+	// Application: ICC-AVR
+// Target: M2560
+// Crystal: 11.059Mhz
+
+//List of functions supplied by this header file, hexapod.h
+/*
+void servo_calibration (void);
+void odd_A_servo (unsigned char angle);
+void even_A_servo (unsigned char angle);
+void A_servo (unsigned char angle);
+void odd_B_servo (unsigned char angle);
+void even_B_servo (unsigned char angle);
+void B_servo (unsigned char angle);
+void odd_C_servo (unsigned char angle);
+void even_C_servo (unsigned char angle);
+void C_servo (unsigned char angle);
+void odd_BC_servo (unsigned char angleB, unsigned char angleC);
+void even_BC_servo (unsigned char angleB, unsigned char angleC);
+void BC_servo (unsigned char angleB, unsigned char angleC);
+void odd_A_servo_forward (unsigned char diff);
+void even_A_servo_forward (unsigned char diff);
+void A_servo_forward (unsigned char diff);
+void odd_A_servo_backward (unsigned char diff);
+void even_A_servo_backward (unsigned char diff);
+void A_servo_backward (unsigned char diff);
+void even_A_servo_90 (void);
+void even_A_servo_65 (void);
+void even_A_servo_115 (void);
+void even_BC_servo_90 (void);
+void even_BC_servo_up_45 (void);
+void even_BC_servo_down_45 (void);
+void odd_A_servo_90 (void);
+void odd_A_servo_65 (void);
+void odd_A_servo_115 (void);
+void odd_BC_servo_90 (void);
+void odd_BC_servo_up_45 (void);
+void odd_BC_servo_down_45 (void);
+void rotate_clockwise_7_5 (void)
+void rotate_anticlockwise_7_5 (void);
+void forward (void);
+void forward_3_legs (void);
+void backward (void);
+void backward_3_legs (void);
+void robot_standup (void);
+void remote_control(void);
+*/
+
+//Functions to be coded
+/*
+void rotate_clockwise (unsigned int clock_angle);
+void rotate_anticlockwise (unsigned int anticlock_angle);
+void rotate (signed int angle);
+void move_12 (unsigned int distance);
+void move_23 (unsigned int distance);
+void move_45 (unsigned int distance);
+void move_56 (unsigned int distance);
+void move_14 (unsigned int distance);
+void move_36 (unsigned int distance);
+void forward (unsigned int distance);
+void backward (unsigned int distance);
+void move (unsigned char angle, unsigned int distance);
+void stroke (unsigned char angle, unsigned int distance);
+void curve (unsigned char tangent_angle, unsigned char segment_angle, unsigned int distance);
+*/
+
+#include <math.h>
+#include "hexapod_firebirdv.h"
+
+void servo_calibration (void)
+{
+angle_1A(90); angle_1B(90); angle_1C(90); angle_2A(90); angle_2B(90); angle_2C(90);
+angle_3A(90); angle_3B(90); angle_3C(90); angle_4A(90); angle_4B(90); angle_4C(90);
+angle_5A(90); angle_5B(90); angle_5C(90); angle_6A(90); angle_6B(90); angle_6C(90);
+}
+
+/*
+Setting angle for A Motors:
+90  - Perpendicular
+65  - Clockwise
+115 - Anticlockwise
+*/
+void odd_A_servo (unsigned char angle)
+{ angle_1A(angle); angle_3A(angle); angle_5A(angle); }
+
+void even_A_servo (unsigned char angle)
+{ angle_2A(angle); angle_4A(angle); angle_6A(angle); }
+
+void A_servo (unsigned char angle)
+{ angle_1A(angle); angle_2A(angle); angle_3A(angle); angle_4A(angle); angle_5A(angle); angle_6A(angle); }
+
+/*
+Setting angle for B Motors:
+90  - Horizontal
+45  - Inclined
+135 - Declined
+*/
+void odd_B_servo (unsigned char angle)
+{ angle_1B(angle); angle_3B(angle); angle_5B(angle); }
+
+void even_B_servo (unsigned char angle)
+{ angle_2B(angle); angle_4B(angle); angle_6B(angle); }
+
+void B_servo (unsigned char angle)
+{ angle_1B(angle); angle_2B(angle); angle_3B(angle); angle_4B(angle); angle_5B(angle); angle_6B(angle); }
+
+/*
+Setting angle for C Motors:
+90  - Perpendicular
+45  - Outward
+135 - Inward
+*/
+void odd_C_servo (unsigned char angle)
+{ angle_1C(angle); angle_3C(angle); angle_5C(angle); }
+
+void even_C_servo (unsigned char angle)
+{ angle_2C(angle); angle_4C(angle); angle_6C(angle); }
+
+void C_servo (unsigned char angle)
+{ angle_1C(angle); angle_2C(angle); angle_3C(angle); angle_4C(angle); angle_5C(angle); angle_6C(angle); }
+
+/*
+Setting angle for BC Motors:
+90  - Perpendicular
+45  - Clockwise
+135 - Anticlockwise
+*/
+void odd_BC_servo (unsigned char angleB, unsigned char angleC)
+{ odd_B_servo(angleB); odd_C_servo(angleC); }
+
+void even_BC_servo (unsigned char angleB, unsigned char angleC)
+{ even_B_servo(angleB); even_C_servo(angleC); }
+
+void BC_servo (unsigned char angleB, unsigned char angleC)
+{ B_servo(angleB); C_servo(angleC);  }
+
+//Setting angle for A Motors: Non-uniform for Forward Rectilinear Motion
+void odd_A_servo_forward (unsigned char diff)
+{ angle_1A(_1A-diff); angle_3A(_3A-diff); angle_5A(_5A+diff); }
+
+void even_A_servo_forward (unsigned char diff)
+{ angle_2A(_2A-diff); angle_4A(_4A+diff); angle_6A(_6A+diff); }
+
+void A_servo_forward (unsigned char diff)
+{ angle_1A(_1A-diff); angle_2A(_2A-diff); angle_3A(_3A-diff); angle_4A(_4A+diff); angle_5A(_5A+diff); angle_6A(_6A+diff); }
+
+//Setting angle for A Motors: Non-uniform for Backward Rectilinear Motion
+void odd_A_servo_backward (unsigned char diff)
+{ angle_1A(_1A+diff); angle_3A(_3A+diff); angle_5A(_5A-diff); }
+
+void even_A_servo_backward (unsigned char diff)
+{ angle_2A(_2A+diff); angle_4A(_4A-diff); angle_6A(_6A-diff); }
+
+void A_servo_backward (unsigned char diff)
+{ angle_1A(_1A+diff); angle_2A(_2A+diff); angle_3A(_3A+diff); angle_4A(_4A-diff); angle_5A(_5A-diff); angle_6A(_6A-diff); }
+
+void opp_14_A (unsigned char angleA)
+{ angle_1A(angleA); angle_4A(angleA); }
+
+void opp_26_A (unsigned char angleA)
+{ angle_2A(angleA); angle_6A(angleA); }
+
+void opp_35_A (unsigned char angleA)
+{ angle_3A(angleA); angle_5A(angleA); }
+
+void opp_14_A_forward (unsigned char diff)
+{ angle_1A(_1A-diff); angle_4A(_4A+diff); }
+
+void opp_26_A_forward (unsigned char diff)
+{ angle_2A(_2A-diff); angle_6A(_6A+diff); }
+
+void opp_35_A_forward (unsigned char diff)
+{ angle_3A(_3A-diff); angle_5A(_5A+diff); }
+
+void opp_14_BC (unsigned char angleB, unsigned char angleC)
+{ angle_1B(angleB); angle_1C(angleC); angle_4B(angleB); angle_4C(angleC); }
+
+void opp_26_BC (unsigned char angleB, unsigned char angleC)
+{ angle_2B(angleB); angle_2C(angleC); angle_6B(angleB); angle_6C(angleC); }
+
+void opp_35_BC (unsigned char angleB, unsigned char angleC)
+{ angle_3B(angleB); angle_3C(angleC); angle_5B(angleB); angle_5C(angleC); }
+
+//Specific Angles
+void even_A_servo_90 (void)
+{ angle_2A(90); angle_4A(90); angle_6A(90); }
+
+void even_A_servo_65 (void) //clockwise
+{ angle_2A(65); angle_4A(65); angle_6A(65); }
+
+void even_A_servo_115 (void)//anticlockwise
+{ angle_2A(115); angle_4A(115); angle_6A(115); }
+
+void even_BC_servo_90 (void)
+{ angle_2B(90); angle_2C(90); angle_4B(90); angle_4C(90); angle_6B(90); angle_6C(90); }
+
+void even_BC_servo_up_45 (void)
+{ angle_2B(45); angle_2C(45); angle_4B(45); angle_4C(45); angle_6B(45); angle_6C(45); }
+
+void even_BC_servo_down_45 (void)
+{ angle_2B(135); angle_2C(135); angle_4B(135); angle_4C(135); angle_6B(135); angle_6C(135); }
+
+void odd_A_servo_90 (void)
+{ angle_1A(90); angle_3A(90); angle_5A(90); }
+
+void odd_A_servo_65 (void)//clockwise
+{ angle_1A(65); angle_3A(65); angle_5A(65); }
+
+void odd_A_servo_115 (void) //anticlockwise
+{ angle_1A(115); angle_3A(115); angle_5A(115); }
+
+void odd_BC_servo_90 (void)
+{ angle_1B(90); angle_1C(90); angle_3B(90); angle_3C(90); angle_5B(90); angle_5C(90); }
+
+void odd_BC_servo_up_45 (void)
+{ angle_1B(45); angle_1C(45); angle_3B(45); angle_3C(45); angle_5B(45); angle_5C(45); }
+
+void odd_BC_servo_down_45 (void)
+{ angle_1B(135); angle_1C(135); angle_3B(135); angle_3C(135); angle_5B(135); angle_5C(135); }
+
+/*********************void rotate_clockwise_3v2 (void)
+{
+ motion_busy = 1; 
+ servo_calibration(); delay_250ms(); 
+ even_A_servo(77); even_BC_servo(45,45); delay_250ms(); 
+ even_BC_servo(90,90); delay_250ms(); 
+ odd_A_servo(77); odd_BC_servo(45,45); delay_250ms(); 
+ odd_BC_servo(90,90); delay_250ms(); 
+ even_A_servo(90); odd_A_servo(90);
+ motion_busy = 0; 
+}*///////////////////***////*/
+
+
+/*********************************************************************/
+/***************Code for CLOCKWISE ROTATATION*************************/
+
+  //  A single rotation move using three legs at a time.
+void rotate_clockwise_3 (void)
+{
+ motion_busy = 1; 
+ servo_calibration(); delay_250ms(); 
+ even_A_servo(62); even_BC_servo(45,45); angle_2B(_2B-9); delay_250ms(); 
+ even_BC_servo(90,90); angle_2B(_2B-9); delay_250ms(); 
+ odd_A_servo(62); odd_BC_servo(45,45); delay_250ms(); 
+ odd_BC_servo(90,90); delay_250ms(); 
+ servo_calibration(); angle_2B(_2B-9); delay_250ms();
+ motion_busy = 0;
+ 
+ /*Pls note that, the calibration offset of 2B servo, in case of rotation wasn't required,
+ Hence to overcome that, we had used angle_2B(_2B-9); to nullify the effect of offset defined in angle_2B function  */ 
+}
+
+
+ // Main rotate function to be used specifying the degrees to be rotated
+void rotate_clockwise (unsigned int clock_angle)
+{
+ int count = (clock_angle%180)/(90.0/12);
+ 	 	   	 						//Thereby getting a precision of 90/12 degrees in one rotation.
+ int i;
+ for (i=0; i < count; i++)
+ 	  rotate_clockwise_3();
+}
+
+/*********************************************************************/
+
+
+/*********************************************************************/
+/*************Code for ANTI-CLOCKWISE ROTATATION**********************/
+
+  //  A single rotation move using three legs at a time.
+void rotate_anticlockwise_3 (void)
+{
+ motion_busy = 1; 
+ servo_calibration(); delay_250ms(); 
+ even_A_servo(118); even_BC_servo(45,45); angle_2B(_2B-9); delay_250ms(); 
+ even_BC_servo(90,90); angle_2B(_2B-9); delay_250ms(); 
+ odd_A_servo(118); odd_BC_servo(45,45); delay_250ms(); 
+ odd_BC_servo(90,90); delay_250ms(); 
+ servo_calibration(); angle_2B(_2B-9); delay_250ms();
+ motion_busy = 0;
+ 
+ /*Pls note that, the calibration offset of 2B servo, in case of rotation wasn't required,
+  Hence to overcome that, we had used angle_2B(_2B-9); to nullify the effect of offset defined in angle_2B function  */
+}
+
+ // Main rotate function to be used specifying the degrees to be rotated
+void rotate_anticlockwise (unsigned int anticlock_angle)
+{
+ int count = (anticlock_angle%180)/(90.0/12);
+ 	 	   	 						//Thereby getting a precision of 90/12 degrees in one rotation.
+ int i;
+ for (i=0; i < count; i++)
+ 	  rotate_anticlockwise_3(); 
+}
+/*********************************************************************/
+
+
+/*********************************************************************/
+/*******************A general rotate function*************************/
+/*******************Rotation values valid from -180 degree to +180 degree***********/
+/*******
+void rotate (signed int angle)
+{
+ angle = angle % 180;
+ while(angle>=180)
+ 		angle -= angle%180;
+ 
+ if (angle == 0)
+ 	return;
+ else if(angle > 0)
+ 		  rotate_clockwise(angle);
+ else
+ 	 	  rotate_anticlockwise(-angle);
+}**********/
+
+
+
+
+/****FORWARD USING 2 LEGS AT A TIME****************/
+
+void forward (void)
+{
+ motion_busy = 1; 
+ servo_calibration();
+ delay_250ms();
+ 
+ //legs 2 and 4 move forward
+ angle_2B(45); angle_2C(45); angle_4B(45); angle_4C(45); //front pair BC servo up 45
+ delay_250ms();
+ angle_2A(60); angle_4A(120); //front pair move forward while legs are up
+ delay_250ms();
+ angle_2B(90); angle_2C(90); angle_4B(90); angle_4C(90); // put down legs
+ delay_250ms();
+ 
+ //legs 1 and 6 move forward
+ angle_1B(45); angle_1C(45); angle_6B(45); angle_6C(45); //middel pair BC servo up 45
+ delay_250ms();
+ angle_1A(60); angle_6A(120); //middel pair move back while legs are up
+ delay_250ms();
+ angle_1B(90); angle_1C(90); angle_6B(90); angle_6C(90); // put down legs
+ delay_250ms();
+ 
+ //legs 3 and 5 move forward
+ angle_3B(45); angle_3C(45); angle_5B(45); angle_5C(45); //middel pair BC servo up 45
+ delay_250ms();
+ angle_3A(60); angle_5A(120); //middel pair move forward while legs are up
+ delay_250ms();
+ angle_3B(90); angle_3C(90); angle_5B(90); angle_5C(90); // put down legs
+ delay_250ms(); 
+ 
+ servo_calibration(); //push towards forward
+ motion_busy = 0; 
+}
+
+
+/****FORWARD USING 3 LEGS AT A TIME****************/
+
+void forward_3_legs (void)
+{
+ motion_busy = 1; 
+ 
+ servo_calibration();
+ delay_250ms();
+ 
+ //even legs move forward
+ even_BC_servo(45,45); //even BC servos raise limbs
+ delay_250ms();
+ even_A_servo_forward(20); //even A servos move raised limbs in forward direction
+ delay_250ms();
+ even_BC_servo(90,90); // put down raised limbs
+ delay_250ms();
+ 
+ //odd legs move forward
+ odd_BC_servo(45,45); //odd BC servos raise limbs
+ delay_250ms();
+ even_A_servo(90); //even A servos move chassis in forward direction
+ delay_250ms();
+ //odd_BC_servo(90,90); // put down raised limbs
+ //delay_250ms();
+ 
+ //odd legs move forward
+ //odd_BC_servo(45,45); //odd BC servos raise limbs
+ //delay_250ms();
+ odd_A_servo_forward(20); //odd A servos move raised limbs in forward direction
+ delay_250ms();
+ odd_BC_servo(90,90); // put down raised limbs
+ delay_250ms();
+ 
+ //even legs move forward
+ even_BC_servo(45,45); //even BC servos raise limbs
+ delay_250ms();
+ odd_A_servo(90); //odd A servos move chassis in forward direction
+ delay_250ms();
+ even_BC_servo(90,90); // put down raised limbs
+ delay_250ms();
+ 
+ servo_calibration(); //push towards forward
+ delay_250ms();
+ 
+ motion_busy = 0; 
+}
+
+/*******void forward_drag(void)
+{
+ motion_busy = 1; 
+ servo_calibration();
+ delay_250ms();
+
+ opp_35_BC(45,45);
+ delay_250ms();
+ opp_35_A_forward(20);
+ delay_250ms(); 
+ opp_35_BC(90,90);
+ delay_250ms();
+ 
+ opp_26_BC(45,45);
+ delay_250ms();
+ opp_26_A_forward(20);
+ delay_250ms(); 
+ opp_26_BC(90,90);
+ delay_250ms();
+
+ opp_14_BC(45,90);
+ delay_250ms();
+ opp_35_A(90);
+ opp_26_A(90);
+ delay_250ms(); 
+ opp_14_BC(90,90);
+ delay_250ms();
+ 
+ servo_calibration();
+ delay_250ms();
+ motion_busy = 0; 
+}*************/
+
+
+/****BACKWARD USING 2 LEGS AT A TIME****************/
+
+ void backward (void)
+ {
+ motion_busy = 1; 
+ servo_calibration();
+ delay_250ms(); 
+ 
+ //legs 2 and 4 move back
+ angle_2B(45); angle_2C(45); angle_4B(45); angle_4C(45); //front pair BC servo up 45
+ delay_250ms(); 
+ angle_2A(120); angle_4A(60); //front pair move forward while legs are up
+ delay_250ms(); 
+ angle_2B(90); angle_2C(90); angle_4B(90); angle_4C(90); // put down legs
+ delay_250ms(); 
+ 
+ //legs 1 and 6 move back
+ angle_1B(45); angle_1C(45); angle_6B(45); angle_6C(45); //middel pair BC servo up 45
+ delay_250ms(); 
+ angle_1A(120); angle_6A(60); //middel pair move back while legs are up
+ delay_250ms(); 
+ angle_1B(90); angle_1C(90); angle_6B(90); angle_6C(90); // put down legs
+ delay_250ms(); 
+ 
+ //legs 3 and 5 move back
+ angle_3B(45); angle_3C(45); angle_5B(45); angle_5C(45); //middel pair BC servo up 45
+ delay_250ms(); 
+ angle_3A(120); angle_5A(60); //middel pair move forward while legs are up
+ delay_250ms(); 
+ angle_3B(90); angle_3C(90); angle_5B(90); angle_5C(90); // put down legs
+ delay_250ms();  
+ 
+ servo_calibration(); angle_3B(_3B+9); delay_250ms(); //push towards back
+ motion_busy = 0; 
+}
+
+
+/****BACKWARD USING 3 LEGS AT A TIME****************/
+
+void backward_3_legs (void)
+ {
+ motion_busy = 1; 
+ 
+ servo_calibration();
+ delay_250ms();
+ 
+ //even legs move forward
+ even_BC_servo(45,45); //even BC servos raise limbs
+ delay_250ms();
+ even_A_servo_backward(20); //even A servos move raised limbs in forward direction
+ delay_250ms();
+ even_BC_servo(90,90); // put down raised limbs
+ delay_250ms();
+ 
+ //odd legs move forward
+ odd_BC_servo(45,45); //odd BC servos raise limbs
+ delay_250ms();
+ even_A_servo(90); //even A servos move chassis in forward direction
+ delay_250ms();
+ //odd_BC_servo(90,90); // put down raised limbs
+ //delay_250ms();
+ 
+ //odd legs move forward
+ //odd_BC_servo(45,45); //odd BC servos raise limbs
+ //delay_250ms();
+ odd_A_servo_backward(20); //odd A servos move raised limbs in forward direction
+ delay_250ms();
+ odd_BC_servo(90,90); // put down raised limbs
+ delay_250ms();
+ 
+ //even legs move forward
+ even_BC_servo(45,45); //even BC servos raise limbs
+ delay_250ms();
+ odd_A_servo(90); //odd A servos move chassis in forward direction
+ delay_250ms();
+ even_BC_servo(90,90); // put down raised limbs
+ delay_250ms();
+ 
+ servo_calibration(); //push towards forward
+ delay_250ms();
+ 
+ motion_busy = 0; 
+}
+
+
+
+void robot_standup (void) //warning: do not call this function while robot is standing or servos will get damaged
+{
+motion_busy = 1; 
+//servo_calibration();
+angle_1B(1); angle_1C(110); angle_2B(1); angle_2C(110); angle_3B(1); angle_3C(110);
+angle_4B(179); angle_4C(70); angle_5B(179); angle_5C(70); angle_6B(179); angle_6C(70);
+delay_1s();
+delay_1s();
+servo_calibration();
+motion_busy = 0; 
+}
+
+void remote_control(void)
+{
+  unsigned char flag1 = 0;
+  PORTA = remote_data[4]; //move left joystick up and down and see if there is any change in the bargraph display.
+  flag1 = 0; //resetting the flag
+ 
+  if((flag1 == 0) && (motion_busy == 0)) //forward, 1 beep
+  {
+  if(remote_data[4] > 0x29)
+   {
+    flag1 = 1;
+    forward();
+    //buzzer_on(); delay_250ms(); buzzer_off(); //use it to debug remote onnection
+   }   
+  }
+  
+  if((flag1 == 0) && (motion_busy == 0)) //back, 2 beep
+  {
+  if(remote_data[4] < 0x15)
+   {
+    flag1 = 1;
+	backward();
+	//buzzer_on(); delay_250ms(); buzzer_off();delay_250ms(); buzzer_on(); delay_250ms(); buzzer_off(); //use it to debug remote onnection
+   }
+  }
+  
+  if((flag1 == 0) && (motion_busy == 0)) //anticlockwise (left), 3 beep
+  {
+  if(remote_data[3] > 0x2D)
+   {
+    flag1 = 1;
+	rotate_anticlockwise_3();
+	//buzzer_on(); delay_250ms(); buzzer_off();delay_250ms(); buzzer_on(); delay_250ms(); buzzer_off(); delay_250ms(); buzzer_on(); delay_250ms(); buzzer_off(); //use it to debug remote onnection
+   }
+ }
+  
+  if((flag1 == 0) && (motion_busy == 0)) //clockwise (right), 4 beep
+  {
+  if(remote_data[3] < 0x19)
+   {
+    flag1 = 1;
+	rotate_clockwise_3();
+	//buzzer_on(); delay_250ms(); buzzer_off();delay_250ms(); buzzer_on(); delay_250ms(); buzzer_off(); delay_250ms(); buzzer_on(); delay_250ms(); buzzer_off();delay_250ms(); buzzer_on(); delay_250ms(); buzzer_off(); //use it to debug remote onnection
+   }
+  }
+  
+  if((flag1 == 0) && (motion_busy == 0)) //stop 1 long beep
+  {
+  if((0x19 < remote_data[3] < 0x2D) && (0x15 < remote_data[4] < 0x29)) 
+   {
+    flag1 = 1;
+	servo_calibration();
+	//buzzer_on(); delay_250ms(); delay_250ms(); delay_250ms(); buzzer_off(); //use it to debug remote onnection
+   }
+  }
+}
+
+
+/*
+void next_letter()
+{
+ for(int i=0;i<10;i++)
+ {
+ forward_3_legs();
+ while(motion_busy == 1);
+ } 
+ rotate_anticlockwise(90);
+}
+
+next_letter();
+//######################HHHHHHHHHHHHHHHHHHHHHHHHH##########################3
+void write_H(int n)
+{
+ int i;
+ for(i=0;i<2*n;i++)
+ {
+ forward_3_legs();
+ while(motion_busy == 1);
+ }
+ 
+ for(i=0;i<n;i++)
+ {
+ backward_3_legs();
+ while(motion_busy == 1);
+ }
+ 
+ rotate_clockwise(90);
+ 
+ for(i=0;i<n;i++)
+ {
+ forward_3_legs();
+ while(motion_busy == 1);
+ }
+ 
+ rotate_anticlockwise(90);
+ 
+ for(i=0;i<n;i++)
+ {
+ forward_3_legs();
+ while(motion_busy == 1);
+ }
+ 
+ for(i=0;i<2*n;i++)
+ {
+ backward_3_legs();
+ while(motion_busy == 1);
+ }
+ 
+ rotate_anticlockwise(90);
+}
+
+next_letter();
+//####################################AAAAAAAAAAAAAAAAAAAAAAAAAAAA##############
+void write_A(int n)
+{
+ int i;
+ rotate_clockwise(30);
+ for(i=0;i<n;i++)
+ {
+ forward_3_legs();
+ while(motion_busy == 1);
+ }
+ rotate_clockwise(60);
+ for(i=0;i<n;i++)
+ {
+ forward_3_legs();
+ while(motion_busy == 1);
+ }
+ for(i=0;i<n;i++)
+ {
+ backward_3_legs();
+ while(motion_busy == 1);
+ }
+ rotate_anticlockwise(60);
+ 
+ for(i=0;i<n;i++)
+ {
+ forward_3_legs();
+ while(motion_busy == 1);
+ }
+ rotate_clockwise(120);
+ 
+ for(i=0;i<2*n;i++)
+ {
+ forward_3_legs();
+ while(motion_busy == 1);
+ } 
+ rotate_anticlockwise(60);
+}
+
+next_letter();
+//#############################EEEEEEEEEEEEEEEEEEEEE#########################33
+
+void write_E(int n)
+{
+ int i;
+ for(i=0;i<2*n;i++)
+ {
+ forward_3_legs();
+ while(motion_busy == 1);
+ }
+ rotate_clockwise(90);
+ for(i=0;i<n;i++)
+ {
+ forward_3_legs();
+ while(motion_busy == 1);
+ }
+ for(i=0;i<n;i++)
+ {
+ backward_3_legs();
+ while(motion_busy == 1);
+ }
+ rotate_clockwise(90);
+ 
+ for(i=0;i<n;i++)
+ {
+ forward_3_legs();
+ while(motion_busy == 1);
+ }
+ rotate_anticlockwise(90);
+ 
+ for(i=0;i<n;i++)
+ {
+ forward_3_legs();
+ while(motion_busy == 1);
+ } 
+ 
+  for(i=0;i<n;i++)
+ {
+ backward_3_legs();
+ while(motion_busy == 1);
+ }
+ rotate_clockwise(90);
+ 
+ for(i=0;i<n;i++)
+ {
+ forward_3_legs();
+ while(motion_busy == 1);
+ } 
+ 
+ rotate_anticlockwise(90);
+ 
+ for(i=0;i<n;i++)
+ {
+ forward_3_legs();
+ while(motion_busy == 1);
+ }
+}
+
+next_letter();
+//####################################XXXXXXXXXXXXXXXXXXXXXXXXXX##############
+void write_X(int n)
+{
+ int i;
+ rotate_clockwise(30);
+ for(i=0;i<2*n;i++)
+ {
+ forward_3_legs();
+ while(motion_busy == 1);
+ }
+ 
+ for(i=0;i<n;i++)
+ {
+ backward_3_legs();
+ while(motion_busy == 1);
+ }
+ rotate_clockwise(120);
+ 
+ for(i=0;i<n;i++)
+ {
+ backward_3_legs();
+ while(motion_busy == 1);
+ }
+ 
+ for(i=0;i<2*n;i++)
+ {
+ forward_3_legs();
+ while(motion_busy == 1);
+ }
+ 
+ rotate_anticlockwise(60); 
+}
+*/

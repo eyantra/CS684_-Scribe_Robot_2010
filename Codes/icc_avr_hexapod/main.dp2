@@ -1,0 +1,1 @@
+main.o: C:\DOCUME~1\Administrator\Desktop\Embedded\icc_avr_hexapod\icc_avr_hexapod\hexapod.h C:\iccv7avr\include\math.h C:\DOCUME~1\Administrator\Desktop\Embedded\icc_avr_hexapod\icc_avr_hexapod\hexapod_firebirdv.h C:\iccv7avr\include\iom2560v.h C:\iccv7avr\include\macros.h

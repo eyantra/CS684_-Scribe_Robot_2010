@@ -1,0 +1,8 @@
+[Files]
+main.c
+[Headers]
+hexapod.h
+hexapod_firebirdv.h
+[Documents]
+Software Requirements Specification.doc
+Software Requirements Specification.pdf

@@ -1,0 +1,1 @@
+The icc_avr_hexapod folder is a project folder developed under Imagecraft ICC7AVR IDE
